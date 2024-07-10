@@ -41,3 +41,22 @@ dialog::backdrop {
 .setting {
   margin: 20px;
 }
+
+.fullscreen {
+  width: 100%;
+}
+
+.large {
+  font-size: 2em;
+  margin: 10px;
+}
+
+.center {
+  display: flex;
+  justify-content: center; /* For horizontal alignment */
+}
+
+.error {
+  color: red;
+  margin: 20px;
+}

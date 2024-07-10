@@ -34,6 +34,7 @@ export default function SettingsDialog({
           onChange={event => store.setRedGifsOnly(event.target.checked)}
         />
       </div>
+
       <button onClick={() => onClose()}>submit</button>
     </dialog>
   )
