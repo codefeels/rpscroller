@@ -10,7 +10,7 @@ import { redGifUrlToId } from './util'
 import { setBool, setString, useAppStore } from './store'
 
 // @ts-expect-error
-import flame from './flame.png'
+import flame from './flame.svg'
 
 function decode(html: string) {
   var txt = document.createElement('textarea')
