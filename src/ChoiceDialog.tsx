@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useDialogShown } from './util'
 import { data } from './data'
 

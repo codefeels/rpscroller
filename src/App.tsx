@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import queryString from 'querystring'
 import useSWR from 'swr'
-import './stage.css'
-import { redGifUrlToId } from './util'
+import he from 'he'
+
+// components
 import ChoiceDialog from './ChoiceDialog'
 import SettingsDialog from './SettingsDialog'
+// data
+import { redGifUrlToId } from './util'
 import { useAppStore } from './store'
+
+import './stage.css'
 
 const fetcher = async (url: string) => {
   const res = await fetch(url)
@@ -12,7 +18,19 @@ const fetcher = async (url: string) => {
     throw new Error(`HTTP ${res.status} fetching ${url} ${await res.text()}`)
   }
   const ret = await res.json()
-  return ret.data
+  return ret.data as {
+    before?: string
+    after?: string
+    children: {
+      data: {
+        id: string
+        subreddit_name_prefixed: string
+        title: string
+        url: string
+        author: string
+      }
+    }[]
+  }
 }
 
 const favs = ['/user/lovingeli1', 'user/jennassecret', 'r/nsfw_html5+anal']
@@ -20,26 +38,27 @@ const params = new URLSearchParams(window.location.search)
 const v = params.get('p') || '/r/nsfw'
 
 function App() {
-  const [val, setVal] = useState(v)
-  const [page, setPage] = useState('')
-  const [submittedVal, setSubmittedVal] = useState(v)
+  const [text, setText] = useState(v)
   const [showChoiceDialog, setShowChoiceDialog] = useState(false)
   const [showSettingsDialog, setShowSettingsDialog] = useState(false)
-  const url =
-    `https://www.reddit.com/${submittedVal}.json` +
-    (page ? `?after=${page}` : '')
-  const { data, error, isLoading } = useSWR(url, fetcher)
   const store = useAppStore()
-  const { noGifs, redGifsOnly } = store
+  const { page, noGifs, redGifsOnly, val } = store
+  const url =
+    `https://www.reddit.com/${val}.json` + (page ? `?after=${page}` : '')
+  const { data, error, isLoading } = useSWR(url, fetcher)
 
   useEffect(() => {
-    window.history.replaceState(null, '', `?v=${submittedVal}`)
-  }, [submittedVal])
+    window.history.replaceState(
+      null,
+      '',
+      `?${queryString.stringify({ val, noGifs, redGifsOnly, page })}`,
+    )
+  }, [val, noGifs, redGifsOnly, page])
 
   function setV(str: string) {
     const s = str.replace('u/', 'user/')
-    setVal(s)
-    setSubmittedVal(s)
+    setText(s)
+    store.setVal(s)
   }
 
   return (
@@ -62,10 +81,10 @@ function App() {
         <input
           id="box"
           type="text"
-          value={val}
-          onChange={event => setVal(event.target.value)}
+          value={text}
+          onChange={event => setText(event.target.value)}
         />
-        <button onClick={() => setSubmittedVal(val)}>Submit</button>
+        <button onClick={() => store.setVal(text)}>Submit</button>
       </div>
       <div>
         {favs.map(f => (
@@ -78,7 +97,7 @@ function App() {
         <div>Loading</div>
       ) : error ? (
         <div style={{ color: 'red' }}>{`${error}`}</div>
-      ) : (
+      ) : data ? (
         <div className="stage">
           <div style={{ position: 'sticky' }}></div>
           {data.children
@@ -103,7 +122,7 @@ function App() {
                   </button>
                   <button onClick={() => setV(subreddit)}>{subreddit}</button>
                   <a href={url} target="_blank">
-                    {title}
+                    {he.decode(title)}
                   </a>
                   {!url.includes('redgifs') &&
                   (url.endsWith('.jpg') ||
@@ -127,11 +146,17 @@ function App() {
               )
             })}
         </div>
-      )}
-      <button disabled={!data?.before} onClick={() => setPage(data.before)}>
+      ) : null}
+      <button
+        disabled={!data?.before}
+        onClick={() => store.setPage(data?.before || '')}
+      >
         Prev
       </button>
-      <button disabled={!data?.after} onClick={() => setPage(data.after)}>
+      <button
+        disabled={!data?.after}
+        onClick={() => store.setPage(data?.after || '')}
+      >
         Next
       </button>
     </div>

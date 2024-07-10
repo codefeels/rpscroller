@@ -1,4 +1,3 @@
-import React from 'react'
 import { useDialogShown } from './util'
 import { useAppStore } from './store'
 
