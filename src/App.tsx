@@ -18,28 +18,124 @@ function decode(html: string) {
   return txt.value
 }
 
+interface Data {
+  before?: string
+  after?: string
+  children: {
+    data: {
+      id: string
+      subreddit_name_prefixed: string
+      title: string
+      url: string
+      permalink: string
+      author: string
+    }
+  }[]
+}
 const fetcher = async (url: string) => {
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} fetching ${url} ${await res.text()}`)
   }
   const ret = (await res.json()) as {
-    data: {
-      before?: string
-      after?: string
-      children: {
-        data: {
-          id: string
-          subreddit_name_prefixed: string
-          title: string
-          url: string
-          permalink: string
-          author: string
-        }
-      }[]
-    }
+    data: Data
   }
   return ret.data
+}
+
+function Posts({ data }: { data: Data }) {
+  const store = useAppStore()
+  const { hideButtons, noGifs, redGifsOnly, fullscreen } = useAppStore()
+  return (
+    <div className="center">
+      <div className={!fullscreen ? 'stage' : 'fullscreen'}>
+        <div style={{ position: 'sticky' }}></div>
+        {data.children
+          .filter(({ data }) => !('comment_type' in data))
+          .filter(
+            ({ data: { url } }) =>
+              url.includes('redgifs') ||
+              url.endsWith('.jpg') ||
+              url.endsWith('.jpeg') ||
+              url.endsWith('.png') ||
+              url.endsWith('.gif') ||
+              url.endsWith('.webp'),
+          )
+          .filter(({ data }) => (noGifs ? !data.url.endsWith('.gif') : true))
+          .filter(({ data }) =>
+            redGifsOnly ? data.url.includes('redgifs') : true,
+          )
+          .map(({ data }) => {
+            const {
+              id,
+              author,
+              subreddit_name_prefixed: subreddit,
+              title,
+              permalink,
+              url,
+            } = data
+
+            return (
+              <div key={id} className="item">
+                <h4 style={{ margin: 0, display: 'inline' }}>
+                  {decode(title)}
+                </h4>{' '}
+                (
+                <a href={url} target="_blank">
+                  link
+                </a>
+                ) (
+                <a href={`https://reddit.com${permalink}`} target="_blank">
+                  comments
+                </a>
+                )
+                {hideButtons ? null : (
+                  <>
+                    <div>
+                      <button onClick={() => store.setVal(`/user/${author}`)}>
+                        Browse {`/u/${author}`}
+                      </button>
+                      <button
+                        onClick={() => store.addFavorite(`/user/${author}`)}
+                      >
+                        Add {`/u/${author}`} to favorites
+                      </button>
+                    </div>
+                    <div>
+                      <button onClick={() => store.setVal(subreddit)}>
+                        Browse {subreddit}
+                      </button>
+                      <button onClick={() => store.addFavorite(subreddit)}>
+                        Add {subreddit} to favorites
+                      </button>
+                    </div>
+                  </>
+                )}
+                {!url.includes('redgifs') &&
+                (url.endsWith('.jpg') ||
+                  url.endsWith('.jpeg') ||
+                  url.endsWith('.png') ||
+                  url.endsWith('.gif') ||
+                  url.endsWith('.webp')) ? (
+                  <div>
+                    <img loading="lazy" style={{ width: '100%' }} src={url} />
+                  </div>
+                ) : url.includes('redgifs') ? (
+                  <iframe
+                    src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
+                    style={{ width: '100%', height: '100vh' }}
+                    loading="lazy"
+                    allowFullScreen
+                    scrolling="no"
+                    frameBorder="0"
+                  />
+                ) : null}
+              </div>
+            )
+          })}
+      </div>
+    </div>
+  )
 }
 
 function App() {
@@ -52,7 +148,6 @@ function App() {
     darkmode,
     fullscreen,
     noGifs,
-    hideButtons,
     redGifsOnly,
     val,
   } = store
@@ -80,16 +175,9 @@ function App() {
       document.body.classList.remove('dark')
     }
   }, [darkmode])
-  function setV(str: string) {
-    const s = str.replace('u/', 'user/')
-    setText(s)
-    store.setVal(s)
-  }
-
-  function addToFavorites(str: string) {
-    const s = str.replace('u/', 'user/')
-    store.addFavorite(s)
-  }
+  useEffect(() => {
+    setText(val)
+  }, [val])
 
   return (
     <div className="app">
@@ -112,7 +200,7 @@ function App() {
               onChange={event => setText(event.target.value)}
             />
             <button type="submit">Submit</button>
-            <button onClick={() => addToFavorites(text)}>
+            <button onClick={() => store.addFavorite(text)}>
               Add to favorites
             </button>
           </form>
@@ -186,7 +274,7 @@ function App() {
               {favorites.map(f => (
                 <tr key={f}>
                   <td>
-                    <button onClick={() => setV(f)}>{f}</button>
+                    <button onClick={() => store.setVal(f)}>{f}</button>
                   </td>
                   <td>
                     <button onClick={() => store.removeFavorite(f)}>
@@ -212,100 +300,7 @@ function App() {
           </div>
         </div>
       ) : data ? (
-        <div className="center">
-          <div className={!fullscreen ? 'stage' : 'fullscreen'}>
-            <div style={{ position: 'sticky' }}></div>
-            {data.children
-              .filter(({ data }) => !('comment_type' in data))
-              .filter(
-                ({ data: { url } }) =>
-                  url.includes('redgifs') ||
-                  url.endsWith('.jpg') ||
-                  url.endsWith('.jpeg') ||
-                  url.endsWith('.png') ||
-                  url.endsWith('.gif') ||
-                  url.endsWith('.webp'),
-              )
-              .filter(({ data }) =>
-                noGifs ? !data.url.endsWith('.gif') : true,
-              )
-              .filter(({ data }) =>
-                redGifsOnly ? data.url.includes('redgifs') : true,
-              )
-              .map(({ data }) => {
-                const {
-                  id,
-                  author,
-                  subreddit_name_prefixed: subreddit,
-                  title,
-                  permalink,
-                  url,
-                } = data
-
-                return (
-                  <div key={id} className="item">
-                    <h4 style={{ margin: 0, display: 'inline' }}>
-                      {decode(title)}
-                    </h4>{' '}
-                    (
-                    <a href={url} target="_blank">
-                      link
-                    </a>
-                    ) (
-                    <a href={`https://reddit.com${permalink}`} target="_blank">
-                      comments
-                    </a>
-                    )
-                    {hideButtons ? null : (
-                      <>
-                        <div>
-                          <button onClick={() => setV(`/user/${author}`)}>
-                            Browse {`/u/${author}`}
-                          </button>
-                          <button
-                            onClick={() => addToFavorites(`/user/${author}`)}
-                          >
-                            Add {`/u/${author}`} to favorites
-                          </button>
-                        </div>
-                        <div>
-                          <button onClick={() => setV(subreddit)}>
-                            Browse {subreddit}
-                          </button>
-                          <button onClick={() => addToFavorites(subreddit)}>
-                            Add {subreddit} to favorites
-                          </button>
-                        </div>
-                      </>
-                    )}
-                    {!url.includes('redgifs') &&
-                    (url.endsWith('.jpg') ||
-                      url.endsWith('.jpeg') ||
-                      url.endsWith('.png') ||
-                      url.endsWith('.gif') ||
-                      url.endsWith('.webp')) ? (
-                      <div>
-                        <img
-                          loading="lazy"
-                          style={{ width: '100%' }}
-                          src={url}
-                        />
-                      </div>
-                    ) : url.includes('redgifs') ? (
-                      <iframe
-                        src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
-                        style={{ width: '100%', height: 800 }}
-                        loading="lazy"
-                        allowFullScreen
-                        scrolling="no"
-                        frameBorder="0"
-                      />
-                    ) : null}
-                  </div>
-                )
-              })}
-          </div>
-        </div>
+        <Posts data={data} />
       ) : null}
       <div className="center">
         <button className="large" onClick={() => store.setPage(prev ?? '')}>

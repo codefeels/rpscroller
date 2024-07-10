@@ -60,13 +60,18 @@ export const useAppStore = create<AppState>()(set => ({
   setHideButtons: flag => set(() => ({ hideButtons: flag })),
   setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
   setPage: page => set(() => ({ page })),
-  setVal: val => set(() => ({ val })),
-  addFavorite: val =>
-    set(state => ({
-      favorites: state.favorites.includes(val)
+  setVal: val => {
+    const s = val?.replace('u/', 'user/')
+    return set(() => ({ val: s }))
+  },
+  addFavorite: val => {
+    const s = val.replace('u/', 'user/')
+    return set(state => ({
+      favorites: state.favorites.includes(s)
         ? state.favorites
-        : [...state.favorites, val],
-    })),
+        : [...state.favorites, s],
+    }))
+  },
   removeFavorite: val =>
     set(state => ({ favorites: state.favorites.filter(f => f !== val) })),
 }))
