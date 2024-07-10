@@ -259,6 +259,11 @@ function App() {
           Next
         </button>
       </div>
+      <footer>
+        <a href="https://github.com/codefeels/rpscroller/" target="_blank">
+          Source code/report issues
+        </a>
+      </footer>
     </div>
   )
 }
