@@ -93,7 +93,7 @@ function App() {
 
   return (
     <div className="app">
-      <div style={{ marginLeft: 10 }}>
+      <div className="header">
         <h1 style={{ margin: 0 }}>
           rpscroller <img style={{ height: '1em' }} src={flame} />
         </h1>
@@ -202,7 +202,15 @@ function App() {
       {isLoading ? (
         <Loading />
       ) : error ? (
-        <div className="error">{`${error}`}</div>
+        <div className="error">
+          <div>{`${error}`}</div>
+          <div>
+            {`${error}` ===
+            'TypeError: NetworkError when attempting to fetch resource.'
+              ? "If you are on firefox then you can disable 'Enhanced Tracking Protection' (at your own risk) to fix this error"
+              : ''}{' '}
+          </div>
+        </div>
       ) : data ? (
         <div className="center">
           <div className={!fullscreen ? 'stage' : 'fullscreen'}>
