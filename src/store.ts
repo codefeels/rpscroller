@@ -6,6 +6,7 @@ interface AppState {
   fullscreen: boolean
   redGifsOnly: boolean
   page?: string
+  prev?: string
   favorites: string[]
   val: string
   hideButtons: boolean
@@ -23,9 +24,11 @@ interface AppState {
 
 const { val = '/r/gonemild' } = queryString.parse(window.location.search)
 
-export function getBool(key: string, def = false) {
+export function getBool(key: string, def = false): boolean {
   try {
-    return JSON.parse(localStorage.getItem(key) || JSON.stringify(def))
+    return JSON.parse(
+      localStorage.getItem(key) ?? JSON.stringify(def),
+    ) as boolean
   } catch (e) {
     console.error(e)
     return def
@@ -36,9 +39,11 @@ export function setBool(key: string, val: boolean) {
   localStorage.setItem(key, JSON.stringify(val))
 }
 
-export function getStringArray(key: string, def = [] as string[]) {
+export function getStringArray(key: string, def = [] as string[]): string[] {
   try {
-    return JSON.parse(localStorage.getItem(key) || JSON.stringify(def))
+    return JSON.parse(
+      localStorage.getItem(key) ?? JSON.stringify(def),
+    ) as string[]
   } catch (e) {
     console.error(e)
     return def
@@ -56,6 +61,7 @@ export const useAppStore = create<AppState>()(set => ({
   hideButtons: getBool('hideButtons'),
   confirmed: getBool('confirmed'),
   page: undefined as string | undefined,
+  prev: undefined as string | undefined,
   val: val as string,
   favorites: getStringArray('favorites', [
     'r/funny',
@@ -67,10 +73,10 @@ export const useAppStore = create<AppState>()(set => ({
   setNoGifs: flag => set(() => ({ noGifs: flag })),
   setHideButtons: flag => set(() => ({ hideButtons: flag })),
   setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
-  setPage: page => set(() => ({ page })),
+  setPage: page => set(store => ({ page, prev: store.page })),
   setVal: val => {
     const s = val?.replace('u/', 'user/')
-    return set(() => ({ val: s }))
+    return set(() => ({ val: s, page: undefined, prev: undefined }))
   },
   addFavorite: val => {
     const s = val.replace('u/', 'user/')

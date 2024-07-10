@@ -19,7 +19,12 @@ module.exports = {
   },
   plugins: ['react-refresh'],
   rules: {
-    'no-console': 'error',
+    'no-console': [
+      'warn',
+      {
+        allow: ['error', 'warn'],
+      },
+    ],
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },

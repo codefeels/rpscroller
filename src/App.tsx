@@ -9,11 +9,11 @@ import Loading from './LoadingSpinner'
 import { redGifUrlToId } from './util'
 import { setBool, setString, useAppStore } from './store'
 
-// @ts-expect-error
+// @ts-expect-error can't figure out svg import
 import flame from './favicon.svg'
 
 function decode(html: string) {
-  var txt = document.createElement('textarea')
+  const txt = document.createElement('textarea')
   txt.innerHTML = html
   return txt.value
 }
@@ -136,18 +136,25 @@ function Posts({ data }: { data: Data }) {
   )
 }
 
-function App() {
+export default function App() {
   const [showSettings, setShowSettings] = useState(false)
   const store = useAppStore()
-  const { page, confirmed, favorites, fullscreen, noGifs, redGifsOnly, val } =
-    store
+  const {
+    page,
+    prev,
+    confirmed,
+    favorites,
+    fullscreen,
+    noGifs,
+    redGifsOnly,
+    val,
+  } = store
   const [showFavorites, setShowFavorites] = useState(false)
   const url =
     `https://www.reddit.com/${val}.json` + (page ? `?after=${page}` : '')
   const [text, setText] = useState(val)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, error, isLoading } = useSWR(url, fetcher)
-  const [prev, setPrev] = useState<string>()
 
   useEffect(() => {
     setBool('noGifs', noGifs)
@@ -156,7 +163,7 @@ function App() {
     setBool('confirmed', confirmed)
     setString('favorites', JSON.stringify(favorites))
     window.history.replaceState(null, '', `?${queryString.stringify({ val })}`)
-  }, [val, fullscreen, noGifs, favorites, redGifsOnly])
+  }, [val, fullscreen, noGifs, favorites, confirmed, redGifsOnly])
   useEffect(() => {
     setText(val)
   }, [val])
@@ -182,7 +189,12 @@ function App() {
               onChange={event => setText(event.target.value)}
             />
             <button type="submit">Submit</button>
-            <button onClick={() => store.addFavorite(text)}>
+            <button
+              onClick={event => {
+                event.preventDefault() // not sure why but otherwise does onSubmit
+                store.addFavorite(text)
+              }}
+            >
               Add to favorites
             </button>
           </form>
@@ -245,18 +257,20 @@ function App() {
         {showFavorites ? (
           <div>
             <table>
-              {favorites.map(f => (
-                <tr key={f}>
-                  <td>
-                    <button onClick={() => store.setVal(f)}>{f}</button>
-                  </td>
-                  <td>
-                    <button onClick={() => store.removeFavorite(f)}>
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              <tbody>
+                {favorites.map(f => (
+                  <tr key={f}>
+                    <td>
+                      <button onClick={() => store.setVal(f)}>{f}</button>
+                    </td>
+                    <td>
+                      <button onClick={() => store.removeFavorite(f)}>
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         ) : null}
@@ -283,10 +297,7 @@ function App() {
         <button
           className="large"
           disabled={!data?.after}
-          onClick={() => {
-            setPrev(page)
-            store.setPage(data?.after ?? '')
-          }}
+          onClick={() => store.setPage(data?.after ?? '')}
         >
           Next
         </button>
@@ -299,5 +310,3 @@ function App() {
     </div>
   )
 }
-
-export { App }

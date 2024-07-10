@@ -1,6 +1,7 @@
-import { App } from './App'
-import { useAppStore } from './store'
+import App from './App'
 import ConfirmDialog from './ConfirmDialog'
+
+import { useAppStore } from './store'
 
 export default function AppPreConfirmation() {
   const store = useAppStore()
