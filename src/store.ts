@@ -9,7 +9,9 @@ interface AppState {
   favorites: string[]
   darkmode: boolean
   val: string
+  hideButtons: boolean
   confirmed: boolean
+  setHideButtons: (arg: boolean) => void
   setFullscreen: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
   setNoGifs: (arg: boolean) => void
@@ -44,6 +46,7 @@ export const useAppStore = create<AppState>()(set => ({
   redGifsOnly: getBool('redGifsOnly'),
   darkmode: getBool('darkmode'),
   fullscreen: getBool('fullscreen'),
+  hideButtons: getBool('hideButtons'),
   confirmed: getBool('confirmed'),
   page: page as string | undefined,
   val: val as string,
@@ -57,6 +60,7 @@ export const useAppStore = create<AppState>()(set => ({
   setConfirmed: flag => set(() => ({ confirmed: flag })),
   setDarkmode: flag => set(() => ({ darkmode: flag })),
   setNoGifs: flag => set(() => ({ noGifs: flag })),
+  setHideButtons: flag => set(() => ({ hideButtons: flag })),
   setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
   setPage: page => set(() => ({ page })),
   setVal: val => set(() => ({ val })),

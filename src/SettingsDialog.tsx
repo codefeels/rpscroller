@@ -35,6 +35,15 @@ export default function SettingsDialog({
         />
       </div>
 
+      <div className="setting">
+        <label htmlFor="hidebuttons">Hide buttons to add to favs/browse</label>
+        <input
+          id="hidebuttons"
+          type="checkbox"
+          checked={store.hideButtons}
+          onChange={event => store.setHideButtons(event.target.checked)}
+        />
+      </div>
       <button onClick={() => onClose()}>submit</button>
     </dialog>
   )

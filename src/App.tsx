@@ -48,6 +48,7 @@ function App() {
     darkmode,
     fullscreen,
     noGifs,
+    hideButtons,
     redGifsOnly,
     val,
   } = store
@@ -68,7 +69,13 @@ function App() {
     setString('favorites', JSON.stringify(favorites))
     window.history.replaceState(null, '', `?${queryString.stringify({ val })}`)
   }, [val, fullscreen, darkmode, noGifs, favorites, redGifsOnly])
-
+  useEffect(() => {
+    if (darkmode) {
+      document.body.classList.add('dark')
+    } else {
+      document.body.classList.remove('dark')
+    }
+  }, [darkmode])
   function setV(str: string) {
     const s = str.replace('u/', 'user/')
     setText(s)
@@ -81,9 +88,9 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="app">
       <div style={{ marginLeft: 10 }}>
-        <h1>
+        <h1 style={{ margin: 0 }}>
           rpscroller <img style={{ height: '1em' }} src={flame} />
         </h1>
 
@@ -181,23 +188,33 @@ function App() {
                     <a href={url} target="_blank">
                       link
                     </a>
-                    ) (<a href={`https://reddit.com${permalink}`}>comments</a>)
-                    <div>
-                      <button onClick={() => setV(`/user/${author}`)}>
-                        Browse {`/u/${author}`}
-                      </button>
-                      <button onClick={() => addToFavorites(`/user/${author}`)}>
-                        Add {`/u/${author}`} to favorites
-                      </button>
-                    </div>
-                    <div>
-                      <button onClick={() => setV(subreddit)}>
-                        Browse {subreddit}
-                      </button>
-                      <button onClick={() => addToFavorites(subreddit)}>
-                        Add {subreddit} to favorites
-                      </button>
-                    </div>
+                    ) (
+                    <a href={`https://reddit.com${permalink}`} target="_blank">
+                      comments
+                    </a>
+                    )
+                    {hideButtons ? null : (
+                      <>
+                        <div>
+                          <button onClick={() => setV(`/user/${author}`)}>
+                            Browse {`/u/${author}`}
+                          </button>
+                          <button
+                            onClick={() => addToFavorites(`/user/${author}`)}
+                          >
+                            Add {`/u/${author}`} to favorites
+                          </button>
+                        </div>
+                        <div>
+                          <button onClick={() => setV(subreddit)}>
+                            Browse {subreddit}
+                          </button>
+                          <button onClick={() => addToFavorites(subreddit)}>
+                            Add {subreddit} to favorites
+                          </button>
+                        </div>
+                      </>
+                    )}
                     {!url.includes('redgifs') &&
                     (url.endsWith('.jpg') ||
                       url.endsWith('.jpeg') ||
