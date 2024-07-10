@@ -1,0 +1,21 @@
+.stage {
+  width: 50%;
+}
+
+.item {
+  border: 1px solid black;
+  padding: 40px;
+  margin: 40px;
+}
+
+@media only screen and (max-width: 600px) {
+  .stage {
+    width: 100%;
+    margin: 0px;
+  }
+  .item {
+    padding: 0px !important;
+    margin: 0px !important;
+    margin-bottom: 40px !important;
+  }
+}

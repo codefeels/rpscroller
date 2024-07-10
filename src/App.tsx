@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useSWR from 'swr'
+import './stage.css'
 
 const fetcher = async (url: string) => {
   const res = await fetch(url)
@@ -8,17 +9,33 @@ const fetcher = async (url: string) => {
   }
   return res.json()
 }
+const favs = ['/user/lovingeli1', 'user/jennassecret', 'r/nsfw_html5+anal']
+
+const params = new URLSearchParams(window.location.search)
+const v = params.get('p') || '/r/nsfw'
 
 function App() {
-  const [val, setVal] = useState('/user/lovingeli1')
-  const [submittedVal, setSubmittedVal] = useState(val)
-  const { data, error, isLoading } = useSWR(
-    `https://www.reddit.com/${submittedVal}.json`,
-    fetcher,
-  )
+  const [val, setVal] = useState(v)
+  const [page, setPage] = useState('')
+  const [submittedVal, setSubmittedVal] = useState(v)
+  const url =
+    `https://www.reddit.com/${submittedVal}.json` +
+    (page ? `?after=${page}` : '')
+  const { data, error, isLoading } = useSWR(url, fetcher)
+
+  useEffect(() => {
+    window.history.replaceState(null, '', `?v=${submittedVal}`)
+  }, [submittedVal])
+
+  function setV(str: string) {
+    const s = str.replace('u/', 'user/')
+    setVal(s)
+    setSubmittedVal(s)
+  }
 
   return (
     <div>
+      <h1>rpscroller</h1>
       <div>
         <label htmlFor="box">Reddit:</label>
         <input
@@ -29,32 +46,46 @@ function App() {
         />
         <button onClick={() => setSubmittedVal(val)}>Submit</button>
       </div>
+      <div>
+        {favs.map(f => (
+          <button key={f} onClick={() => setV(f)}>
+            {f}
+          </button>
+        ))}
+      </div>
       {isLoading ? (
         <div>Loading</div>
       ) : error ? (
         <div style={{ color: 'red' }}>{`${error}`}</div>
       ) : (
-        <div style={{ width: '50%' }}>
+        <div className="stage">
           <div style={{ position: 'sticky' }}></div>
           {data.data.children
             .filter(({ data }) => !('comment_type' in data))
             .map(({ data }) => {
-              const { id, title, url: url2 = '', link_url } = data
-              const url = url2 || link_url
+              const {
+                id,
+                author,
+                subreddit_name_prefixed: subreddit,
+                title,
+                url,
+              } = data
 
               return (
-                <div
-                  key={id}
-                  style={{ border: '1px solid black', padding: 40, margin: 40 }}
-                >
+                <div key={id} className="item">
+                  <button onClick={() => setV(`/user/${author}`)}>
+                    {author}
+                  </button>
+                  <button onClick={() => setV(subreddit)}>{subreddit}</button>
                   <a href={url} target="_blank">
                     {title}
                   </a>
-                  {url.endsWith('.jpg') ||
-                  url.endsWith('.jpeg') ||
-                  url.endsWith('.png') ||
-                  url.endsWith('.gif') ||
-                  url.endsWith('.webp') ? (
+                  {!url.includes('redgifs') &&
+                  (url.endsWith('.jpg') ||
+                    url.endsWith('.jpeg') ||
+                    url.endsWith('.png') ||
+                    url.endsWith('.gif') ||
+                    url.endsWith('.webp')) ? (
                     <div>
                       <img style={{ width: '100%' }} src={url} />
                     </div>
@@ -72,20 +103,40 @@ function App() {
             })}
         </div>
       )}
+      <button
+        disabled={!data?.data.before}
+        onClick={() => setPage(data.data.before)}
+      >
+        Prev
+      </button>
+      <button
+        disabled={!data?.data.after}
+        onClick={() => setPage(data.data.after)}
+      >
+        Next
+      </button>
     </div>
   )
 }
 
 function redGifUrlToId(url: string) {
-  //https://redgifs.com/ifr/unhappyfluidgrassspider'
-  var matches = url.match(/redgifs.com\/watch\/([\w-]+)\/?/i)
-  if (matches && matches.length > 1) {
+  // watch to ifr
+  let matches = url.match(/redgifs.com\/watch\/([\w-]+)\/?/i)
+  if (matches?.length > 1) {
     return matches[1]
   }
 
-  matches = url.match(/redgifs.com\/ifr\/([\w-]+)\/?/i)
-  if (matches && matches.length > 1) {
-    return matches[1]
+  // already iframe
+  let matches2 = url.match(/redgifs.com\/ifr\/([\w-]+)\/?/i)
+  if (matches2?.length > 1) {
+    return matches2[1]
+  }
+
+  // image
+  let matches3 = url.match(/redgifs.com\/i\/([\w-]+)\/?/i)
+  console.log({ url, matches }, '3')
+  if (matches3?.length > 1) {
+    return matches3[1]
   }
 
   return false
