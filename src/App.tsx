@@ -98,15 +98,24 @@ function App() {
           rpscroller <img style={{ height: '1em' }} src={flame} />
         </h1>
         <div>
-          <label htmlFor="box">Reddit:</label>
-          <input
-            id="box"
-            type="text"
-            value={text}
-            onChange={event => setText(event.target.value)}
-          />
-          <button onClick={() => store.setVal(text)}>Submit</button>
-          <button onClick={() => addToFavorites(text)}>Add to favorites</button>
+          <form
+            onSubmit={event => {
+              event.preventDefault()
+              store.setVal(text)
+            }}
+          >
+            <label htmlFor="box">Reddit:</label>
+            <input
+              id="box"
+              type="text"
+              value={text}
+              onChange={event => setText(event.target.value)}
+            />
+            <button type="submit">Submit</button>
+            <button onClick={() => addToFavorites(text)}>
+              Add to favorites
+            </button>
+          </form>
         </div>
 
         <button onClick={() => setShowSettings(!showSettings)}>

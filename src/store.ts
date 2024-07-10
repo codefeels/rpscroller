@@ -23,7 +23,7 @@ interface AppState {
   removeFavorite: (arg: string) => void
 }
 
-const { page, val = '/r/gonemild' } = queryString.parse(window.location.search)
+const { val = '/r/gonemild' } = queryString.parse(window.location.search)
 
 export function getBool(key: string, def = false) {
   return JSON.parse(localStorage.getItem(key) || JSON.stringify(def))
@@ -48,12 +48,12 @@ export const useAppStore = create<AppState>()(set => ({
   fullscreen: getBool('fullscreen'),
   hideButtons: getBool('hideButtons'),
   confirmed: getBool('confirmed'),
-  page: page as string | undefined,
+  page: undefined as string | undefined,
   val: val as string,
   favorites: JSON.parse(
     getString(
       'favorites',
-      '["user/jennassecret","r/nsfw_html5+anal","r/midriff","r/gonemild"]',
+      '["user/jennassecret","r/midriff+gonemild","r/midriff","r/gonemild"]',
     ),
   ),
   setFullscreen: flag => set(() => ({ fullscreen: flag })),
@@ -64,7 +64,12 @@ export const useAppStore = create<AppState>()(set => ({
   setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
   setPage: page => set(() => ({ page })),
   setVal: val => set(() => ({ val })),
-  addFavorite: val => set(state => ({ favorites: [...state.favorites, val] })),
+  addFavorite: val =>
+    set(state => ({
+      favorites: state.favorites.includes(val)
+        ? state.favorites
+        : [...state.favorites, val],
+    })),
   removeFavorite: val =>
     set(state => ({ favorites: state.favorites.filter(f => f !== val) })),
 }))
