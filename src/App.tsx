@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import queryString from 'querystring'
 import useSWR from 'swr'
-import he from 'he'
 
 // components
 import Loading from './LoadingSpinner'
@@ -12,6 +11,12 @@ import { setBool, setString, useAppStore } from './store'
 
 // @ts-expect-error
 import flame from './flame.png'
+
+function decode(html: string) {
+  var txt = document.createElement('textarea')
+  txt.innerHTML = html
+  return txt.value
+}
 
 const fetcher = async (url: string) => {
   const res = await fetch(url)
@@ -223,7 +228,7 @@ function App() {
                 return (
                   <div key={id} className="item">
                     <h4 style={{ margin: 0, display: 'inline' }}>
-                      {he.decode(title)}
+                      {decode(title)}
                     </h4>{' '}
                     (
                     <a href={url} target="_blank">
