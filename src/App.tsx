@@ -4,7 +4,6 @@ import useSWR from 'swr'
 import he from 'he'
 
 // components
-import ChoiceDialog from './ChoiceDialog'
 import SettingsDialog from './SettingsDialog'
 
 // data
@@ -17,34 +16,34 @@ const fetcher = async (url: string) => {
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} fetching ${url} ${await res.text()}`)
   }
-  const ret = await res.json()
-  return ret.data as {
-    before?: string
-    after?: string
-    children: {
-      data: {
-        id: string
-        subreddit_name_prefixed: string
-        title: string
-        url: string
-        author: string
-      }
-    }[]
+  const ret = (await res.json()) as {
+    data: {
+      before?: string
+      after?: string
+      children: {
+        data: {
+          id: string
+          subreddit_name_prefixed: string
+          title: string
+          url: string
+          author: string
+        }
+      }[]
+    }
   }
+  return ret.data
 }
 
 const favs = ['/user/lovingeli1', 'user/jennassecret', 'r/nsfw_html5+anal']
-const params = new URLSearchParams(window.location.search)
-const v = params.get('p') || '/r/nsfw'
 
 function App() {
-  const [text, setText] = useState(v)
-  const [showChoiceDialog, setShowChoiceDialog] = useState(false)
   const [showSettingsDialog, setShowSettingsDialog] = useState(false)
   const store = useAppStore()
   const { page, fullscreen, noGifs, redGifsOnly, val } = store
   const url =
     `https://www.reddit.com/${val}.json` + (page ? `?after=${page}` : '')
+  const [text, setText] = useState(val)
+  // eslint-disable-next-line @typescript-eslint/no-unsage-assignment
   const { data, error, isLoading } = useSWR(url, fetcher)
   const [prev, setPrev] = useState<string>()
 
@@ -61,7 +60,6 @@ function App() {
     setText(s)
     store.setVal(s)
   }
-  console.log({ data })
 
   return (
     <div>
@@ -159,7 +157,7 @@ function App() {
         </div>
       ) : null}
       <div className="center">
-        <button className="large" onClick={() => store.setPage(prev || '')}>
+        <button className="large" onClick={() => store.setPage(prev ?? '')}>
           Prev
         </button>
         <button
@@ -167,7 +165,7 @@ function App() {
           disabled={!data?.after}
           onClick={() => {
             setPrev(page)
-            store.setPage(data?.after || '')
+            store.setPage(data?.after ?? '')
           }}
         >
           Next

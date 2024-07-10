@@ -38,7 +38,6 @@ export function redGifUrlToId(url: string) {
 
   // image
   const matches3 = url.match(/redgifs.com\/i\/([\w-]+)\/?/i)
-  console.log({ url, matches }, '3')
   if (matches3?.length) {
     return matches3[1]
   }
