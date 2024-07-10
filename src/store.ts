@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import queryString from 'querystring'
+import queryString from 'query-string'
 
 interface AppState {
   noGifs: boolean
@@ -51,10 +51,7 @@ export const useAppStore = create<AppState>()(set => ({
   page: undefined as string | undefined,
   val: val as string,
   favorites: JSON.parse(
-    getString(
-      'favorites',
-      '["user/jennassecret","r/midriff+gonemild","r/midriff","r/gonemild"]',
-    ),
+    getString('favorites', '["r/funny","r/midriff+gonemild","r/gonewild"]'),
   ),
   setFullscreen: flag => set(() => ({ fullscreen: flag })),
   setConfirmed: flag => set(() => ({ confirmed: flag })),

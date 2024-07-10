@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import queryString from 'querystring'
+import queryString from 'query-string'
 import useSWR from 'swr'
 
 // components
@@ -10,7 +10,7 @@ import { redGifUrlToId } from './util'
 import { setBool, setString, useAppStore } from './store'
 
 // @ts-expect-error
-import flame from './flame.svg'
+import flame from './favicon.svg'
 
 function decode(html: string) {
   var txt = document.createElement('textarea')
