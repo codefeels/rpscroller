@@ -5,6 +5,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* https://dev.to/madsstoumann/dark-mode-in-3-lines-of-css-and-other-adventures-1ljj */
+  background-color: Canvas;
+  color: CanvasText;
+  color-scheme: dark;
 }
 
 dialog::backdrop {
@@ -62,11 +67,6 @@ dialog::backdrop {
 .error {
   color: red;
   margin: 20px;
-}
-
-.dark {
-  background: #333;
-  color: #ccc;
 }
 
 img {

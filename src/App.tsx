@@ -139,16 +139,8 @@ function Posts({ data }: { data: Data }) {
 function App() {
   const [showSettings, setShowSettings] = useState(false)
   const store = useAppStore()
-  const {
-    page,
-    confirmed,
-    favorites,
-    darkmode,
-    fullscreen,
-    noGifs,
-    redGifsOnly,
-    val,
-  } = store
+  const { page, confirmed, favorites, fullscreen, noGifs, redGifsOnly, val } =
+    store
   const [showFavorites, setShowFavorites] = useState(false)
   const url =
     `https://www.reddit.com/${val}.json` + (page ? `?after=${page}` : '')
@@ -160,19 +152,11 @@ function App() {
   useEffect(() => {
     setBool('noGifs', noGifs)
     setBool('fullscreen', fullscreen)
-    setBool('darkmode', darkmode)
     setBool('redGifsOnly', redGifsOnly)
     setBool('confirmed', confirmed)
     setString('favorites', JSON.stringify(favorites))
     window.history.replaceState(null, '', `?${queryString.stringify({ val })}`)
-  }, [val, fullscreen, darkmode, noGifs, favorites, redGifsOnly])
-  useEffect(() => {
-    if (darkmode) {
-      document.body.classList.add('dark')
-    } else {
-      document.body.classList.remove('dark')
-    }
-  }, [darkmode])
+  }, [val, fullscreen, noGifs, favorites, redGifsOnly])
   useEffect(() => {
     setText(val)
   }, [val])
@@ -218,15 +202,7 @@ function App() {
               />
               <label htmlFor="fullscreen">Fullscreen</label>
             </div>
-            <div>
-              <input
-                id="darkmode"
-                type="checkbox"
-                checked={darkmode}
-                onChange={event => store.setDarkmode(event.target.checked)}
-              />
-              <label htmlFor="darkmode">Dark mode</label>
-            </div>
+
             <div>
               <input
                 id="nogifs"
