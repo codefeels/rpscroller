@@ -43,7 +43,7 @@ function App() {
   const url =
     `https://www.reddit.com/${val}.json` + (page ? `?after=${page}` : '')
   const [text, setText] = useState(val)
-  // eslint-disable-next-line @typescript-eslint/no-unsage-assignment
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, error, isLoading } = useSWR(url, fetcher)
   const [prev, setPrev] = useState<string>()
 
@@ -145,6 +145,7 @@ function App() {
                       <iframe
                         src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
                         style={{ width: '100%', height: 800 }}
+                        loading="lazy"
                         allowFullScreen
                         scrolling="no"
                         frameBorder="0"
