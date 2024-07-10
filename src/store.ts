@@ -23,7 +23,7 @@ interface AppState {
   removeFavorite: (arg: string) => void
 }
 
-const { page, val = '/r/nsfw' } = queryString.parse(window.location.search)
+const { page, val = '/r/gonemild' } = queryString.parse(window.location.search)
 
 export function getBool(key: string, def = false) {
   return JSON.parse(localStorage.getItem(key) || JSON.stringify(def))
