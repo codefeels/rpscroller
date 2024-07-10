@@ -4,7 +4,6 @@ import useSWR from 'swr'
 import he from 'he'
 
 // components
-import SettingsDialog from './SettingsDialog'
 import Loading from './LoadingSpinner'
 
 // data
@@ -39,7 +38,7 @@ const fetcher = async (url: string) => {
 }
 
 function App() {
-  const [showSettingsDialog, setShowSettingsDialog] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const store = useAppStore()
   const {
     page,
@@ -93,12 +92,6 @@ function App() {
         <h1 style={{ margin: 0 }}>
           rpscroller <img style={{ height: '1em' }} src={flame} />
         </h1>
-
-        <SettingsDialog
-          open={showSettingsDialog}
-          onClose={() => setShowSettingsDialog(false)}
-        />
-
         <div>
           <label htmlFor="box">Reddit:</label>
           <input
@@ -110,37 +103,85 @@ function App() {
           <button onClick={() => store.setVal(text)}>Submit</button>
           <button onClick={() => addToFavorites(text)}>Add to favorites</button>
         </div>
-        <div>
-          <label htmlFor="fullscreen">Fullscreen</label>
-          <input
-            id="fullscreen"
-            type="checkbox"
-            checked={fullscreen}
-            onChange={event => store.setFullscreen(event.target.checked)}
-          />
-        </div>
-        <div>
-          <label htmlFor="darkmode">Dark mode</label>
-          <input
-            id="darkmode"
-            type="checkbox"
-            checked={darkmode}
-            onChange={event => store.setDarkmode(event.target.checked)}
-          />
-        </div>
 
-        <button onClick={() => setShowSettingsDialog(true)}>Settings</button>
+        <button onClick={() => setShowSettings(!showSettings)}>
+          {showSettings ? 'Hide settings' : 'Show settings'}
+        </button>
+        {showSettings ? (
+          <div>
+            <div>
+              <input
+                id="fullscreen"
+                type="checkbox"
+                checked={fullscreen}
+                onChange={event => store.setFullscreen(event.target.checked)}
+              />
+              <label htmlFor="fullscreen">Fullscreen</label>
+            </div>
+            <div>
+              <input
+                id="darkmode"
+                type="checkbox"
+                checked={darkmode}
+                onChange={event => store.setDarkmode(event.target.checked)}
+              />
+              <label htmlFor="darkmode">Dark mode</label>
+            </div>
+            <div>
+              <input
+                id="nogifs"
+                type="checkbox"
+                checked={store.noGifs}
+                onChange={event => store.setNoGifs(event.target.checked)}
+              />
+              <label htmlFor="nogifs">
+                No gifs? The actual, slow bloated filetype
+              </label>
+            </div>
+
+            <div>
+              <input
+                id="redgifs"
+                type="checkbox"
+                checked={store.redGifsOnly}
+                onChange={event => store.setRedGifsOnly(event.target.checked)}
+              />
+              <label htmlFor="redgifs">RedGifs only (the image host)</label>
+            </div>
+
+            <div>
+              <input
+                id="hidebuttons"
+                type="checkbox"
+                checked={store.hideButtons}
+                onChange={event => store.setHideButtons(event.target.checked)}
+              />
+              <label htmlFor="hidebuttons">
+                Hide buttons to add to favs/browse
+              </label>
+            </div>
+          </div>
+        ) : null}
+
         <button onClick={() => setShowFavorites(!showFavorites)}>
           {showFavorites ? 'Hide favorites' : 'Show favorites'}
         </button>
         {showFavorites ? (
           <div>
-            {favorites.map(f => (
-              <div key={f}>
-                <button onClick={() => setV(f)}>{f}</button>
-                <button onClick={() => store.removeFavorite(f)}>Remove</button>
-              </div>
-            ))}
+            <table>
+              {favorites.map(f => (
+                <tr key={f}>
+                  <td>
+                    <button onClick={() => setV(f)}>{f}</button>
+                  </td>
+                  <td>
+                    <button onClick={() => store.removeFavorite(f)}>
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </table>
           </div>
         ) : null}
       </div>
