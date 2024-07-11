@@ -386,14 +386,20 @@ function PrevNext({ data }: { data: Data }) {
       <div className="flex justify-center">
         <button
           className="text-4xl m-2"
-          onClick={() => store.setPage(prev ?? '')}
+          onClick={() => {
+            store.setPage(prev ?? '')
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
         >
           Prev
         </button>
         <button
           className="text-4xl m-2"
           disabled={!data?.after}
-          onClick={() => store.setPage(data?.after ?? '')}
+          onClick={() => {
+            store.setPage(data?.after ?? '')
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
         >
           Next
         </button>
