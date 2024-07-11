@@ -6,7 +6,7 @@ import useSWR from 'swr'
 import Loading from './LoadingSpinner'
 
 // data
-import { decode, redGifUrlToId } from './util'
+import { de, decode, redGifUrlToId } from './util'
 import { setBool, setString, useAppStore } from './store'
 
 import flame from './favicon.svg'
@@ -111,8 +111,8 @@ function Post({ post }: { post: Post }) {
 }
 
 function Posts({ data }: { data: Data }) {
-  const { noGifs, fullscreen, redGifsOnly } = useAppStore()
-  const result = data.children
+  const { noGifs, dedupe, fullscreen, redGifsOnly } = useAppStore()
+  let result = data.children
     .filter(({ data }) => !('comment_type' in data))
     .filter(
       ({ data: { url } }) =>
@@ -125,7 +125,10 @@ function Posts({ data }: { data: Data }) {
     )
     .filter(({ data }) => (noGifs ? !data.url.endsWith('.gif') : true))
     .filter(({ data }) => (redGifsOnly ? data.url.includes('redgifs') : true))
-  console.log({ fullscreen })
+
+  if (dedupe) {
+    result = de(result, r => r.data.url)
+  }
   return (
     <div className={!fullscreen ? 'flex justify-center' : undefined}>
       <div className={!fullscreen ? 'w-1/2' : undefined}>
@@ -252,6 +255,15 @@ function Settings() {
         <label htmlFor="nogifs">
           No gifs? The actual, slow bloated filetype
         </label>
+      </div>
+      <div>
+        <input
+          id="dedupe"
+          type="checkbox"
+          checked={store.dedupe}
+          onChange={event => store.setDedupe(event.target.checked)}
+        />
+        <label htmlFor="nogifs">De-duplicate repeat URLs on each page</label>
       </div>
 
       <div>
@@ -412,7 +424,7 @@ export default function App() {
     setBool('redGifsOnly', redGifsOnly)
     setBool('confirmed', confirmed)
     setString('favorites', JSON.stringify(favorites))
-    window.history.replaceState(null, '', `?${queryString.stringify({ val })}`)
+    window.history.pushState(null, '', `?${queryString.stringify({ val })}`)
   }, [val, noGifs, favorites, confirmed, redGifsOnly])
 
   return (
@@ -421,7 +433,7 @@ export default function App() {
       {isLoading ? (
         <Loading />
       ) : error ? (
-        <ErrorMessage error={error} />
+        <ErrorMessage error={error as unknown} />
       ) : data ? (
         <>
           <Posts data={data} />

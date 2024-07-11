@@ -10,10 +10,12 @@ interface AppState {
   mode: string
   favorites: string[]
   val: string
+  dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
+  setDedupe: (arg: boolean) => void
   setNoGifs: (arg: boolean) => void
   setFullscreen: (arg: boolean) => void
   setRedGifsOnly: (arg: boolean) => void
@@ -63,8 +65,9 @@ export const useAppStore = create<AppState>()(set => ({
   fullscreen: getBool('fullscreen'),
   redGifsOnly: getBool('redGifsOnly'),
   hideButtons: getBool('hideButtons'),
+  dedupe: getBool('dedupe'),
   confirmed: getBool('confirmed'),
-  mode: `${mode}`,
+  mode: `${mode as string}`,
   page: undefined as string | undefined,
   prev: undefined as string | undefined,
   val: val as string,
@@ -75,6 +78,7 @@ export const useAppStore = create<AppState>()(set => ({
   ]),
   setConfirmed: flag => set(() => ({ confirmed: flag })),
   setNoGifs: flag => set(() => ({ noGifs: flag })),
+  setDedupe: flag => set(() => ({ dedupe: flag })),
   setFullscreen: flag => set(() => ({ fullscreen: flag })),
   setHideButtons: flag => set(() => ({ hideButtons: flag })),
   setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
