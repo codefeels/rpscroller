@@ -6,6 +6,7 @@ interface AppState {
   redGifsOnly: boolean
   page?: string
   prev?: string
+  mode: string
   favorites: string[]
   val: string
   hideButtons: boolean
@@ -15,12 +16,15 @@ interface AppState {
   setNoGifs: (arg: boolean) => void
   setRedGifsOnly: (arg: boolean) => void
   setPage: (arg?: string) => void
+  setMode: (arg?: string) => void
   setVal: (arg?: string) => void
   addFavorite: (arg: string) => void
   removeFavorite: (arg: string) => void
 }
 
-const { val = '/r/gonemild' } = queryString.parse(window.location.search)
+const { mode = 'hot', val = '/r/gonemild' } = queryString.parse(
+  window.location.search,
+)
 
 export function getBool(key: string, def = false): boolean {
   try {
@@ -57,6 +61,7 @@ export const useAppStore = create<AppState>()(set => ({
   redGifsOnly: getBool('redGifsOnly'),
   hideButtons: getBool('hideButtons'),
   confirmed: getBool('confirmed'),
+  mode: `${mode}`,
   page: undefined as string | undefined,
   prev: undefined as string | undefined,
   val: val as string,
@@ -70,6 +75,7 @@ export const useAppStore = create<AppState>()(set => ({
   setHideButtons: flag => set(() => ({ hideButtons: flag })),
   setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
   setPage: page => set(store => ({ page, prev: store.page })),
+  setMode: mode => set(() => ({ mode, page: undefined, prev: undefined })),
   setVal: val => {
     const s = val?.replace('u/', 'user/')
     return set(() => ({ val: s, page: undefined, prev: undefined }))

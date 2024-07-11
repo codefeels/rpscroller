@@ -38,8 +38,31 @@ const fetcher = async (url: string) => {
   return ret.data
 }
 
-function Post({ post }: { post: Post }) {
+function Buttons({ post }: { post: Post }) {
   const store = useAppStore()
+  const { author, subreddit_name_prefixed: subreddit } = post
+  return (
+    <div>
+      <div>
+        <button onClick={() => store.setVal(`/user/${author}`)}>
+          Browse {`/u/${author}`}
+        </button>
+        <button onClick={() => store.addFavorite(`/user/${author}`)}>
+          Add {`/u/${author}`} to favorites
+        </button>
+      </div>
+      <div>
+        <button onClick={() => store.setVal(subreddit)}>
+          Browse {subreddit}
+        </button>
+        <button onClick={() => store.addFavorite(subreddit)}>
+          Add {subreddit} to favorites
+        </button>
+      </div>
+    </div>
+  )
+}
+function Post({ post }: { post: Post }) {
   const { hideButtons } = useAppStore()
   const {
     author,
@@ -51,34 +74,18 @@ function Post({ post }: { post: Post }) {
   return (
     <div className="lg:m-10 lg:p-10 border border-solid border-gray-950">
       <h4 className="inline">{decode(title)}</h4> (
-      <a href={url} target="_blank">
-        link
+      <a href={`https://reddit.com/u/${author}`} target="_blank">
+        user
+      </a>
+      ) (
+      <a href={`https://reddit.com/${subreddit}`} target="_blank">
+        subreddit
       </a>
       ) (
       <a href={`https://reddit.com${permalink}`} target="_blank">
         comments
       </a>
-      )
-      {hideButtons ? null : (
-        <>
-          <div>
-            <button onClick={() => store.setVal(`/user/${author}`)}>
-              Browse {`/u/${author}`}
-            </button>
-            <button onClick={() => store.addFavorite(`/user/${author}`)}>
-              Add {`/u/${author}`} to favorites
-            </button>
-          </div>
-          <div>
-            <button onClick={() => store.setVal(subreddit)}>
-              Browse {subreddit}
-            </button>
-            <button onClick={() => store.addFavorite(subreddit)}>
-              Add {subreddit} to favorites
-            </button>
-          </div>
-        </>
-      )}
+      ){hideButtons ? null : <Buttons post={post} />}
       {!url.includes('redgifs') &&
       (url.endsWith('.jpg') ||
         url.endsWith('.jpeg') ||
@@ -133,10 +140,20 @@ function Posts({ data }: { data: Data }) {
 export default function App() {
   const [showSettings, setShowSettings] = useState(false)
   const store = useAppStore()
-  const { page, prev, confirmed, favorites, noGifs, redGifsOnly, val } = store
+  const { page, mode, prev, confirmed, favorites, noGifs, redGifsOnly, val } =
+    store
   const [showFavorites, setShowFavorites] = useState(false)
+  const modeString = {
+    topall: '/top.json?t=all',
+    topmonth: '/top.json?t=month',
+    topday: '/top.json?t=day',
+    topyear: '/top.json?t=year',
+    hot: '.json',
+    new: '/new.json',
+  } as Record<string, string>
   const url =
-    `https://www.reddit.com/${val}.json` + (page ? `?after=${page}` : '')
+    `https://www.reddit.com/${val}${modeString[mode] || ''}` +
+    (page ? `?after=${page}` : '')
   const [text, setText] = useState(val)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, error, isLoading } = useSWR(url, fetcher)
@@ -248,6 +265,68 @@ export default function App() {
             </table>
           </div>
         ) : null}
+        <div>
+          <div>
+            <label htmlFor="topall">Top (all time)</label>
+            <input
+              id="topall"
+              value="topall"
+              type="radio"
+              checked={mode === 'topall'}
+              onChange={event => store.setMode(event.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="topyear">Top (year)</label>
+            <input
+              id="topyear"
+              value="topyear"
+              type="radio"
+              checked={mode === 'topyear'}
+              onChange={event => store.setMode(event.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="topday">Top (day)</label>
+            <input
+              id="topday"
+              value="topday"
+              type="radio"
+              checked={mode === 'topday'}
+              onChange={event => store.setMode(event.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="topmonth">Top (month)</label>
+            <input
+              id="topmonth"
+              value="topmonth"
+              type="radio"
+              checked={mode === 'topmonth'}
+              onChange={event => store.setMode(event.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="hot">Hot</label>
+            <input
+              id="hot"
+              value="hot"
+              type="radio"
+              checked={mode === 'hot'}
+              onChange={event => store.setMode(event.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="new">New</label>
+            <input
+              id="new"
+              value="new"
+              type="radio"
+              checked={mode === 'new'}
+              onChange={event => store.setMode(event.target.value)}
+            />
+          </div>
+        </div>
       </div>
       {isLoading ? (
         <Loading />
