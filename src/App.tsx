@@ -9,7 +9,6 @@ import Loading from './LoadingSpinner'
 import { decode, redGifUrlToId } from './util'
 import { setBool, setString, useAppStore } from './store'
 
-// @ts-expect-error can't figure out svg import
 import flame from './favicon.svg'
 
 interface Post {
@@ -112,7 +111,7 @@ function Post({ post }: { post: Post }) {
 }
 
 function Posts({ data }: { data: Data }) {
-  const { noGifs, redGifsOnly } = useAppStore()
+  const { noGifs, fullscreen, redGifsOnly } = useAppStore()
   const result = data.children
     .filter(({ data }) => !('comment_type' in data))
     .filter(
@@ -126,13 +125,16 @@ function Posts({ data }: { data: Data }) {
     )
     .filter(({ data }) => (noGifs ? !data.url.endsWith('.gif') : true))
     .filter(({ data }) => (redGifsOnly ? data.url.includes('redgifs') : true))
+  console.log({ fullscreen })
   return (
-    <div>
-      {result.length > 0 ? (
-        result.map(({ data }) => <Post key={data.id} post={data} />)
-      ) : (
-        <h1>No results on this page, check your filters in the settings</h1>
-      )}
+    <div className={!fullscreen ? 'flex justify-center' : undefined}>
+      <div className={!fullscreen ? 'w-1/2' : undefined}>
+        {result.length > 0 ? (
+          result.map(({ data }) => <Post key={data.id} post={data} />)
+        ) : (
+          <h1>No results on this page, check your filters in the settings</h1>
+        )}
+      </div>
     </div>
   )
 }
@@ -264,6 +266,15 @@ function Settings() {
 
       <div>
         <input
+          id="fullscreen"
+          type="checkbox"
+          checked={store.fullscreen}
+          onChange={event => store.setFullscreen(event.target.checked)}
+        />
+        <label htmlFor="fullscreen">Fullscreen</label>
+      </div>
+      <div>
+        <input
           id="hidebuttons"
           type="checkbox"
           checked={store.hideButtons}
@@ -310,13 +321,78 @@ function FormBox() {
     </div>
   )
 }
-export default function App() {
+
+function ErrorMessage({ error }: { error: unknown }) {
+  return (
+    <div className="text-red-600 m-20">
+      <div>{`${error}`}</div>
+      <div>
+        {`${error}` ===
+        'TypeError: NetworkError when attempting to fetch resource.'
+          ? "If you are on firefox then you can disable 'Enhanced Tracking Protection' (at your own risk) to fix this error"
+          : ''}{' '}
+      </div>
+    </div>
+  )
+}
+
+function Header() {
   const [showSettings, setShowSettings] = useState(false)
-  const store = useAppStore()
-  const { page, mode, prev, confirmed, favorites, noGifs, redGifsOnly, val } =
-    store
   const [showFavorites, setShowFavorites] = useState(false)
   const [showSorts, setShowSorts] = useState(false)
+
+  return (
+    <div className="mb-10">
+      <h1>
+        rpscroller <img className="h-8" src={flame} />
+      </h1>
+      <FormBox />
+
+      <div>
+        <button onClick={() => setShowSettings(!showSettings)}>
+          {showSettings ? 'Hide settings' : 'Show settings'}
+        </button>
+        <button onClick={() => setShowFavorites(!showFavorites)}>
+          {showFavorites ? 'Hide favorites' : 'Show favorites'}
+        </button>
+        <button onClick={() => setShowSorts(!showSorts)}>
+          {showSorts ? 'Hide sorts' : 'Show sorts'}
+        </button>
+      </div>
+      {showSettings ? <Settings /> : null}
+      {showFavorites ? <Favorites /> : null}
+      {showSorts ? <Sorts /> : null}
+    </div>
+  )
+}
+
+function PrevNext({ data }: { data: Data }) {
+  const store = useAppStore()
+  const { prev } = store
+  return (
+    <div>
+      <div className="flex justify-center">
+        <button
+          className="text-4xl m-2"
+          onClick={() => store.setPage(prev ?? '')}
+        >
+          Prev
+        </button>
+        <button
+          className="text-4xl m-2"
+          disabled={!data?.after}
+          onClick={() => store.setPage(data?.after ?? '')}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  )
+}
+export default function App() {
+  const store = useAppStore()
+  const { page, mode, confirmed, favorites, noGifs, redGifsOnly, val } = store
+
   const modeString = {
     topall: '/top.json?t=all',
     topmonth: '/top.json?t=month',
@@ -341,59 +417,17 @@ export default function App() {
 
   return (
     <div className="lg:m-5">
-      <div className="mb-10">
-        <h1 className="m-0">
-          rpscroller <img className="h-8" src={flame} />
-        </h1>
-        <FormBox />
-
-        <button onClick={() => setShowSettings(!showSettings)}>
-          {showSettings ? 'Hide settings' : 'Show settings'}
-        </button>
-        {showSettings ? <Settings /> : null}
-
-        <button onClick={() => setShowFavorites(!showFavorites)}>
-          {showFavorites ? 'Hide favorites' : 'Show favorites'}
-        </button>
-        {showFavorites ? <Favorites /> : null}
-
-        <button onClick={() => setShowSorts(!showSorts)}>
-          {showSorts ? 'Hide sorts' : 'Show sorts'}
-        </button>
-        {showSorts ? <Sorts /> : null}
-      </div>
+      <Header />
       {isLoading ? (
         <Loading />
       ) : error ? (
-        <div className="text-red-600 m-20">
-          <div>{`${error}`}</div>
-          <div>
-            {`${error}` ===
-            'TypeError: NetworkError when attempting to fetch resource.'
-              ? "If you are on firefox then you can disable 'Enhanced Tracking Protection' (at your own risk) to fix this error"
-              : ''}{' '}
-          </div>
-        </div>
+        <ErrorMessage error={error} />
       ) : data ? (
-        <Posts data={data} />
+        <>
+          <Posts data={data} />
+          <PrevNext data={data} />
+        </>
       ) : null}
-      <div>
-        <div className="flex justify-center">
-          <button
-            className="text-4xl m-2"
-            onClick={() => store.setPage(prev ?? '')}
-          >
-            Prev
-          </button>
-          <button
-            className="text-4xl m-2"
-            disabled={!data?.after}
-            onClick={() => store.setPage(data?.after ?? '')}
-          >
-            Next
-          </button>
-        </div>
-      </div>
       <footer>
         <a href="https://github.com/codefeels/rpscroller/" target="_blank">
           Source code/report issues
