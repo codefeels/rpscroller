@@ -137,12 +137,186 @@ function Posts({ data }: { data: Data }) {
   )
 }
 
+function Favorites() {
+  const store = useAppStore()
+  const { favorites } = store
+
+  return (
+    <div>
+      <table>
+        <tbody>
+          {favorites
+            .map(f => f.replace(/^\//, ''))
+            .sort()
+            .map(f => (
+              <tr key={f}>
+                <td>
+                  <button onClick={() => store.setVal(f)}>{f}</button>
+                </td>
+                <td>
+                  <button onClick={() => store.removeFavorite(f)}>
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function Sorts() {
+  const store = useAppStore()
+  const { mode } = store
+
+  return (
+    <div>
+      <div>
+        <label htmlFor="topall">Top (all time)</label>
+        <input
+          id="topall"
+          value="topall"
+          type="radio"
+          checked={mode === 'topall'}
+          onChange={event => store.setMode(event.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="topyear">Top (year)</label>
+        <input
+          id="topyear"
+          value="topyear"
+          type="radio"
+          checked={mode === 'topyear'}
+          onChange={event => store.setMode(event.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="topday">Top (day)</label>
+        <input
+          id="topday"
+          value="topday"
+          type="radio"
+          checked={mode === 'topday'}
+          onChange={event => store.setMode(event.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="topmonth">Top (month)</label>
+        <input
+          id="topmonth"
+          value="topmonth"
+          type="radio"
+          checked={mode === 'topmonth'}
+          onChange={event => store.setMode(event.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="hot">Hot</label>
+        <input
+          id="hot"
+          value="hot"
+          type="radio"
+          checked={mode === 'hot'}
+          onChange={event => store.setMode(event.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="new">New</label>
+        <input
+          id="new"
+          value="new"
+          type="radio"
+          checked={mode === 'new'}
+          onChange={event => store.setMode(event.target.value)}
+        />
+      </div>
+    </div>
+  )
+}
+
+function Settings() {
+  const store = useAppStore()
+  return (
+    <div>
+      <div>
+        <input
+          id="nogifs"
+          type="checkbox"
+          checked={store.noGifs}
+          onChange={event => store.setNoGifs(event.target.checked)}
+        />
+        <label htmlFor="nogifs">
+          No gifs? The actual, slow bloated filetype
+        </label>
+      </div>
+
+      <div>
+        <input
+          id="redgifs"
+          type="checkbox"
+          checked={store.redGifsOnly}
+          onChange={event => store.setRedGifsOnly(event.target.checked)}
+        />
+        <label htmlFor="redgifs">RedGifs only (the image host)</label>
+      </div>
+
+      <div>
+        <input
+          id="hidebuttons"
+          type="checkbox"
+          checked={store.hideButtons}
+          onChange={event => store.setHideButtons(event.target.checked)}
+        />
+        <label htmlFor="hidebuttons">Hide buttons to add to favs/browse</label>
+      </div>
+    </div>
+  )
+}
+
+function FormBox() {
+  const store = useAppStore()
+  const { val } = store
+  const [text, setText] = useState(val)
+  useEffect(() => {
+    setText(val)
+  }, [val])
+  return (
+    <div>
+      <form
+        onSubmit={event => {
+          event.preventDefault()
+          store.setVal(text)
+        }}
+      >
+        <label htmlFor="box">Reddit:</label>
+        <input
+          id="box"
+          type="text"
+          value={text}
+          onChange={event => setText(event.target.value)}
+        />
+        <button type="submit">Submit</button>
+        <button
+          onClick={event => {
+            event.preventDefault() // not sure why but otherwise does onSubmit
+            store.addFavorite(text)
+          }}
+        >
+          Add to favorites
+        </button>
+      </form>
+    </div>
+  )
+}
 export default function App() {
   const [showSettings, setShowSettings] = useState(false)
   const store = useAppStore()
   const { page, mode, prev, confirmed, favorites, noGifs, redGifsOnly, val } =
     store
   const [showFavorites, setShowFavorites] = useState(false)
+  const [showSorts, setShowSorts] = useState(false)
   const modeString = {
     topall: '/top.json?t=all',
     topmonth: '/top.json?t=month',
@@ -154,7 +328,6 @@ export default function App() {
   const url =
     `https://www.reddit.com/${val}${modeString[mode] || ''}` +
     (page ? `?after=${page}` : '')
-  const [text, setText] = useState(val)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, error, isLoading } = useSWR(url, fetcher)
 
@@ -165,9 +338,6 @@ export default function App() {
     setString('favorites', JSON.stringify(favorites))
     window.history.replaceState(null, '', `?${queryString.stringify({ val })}`)
   }, [val, noGifs, favorites, confirmed, redGifsOnly])
-  useEffect(() => {
-    setText(val)
-  }, [val])
 
   return (
     <div className="lg:m-5">
@@ -175,158 +345,22 @@ export default function App() {
         <h1 className="m-0">
           rpscroller <img className="h-8" src={flame} />
         </h1>
-        <div>
-          <form
-            onSubmit={event => {
-              event.preventDefault()
-              store.setVal(text)
-            }}
-          >
-            <label htmlFor="box">Reddit:</label>
-            <input
-              id="box"
-              type="text"
-              value={text}
-              onChange={event => setText(event.target.value)}
-            />
-            <button type="submit">Submit</button>
-            <button
-              onClick={event => {
-                event.preventDefault() // not sure why but otherwise does onSubmit
-                store.addFavorite(text)
-              }}
-            >
-              Add to favorites
-            </button>
-          </form>
-        </div>
+        <FormBox />
 
         <button onClick={() => setShowSettings(!showSettings)}>
           {showSettings ? 'Hide settings' : 'Show settings'}
         </button>
-        {showSettings ? (
-          <div>
-            <div>
-              <input
-                id="nogifs"
-                type="checkbox"
-                checked={store.noGifs}
-                onChange={event => store.setNoGifs(event.target.checked)}
-              />
-              <label htmlFor="nogifs">
-                No gifs? The actual, slow bloated filetype
-              </label>
-            </div>
-
-            <div>
-              <input
-                id="redgifs"
-                type="checkbox"
-                checked={store.redGifsOnly}
-                onChange={event => store.setRedGifsOnly(event.target.checked)}
-              />
-              <label htmlFor="redgifs">RedGifs only (the image host)</label>
-            </div>
-
-            <div>
-              <input
-                id="hidebuttons"
-                type="checkbox"
-                checked={store.hideButtons}
-                onChange={event => store.setHideButtons(event.target.checked)}
-              />
-              <label htmlFor="hidebuttons">
-                Hide buttons to add to favs/browse
-              </label>
-            </div>
-          </div>
-        ) : null}
+        {showSettings ? <Settings /> : null}
 
         <button onClick={() => setShowFavorites(!showFavorites)}>
           {showFavorites ? 'Hide favorites' : 'Show favorites'}
         </button>
-        {showFavorites ? (
-          <div>
-            <table>
-              <tbody>
-                {favorites.map(f => (
-                  <tr key={f}>
-                    <td>
-                      <button onClick={() => store.setVal(f)}>{f}</button>
-                    </td>
-                    <td>
-                      <button onClick={() => store.removeFavorite(f)}>
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : null}
-        <div>
-          <div>
-            <label htmlFor="topall">Top (all time)</label>
-            <input
-              id="topall"
-              value="topall"
-              type="radio"
-              checked={mode === 'topall'}
-              onChange={event => store.setMode(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="topyear">Top (year)</label>
-            <input
-              id="topyear"
-              value="topyear"
-              type="radio"
-              checked={mode === 'topyear'}
-              onChange={event => store.setMode(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="topday">Top (day)</label>
-            <input
-              id="topday"
-              value="topday"
-              type="radio"
-              checked={mode === 'topday'}
-              onChange={event => store.setMode(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="topmonth">Top (month)</label>
-            <input
-              id="topmonth"
-              value="topmonth"
-              type="radio"
-              checked={mode === 'topmonth'}
-              onChange={event => store.setMode(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="hot">Hot</label>
-            <input
-              id="hot"
-              value="hot"
-              type="radio"
-              checked={mode === 'hot'}
-              onChange={event => store.setMode(event.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="new">New</label>
-            <input
-              id="new"
-              value="new"
-              type="radio"
-              checked={mode === 'new'}
-              onChange={event => store.setMode(event.target.value)}
-            />
-          </div>
-        </div>
+        {showFavorites ? <Favorites /> : null}
+
+        <button onClick={() => setShowSorts(!showSorts)}>
+          {showSorts ? 'Hide sorts' : 'Show sorts'}
+        </button>
+        {showSorts ? <Sorts /> : null}
       </div>
       {isLoading ? (
         <Loading />
