@@ -3,7 +3,6 @@ import queryString from 'query-string'
 
 interface AppState {
   noGifs: boolean
-  fullscreen: boolean
   redGifsOnly: boolean
   page?: string
   prev?: string
@@ -12,7 +11,6 @@ interface AppState {
   hideButtons: boolean
   confirmed: boolean
   setHideButtons: (arg: boolean) => void
-  setFullscreen: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
   setNoGifs: (arg: boolean) => void
   setRedGifsOnly: (arg: boolean) => void
@@ -57,7 +55,6 @@ export function setString(key: string, val: string) {
 export const useAppStore = create<AppState>()(set => ({
   noGifs: getBool('noGifs'),
   redGifsOnly: getBool('redGifsOnly'),
-  fullscreen: getBool('fullscreen'),
   hideButtons: getBool('hideButtons'),
   confirmed: getBool('confirmed'),
   page: undefined as string | undefined,
@@ -68,7 +65,6 @@ export const useAppStore = create<AppState>()(set => ({
     'r/midriff+gonemild',
     'r/gonewild',
   ]),
-  setFullscreen: flag => set(() => ({ fullscreen: flag })),
   setConfirmed: flag => set(() => ({ confirmed: flag })),
   setNoGifs: flag => set(() => ({ noGifs: flag })),
   setHideButtons: flag => set(() => ({ hideButtons: flag })),

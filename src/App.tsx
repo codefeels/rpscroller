@@ -6,17 +6,12 @@ import useSWR from 'swr'
 import Loading from './LoadingSpinner'
 
 // data
-import { redGifUrlToId } from './util'
+import { decode, redGifUrlToId } from './util'
 import { setBool, setString, useAppStore } from './store'
 
 // @ts-expect-error can't figure out svg import
 import flame from './favicon.svg'
 
-function decode(html: string) {
-  const txt = document.createElement('textarea')
-  txt.innerHTML = html
-  return txt.value
-}
 interface Post {
   id: string
   subreddit_name_prefixed: string
@@ -54,8 +49,8 @@ function Post({ post }: { post: Post }) {
     url,
   } = post
   return (
-    <div className="item">
-      <h4 style={{ margin: 0, display: 'inline' }}>{decode(title)}</h4> (
+    <div className="lg:m-10 lg:p-10 border border-solid border-gray-950">
+      <h4 className="inline">{decode(title)}</h4> (
       <a href={url} target="_blank">
         link
       </a>
@@ -90,13 +85,15 @@ function Post({ post }: { post: Post }) {
         url.endsWith('.png') ||
         url.endsWith('.gif') ||
         url.endsWith('.webp')) ? (
-        <div>
-          <img loading="lazy" style={{ width: '100%' }} src={url} />
-        </div>
+        <img
+          loading="lazy"
+          className="w-full max-h-screen object-contain"
+          src={url}
+        />
       ) : url.includes('redgifs') ? (
         <iframe
           src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
-          style={{ width: '100%', height: '100vh' }}
+          className="h-screen w-full"
           loading="lazy"
           allowFullScreen
           scrolling="no"
@@ -108,7 +105,7 @@ function Post({ post }: { post: Post }) {
 }
 
 function Posts({ data }: { data: Data }) {
-  const { noGifs, redGifsOnly, fullscreen } = useAppStore()
+  const { noGifs, redGifsOnly } = useAppStore()
   const result = data.children
     .filter(({ data }) => !('comment_type' in data))
     .filter(
@@ -123,15 +120,12 @@ function Posts({ data }: { data: Data }) {
     .filter(({ data }) => (noGifs ? !data.url.endsWith('.gif') : true))
     .filter(({ data }) => (redGifsOnly ? data.url.includes('redgifs') : true))
   return (
-    <div className="center">
-      <div className={!fullscreen ? 'stage' : 'fullscreen'}>
-        <div style={{ position: 'sticky' }}></div>
-        {result.length > 0 ? (
-          result.map(({ data }) => <Post key={data.id} post={data} />)
-        ) : (
-          <h1>No results on this page, check your filters in the settings</h1>
-        )}
-      </div>
+    <div>
+      {result.length > 0 ? (
+        result.map(({ data }) => <Post key={data.id} post={data} />)
+      ) : (
+        <h1>No results on this page, check your filters in the settings</h1>
+      )}
     </div>
   )
 }
@@ -139,16 +133,7 @@ function Posts({ data }: { data: Data }) {
 export default function App() {
   const [showSettings, setShowSettings] = useState(false)
   const store = useAppStore()
-  const {
-    page,
-    prev,
-    confirmed,
-    favorites,
-    fullscreen,
-    noGifs,
-    redGifsOnly,
-    val,
-  } = store
+  const { page, prev, confirmed, favorites, noGifs, redGifsOnly, val } = store
   const [showFavorites, setShowFavorites] = useState(false)
   const url =
     `https://www.reddit.com/${val}.json` + (page ? `?after=${page}` : '')
@@ -158,21 +143,20 @@ export default function App() {
 
   useEffect(() => {
     setBool('noGifs', noGifs)
-    setBool('fullscreen', fullscreen)
     setBool('redGifsOnly', redGifsOnly)
     setBool('confirmed', confirmed)
     setString('favorites', JSON.stringify(favorites))
     window.history.replaceState(null, '', `?${queryString.stringify({ val })}`)
-  }, [val, fullscreen, noGifs, favorites, confirmed, redGifsOnly])
+  }, [val, noGifs, favorites, confirmed, redGifsOnly])
   useEffect(() => {
     setText(val)
   }, [val])
 
   return (
-    <div className="app">
-      <div className="header">
-        <h1 style={{ margin: 0 }}>
-          rpscroller <img style={{ height: '1em' }} src={flame} />
+    <div className="lg:m-5">
+      <div className="mb-10">
+        <h1 className="m-0">
+          rpscroller <img className="h-8" src={flame} />
         </h1>
         <div>
           <form
@@ -205,16 +189,6 @@ export default function App() {
         </button>
         {showSettings ? (
           <div>
-            <div>
-              <input
-                id="fullscreen"
-                type="checkbox"
-                checked={fullscreen}
-                onChange={event => store.setFullscreen(event.target.checked)}
-              />
-              <label htmlFor="fullscreen">Fullscreen</label>
-            </div>
-
             <div>
               <input
                 id="nogifs"
@@ -278,7 +252,7 @@ export default function App() {
       {isLoading ? (
         <Loading />
       ) : error ? (
-        <div className="error">
+        <div className="text-red-600 m-20">
           <div>{`${error}`}</div>
           <div>
             {`${error}` ===
@@ -290,17 +264,22 @@ export default function App() {
       ) : data ? (
         <Posts data={data} />
       ) : null}
-      <div className="center">
-        <button className="large" onClick={() => store.setPage(prev ?? '')}>
-          Prev
-        </button>
-        <button
-          className="large"
-          disabled={!data?.after}
-          onClick={() => store.setPage(data?.after ?? '')}
-        >
-          Next
-        </button>
+      <div>
+        <div className="flex justify-center">
+          <button
+            className="text-4xl m-2"
+            onClick={() => store.setPage(prev ?? '')}
+          >
+            Prev
+          </button>
+          <button
+            className="text-4xl m-2"
+            disabled={!data?.after}
+            onClick={() => store.setPage(data?.after ?? '')}
+          >
+            Next
+          </button>
+        </div>
       </div>
       <footer>
         <a href="https://github.com/codefeels/rpscroller/" target="_blank">

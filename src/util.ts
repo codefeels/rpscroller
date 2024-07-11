@@ -44,3 +44,9 @@ export function redGifUrlToId(url: string) {
 
   return false
 }
+
+export function decode(html: string) {
+  const txt = document.createElement('textarea')
+  txt.innerHTML = html
+  return txt.value
+}
