@@ -69,3 +69,20 @@ export function de<T>(list: T[], hasher: Hasher<T> = JSON.stringify) {
 
   return clone
 }
+
+export interface Post {
+  id: string
+  subreddit_name_prefixed: string
+  title: string
+  url: string
+  permalink: string
+  author: string
+}
+
+export interface Data {
+  before?: string
+  after?: string
+  children: {
+    data: Post
+  }[]
+}

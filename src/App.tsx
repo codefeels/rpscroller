@@ -3,39 +3,19 @@ import queryString from 'query-string'
 import useSWR from 'swr'
 
 // components
-import Loading from './LoadingSpinner'
+import LoadingSpinner from './LoadingSpinner'
 
 // data
+import type { Data, Post } from './util'
 import { de, decode, redGifUrlToId } from './util'
 import { setBool, setString, useAppStore } from './store'
 
 import flame from './favicon.svg'
 
-interface Post {
-  id: string
-  subreddit_name_prefixed: string
-  title: string
-  url: string
-  permalink: string
-  author: string
-}
-interface Data {
-  before?: string
-  after?: string
-  children: {
-    data: Post
-  }[]
-}
-const fetcher = async (url: string) => {
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status} fetching ${url} ${await res.text()}`)
-  }
-  const ret = (await res.json()) as {
-    data: Data
-  }
-  return ret.data
-}
+// refresh page after back button
+window.addEventListener('popstate', function (e) {
+  window.location.reload()
+})
 
 function Buttons({ post }: { post: Post }) {
   const store = useAppStore()
@@ -71,7 +51,7 @@ function Post({ post }: { post: Post }) {
     url,
   } = post
   return (
-    <div className="lg:m-10 lg:p-10 border border-solid border-gray-950">
+    <div>
       <h4 className="inline">{decode(title)}</h4> (
       <a href={`https://reddit.com/u/${author}`} target="_blank">
         user
@@ -131,12 +111,14 @@ function Posts({ data }: { data: Data }) {
   }
   return (
     <div className={!fullscreen ? 'flex justify-center' : undefined}>
-      <div className={!fullscreen ? 'w-1/2' : undefined}>
-        {result.length > 0 ? (
-          result.map(({ data }) => <Post key={data.id} post={data} />)
-        ) : (
-          <h1>No results on this page, check your filters in the settings</h1>
-        )}
+      <div className={!fullscreen ? 'lg:w-1/2' : undefined}>
+        <div className="flex flex-col space-y-20">
+          {result.length > 0 ? (
+            result.map(({ data }) => <Post key={data.id} post={data} />)
+          ) : (
+            <h1>No results on this page, check your filters in the settings</h1>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -378,32 +360,30 @@ function Header() {
   )
 }
 
-function PrevNext({ data }: { data: Data }) {
+function PrevNextButtons({ data }: { data: Data }) {
   const store = useAppStore()
   const { prev } = store
   return (
-    <div>
-      <div className="flex justify-center">
-        <button
-          className="text-4xl m-2"
-          onClick={() => {
-            store.setPage(prev ?? '')
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-          }}
-        >
-          Prev
-        </button>
-        <button
-          className="text-4xl m-2"
-          disabled={!data?.after}
-          onClick={() => {
-            store.setPage(data?.after ?? '')
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-          }}
-        >
-          Next
-        </button>
-      </div>
+    <div className="flex justify-center m-10">
+      <button
+        className="text-4xl m-2"
+        onClick={() => {
+          store.setPage(prev ?? '')
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
+      >
+        Prev
+      </button>
+      <button
+        className="text-4xl m-2"
+        disabled={!data?.after}
+        onClick={() => {
+          store.setPage(data?.after ?? '')
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
+      >
+        Next
+      </button>
     </div>
   )
 }
@@ -419,11 +399,22 @@ export default function App() {
     hot: '.json',
     new: '/new.json',
   } as Record<string, string>
+
   const url =
     `https://www.reddit.com/${val}${modeString[mode] || ''}` +
     (page ? `?after=${page}` : '')
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { data, error, isLoading } = useSWR(url, fetcher)
+  const { data, error, isLoading } = useSWR(url, async (url: string) => {
+    const res = await fetch(url)
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} fetching ${url} ${await res.text()}`)
+    }
+    const ret = (await res.json()) as {
+      data: Data
+    }
+    return ret.data
+  })
 
   useEffect(() => {
     setBool('noGifs', noGifs)
@@ -436,16 +427,20 @@ export default function App() {
   return (
     <div className="lg:m-5">
       <Header />
-      {isLoading ? (
-        <Loading />
-      ) : error ? (
-        <ErrorMessage error={error as unknown} />
-      ) : data ? (
-        <>
-          <Posts data={data} />
-          <PrevNext data={data} />
-        </>
-      ) : null}
+      <div className="flex justify-center">
+        <div>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : error ? (
+            <ErrorMessage error={error as unknown} />
+          ) : data ? (
+            <>
+              <Posts data={data} />
+              <PrevNextButtons data={data} />
+            </>
+          ) : null}
+        </div>
+      </div>
       <footer>
         <a href="https://github.com/codefeels/rpscroller/" target="_blank">
           Source code/report issues
