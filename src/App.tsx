@@ -13,9 +13,7 @@ import { setBool, setString, useAppStore } from './store'
 import flame from './favicon.svg'
 
 // refresh page after back button
-window.addEventListener('popstate', function (e) {
-  window.location.reload()
-})
+window.addEventListener('popstate', () => window.location.reload())
 
 function Buttons({ post }: { post: Post }) {
   const store = useAppStore()
