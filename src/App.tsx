@@ -8,7 +8,7 @@ import LoadingSpinner from './LoadingSpinner'
 // data
 import type { Data, Post } from './util'
 import { de, decode, redGifUrlToId } from './util'
-import { setBool, setString, useAppStore } from './store'
+import { setBool, setStringArray, useAppStore } from './store'
 
 import flame from './favicon.svg'
 
@@ -39,6 +39,42 @@ function Buttons({ post }: { post: Post }) {
     </div>
   )
 }
+
+function Gallery({ post }: { post: Post }) {
+  const { media_metadata, gallery_data } = post
+  const [frame, setFrame] = useState(0)
+  const { media_id, caption } = gallery_data.items[frame]
+  return (
+    <div>
+      <div className="text-center">
+        {caption} {frame + 1}/{gallery_data.items.length}
+      </div>
+      <img
+        loading="lazy"
+        className="w-full max-h-screen object-contain"
+        src={decode(media_metadata[media_id].s.u)}
+      />
+
+      <div className={'flex justify-center'}>
+        <button
+          className="text-4xl m-2"
+          disabled={frame <= 0}
+          onClick={() => setFrame(frame - 1)}
+        >
+          &lt;
+        </button>
+        <button
+          className="text-4xl m-2"
+          disabled={frame >= gallery_data.items.length - 1}
+          onClick={() => setFrame(frame + 1)}
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function Post({ post }: { post: Post }) {
   const { hideButtons } = useAppStore()
   const {
@@ -63,12 +99,14 @@ function Post({ post }: { post: Post }) {
         comments
       </a>
       ){hideButtons ? null : <Buttons post={post} />}
-      {!url.includes('redgifs') &&
-      (url.endsWith('.jpg') ||
-        url.endsWith('.jpeg') ||
-        url.endsWith('.png') ||
-        url.endsWith('.gif') ||
-        url.endsWith('.webp')) ? (
+      {url.startsWith('https://www.reddit.com/gallery') ? (
+        <Gallery post={post} />
+      ) : !url.includes('redgifs') &&
+        (url.endsWith('.jpg') ||
+          url.endsWith('.jpeg') ||
+          url.endsWith('.png') ||
+          url.endsWith('.gif') ||
+          url.endsWith('.webp')) ? (
         <img
           loading="lazy"
           className="w-full max-h-screen object-contain"
@@ -99,7 +137,8 @@ function Posts({ data }: { data: Data }) {
         url.endsWith('.jpeg') ||
         url.endsWith('.png') ||
         url.endsWith('.gif') ||
-        url.endsWith('.webp'),
+        url.endsWith('.webp') ||
+        url.startsWith('https://www.reddit.com/gallery'),
     )
     .filter(({ data }) => (noGifs ? !data.url.endsWith('.gif') : true))
     .filter(({ data }) => (redGifsOnly ? data.url.includes('redgifs') : true))
@@ -114,7 +153,11 @@ function Posts({ data }: { data: Data }) {
           {result.length > 0 ? (
             result.map(({ data }) => <Post key={data.id} post={data} />)
           ) : (
-            <h1>No results on this page, check your filters in the settings</h1>
+            <h1>
+              No results on this page, check your filters in the settings or
+              this may just have been a page of comments if you are browsing a
+              user page
+            </h1>
           )}
         </div>
       </div>
@@ -418,9 +461,12 @@ export default function App() {
     setBool('noGifs', noGifs)
     setBool('redGifsOnly', redGifsOnly)
     setBool('confirmed', confirmed)
-    setString('favorites', JSON.stringify(favorites))
+    setStringArray('favorites', favorites)
+  }, [noGifs, favorites, confirmed, redGifsOnly])
+
+  useEffect(() => {
     window.history.pushState(null, '', `?${queryString.stringify({ val })}`)
-  }, [val, noGifs, favorites, confirmed, redGifsOnly])
+  }, [val])
 
   return (
     <div className="lg:m-5">

@@ -56,8 +56,8 @@ export function getStringArray(key: string, def = [] as string[]): string[] {
   }
 }
 
-export function setString(key: string, val: string) {
-  return localStorage.setItem(key, val)
+export function setStringArray(key: string, val: string[]) {
+  return localStorage.setItem(key, JSON.stringify(val))
 }
 
 export const useAppStore = create<AppState>()(set => ({
