@@ -7,10 +7,12 @@ import LoadingSpinner from './LoadingSpinner'
 
 // data
 import type { Data, Post } from './util'
-import { de, decode, redGifUrlToId } from './util'
+import { deduplicate, decode, redGifUrlToId } from './util'
 import { setBool, setStringArray, useAppStore } from './store'
 
 import flame from './favicon.svg'
+import { useIntersectionObserver, useDebounceValue } from 'usehooks-ts'
+import { formatDistance } from 'date-fns'
 
 // refresh page after back button
 window.addEventListener('popstate', () => window.location.reload())
@@ -24,16 +26,22 @@ function Buttons({ post }: { post: Post }) {
         <button onClick={() => store.setVal(`/user/${author}`)}>
           Browse {`/u/${author}`}
         </button>
-        <button onClick={() => store.addFavorite(`/user/${author}`)}>
-          Add {`/u/${author}`} to favorites
+        <button
+          disabled={store.favs.includes(`/user/${author}`)}
+          onClick={() => store.addFavorite(`/user/${author}`)}
+        >
+          Add {`/u/${author}`} to favs
         </button>
       </div>
       <div>
         <button onClick={() => store.setVal(subreddit)}>
           Browse {subreddit}
         </button>
-        <button onClick={() => store.addFavorite(subreddit)}>
-          Add {subreddit} to favorites
+        <button
+          disabled={store.favs.includes(subreddit)}
+          onClick={() => store.addFavorite(subreddit)}
+        >
+          Add {subreddit} to favs
         </button>
       </div>
     </div>
@@ -41,13 +49,17 @@ function Buttons({ post }: { post: Post }) {
 }
 
 function Gallery({ post }: { post: Post }) {
-  const { media_metadata, gallery_data } = post
+  const { gallery_data, crosspost_parent_list } = post
   const [frame, setFrame] = useState(0)
-  const { media_id, caption } = gallery_data.items[frame]
+  const items =
+    gallery_data?.items || crosspost_parent_list[0]?.gallery_data.items
+  const media_metadata =
+    post.media_metadata || crosspost_parent_list[0]?.media_metadata
+  const { media_id, caption } = items[frame]
   return (
     <div>
       <div className="text-center">
-        {caption} {frame + 1}/{gallery_data.items.length}
+        {caption} {frame + 1}/{items.length}
       </div>
       <img
         loading="lazy"
@@ -65,7 +77,7 @@ function Gallery({ post }: { post: Post }) {
         </button>
         <button
           className="text-4xl m-2"
-          disabled={frame >= gallery_data.items.length - 1}
+          disabled={frame >= items.length - 1}
           onClick={() => setFrame(frame + 1)}
         >
           &gt;
@@ -77,6 +89,10 @@ function Gallery({ post }: { post: Post }) {
 
 function Post({ post }: { post: Post }) {
   const { hideButtons } = useAppStore()
+  const { isIntersecting, ref } = useIntersectionObserver({
+    threshold: 0.4,
+  })
+  const [debouncedIsIntersecting] = useDebounceValue(isIntersecting, 1000)
   const {
     author,
     subreddit_name_prefixed: subreddit,
@@ -85,14 +101,25 @@ function Post({ post }: { post: Post }) {
     url,
   } = post
   return (
-    <div>
-      <h4 className="inline">{decode(title)}</h4> (
+    <div ref={ref}>
+      <h4 className="inline">
+        {decode(title)} (
+        {formatDistance(new Date(post.created * 1000), new Date(), {
+          addSuffix: true,
+        })}
+        ) [{post.score}]
+      </h4>{' '}
+      (
       <a
         href={`https://reddit.com/u/${author}`}
         target="_blank"
         rel="noreferrer"
       >
         user
+      </a>
+      ) (
+      <a href={url} target="_blank" rel="noreferrer">
+        url
       </a>
       ) (
       <a
@@ -116,6 +143,7 @@ function Post({ post }: { post: Post }) {
       ) : !url.includes('redgifs') &&
         (url.endsWith('.jpg') ||
           url.endsWith('.jpeg') ||
+          url.endsWith('.webp') ||
           url.endsWith('.png') ||
           url.endsWith('.gif') ||
           url.endsWith('.webp')) ? (
@@ -125,27 +153,40 @@ function Post({ post }: { post: Post }) {
           src={url}
         />
       ) : url.includes('redgifs') ? (
-        <iframe
-          src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
-          className="h-screen w-full"
-          loading="lazy"
-          allowFullScreen
-          scrolling="no"
-          frameBorder="0"
-        />
+        debouncedIsIntersecting ? (
+          <iframe
+            src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
+            className="h-screen w-full"
+            loading="lazy"
+            allowFullScreen
+            scrolling="no"
+            frameBorder="0"
+          />
+        ) : (
+          <div
+            style={{ width: '100%', height: '100vh' }}
+            className="flex flex-col animate-pulse space-y-4 m-20"
+          >
+            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
+            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
+            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
+            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
+          </div>
+        )
       ) : null}
     </div>
   )
 }
 
 function Posts({ data }: { data: Data }) {
-  const { noGifs, dedupe, fullscreen, redGifsOnly } = useAppStore()
+  const { noGifs, skipPinned, dedupe, fullscreen, redGifsOnly } = useAppStore()
   let result = data.children
     .filter(({ data }) => !('comment_type' in data))
     .filter(
       ({ data: { url } }) =>
         url.includes('redgifs') ||
         url.endsWith('.jpg') ||
+        url.endsWith('.webp') ||
         url.endsWith('.jpeg') ||
         url.endsWith('.png') ||
         url.endsWith('.gif') ||
@@ -154,13 +195,14 @@ function Posts({ data }: { data: Data }) {
     )
     .filter(({ data }) => (noGifs ? !data.url.endsWith('.gif') : true))
     .filter(({ data }) => (redGifsOnly ? data.url.includes('redgifs') : true))
+    .filter(({ data }) => (skipPinned ? !data.pinned : true))
 
   if (dedupe) {
-    result = de(result, r => r.data.url)
+    result = deduplicate(result, r => r.data.url)
   }
   return (
-    <div className={fullscreen ? undefined : 'flex justify-center'}>
-      <div className={fullscreen ? undefined : 'lg:w-1/2'}>
+    <div className="flex justify-center overflow-hidden">
+      <div className={fullscreen ? 'lg:w-11/12' : 'lg:w-1/2'}>
         <div className="flex flex-col space-y-20">
           {result.length > 0 ? (
             result.map(({ data }) => <Post key={data.id} post={data} />)
@@ -179,48 +221,17 @@ function Posts({ data }: { data: Data }) {
 
 function Favorites() {
   const store = useAppStore()
-  const { favorites } = store
+  const { favs } = store
   const [multi, setMulti] = useState<string[]>([])
   const [makeMultiReddit, setMakeMultiReddit] = useState(false)
+  const [showUsers, setShowUsers] = useState(true)
+  const [showSubreddits, setShowSubreddits] = useState(true)
   const multiVal = '/r/' + multi.join('+')
   return (
-    <div className="m-10">
-      <h4>Favorites</h4>
-      <div className="flex space-x-20">
-        <table>
-          <tbody>
-            {favorites
-              .map(f => f.replace(/^\//, ''))
-              .sort()
-              .map(f => (
-                <tr key={f}>
-                  <td>
-                    <button onClick={() => store.setVal(f)}>{f}</button>
-                  </td>
-                  <td>
-                    <button onClick={() => store.removeFavorite(f)}>
-                      Remove
-                    </button>
-                  </td>
-                  {makeMultiReddit ? (
-                    <td>
-                      <button
-                        onClick={() =>
-                          setMulti([
-                            ...multi,
-                            f.replace('user/', 'u_').replace('r/', ''),
-                          ])
-                        }
-                      >
-                        Add to multi
-                      </button>
-                    </td>
-                  ) : null}
-                </tr>
-              ))}
-          </tbody>
-        </table>
-        <div>
+    <div className="lg:m-10">
+      <h4>
+        Favorites{' '}
+        <span>
           <button onClick={() => setMakeMultiReddit(!makeMultiReddit)}>
             {makeMultiReddit ? 'Hide multi-reddit maker' : 'Make multi-reddit?'}
           </button>
@@ -232,8 +243,102 @@ function Favorites() {
               <button onClick={() => setMulti([])}>Clear</button>
             </div>
           ) : null}
-        </div>
-      </div>
+          <label htmlFor="reddits">Show subreddits</label>
+          <input
+            id="reddits"
+            type="checkbox"
+            checked={showSubreddits}
+            onChange={event => setShowSubreddits(event.target.checked)}
+          />
+          <label htmlFor="users">Show users</label>
+          <input
+            id="users"
+            type="checkbox"
+            checked={showUsers}
+            onChange={event => setShowUsers(event.target.checked)}
+          />
+        </span>
+      </h4>
+      <table>
+        <tbody>
+          {showSubreddits
+            ? favs
+                .map(f => f.replace(/^\//, ''))
+                .filter(
+                  f =>
+                    !(
+                      f.startsWith('u/') ||
+                      f.startsWith('user/') ||
+                      f.startsWith('u_')
+                    ),
+                )
+                .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+                .map(f => (
+                  <tr key={f}>
+                    <td>
+                      <button onClick={() => store.setVal(f)}>{f}</button>
+                    </td>
+                    <td>
+                      <button onClick={() => store.removeFavorite(f)}>
+                        Remove
+                      </button>
+                    </td>
+                    {makeMultiReddit ? (
+                      <td>
+                        <button
+                          onClick={() =>
+                            setMulti([
+                              ...multi,
+                              f.replace('user/', 'u_').replace('r/', ''),
+                            ])
+                          }
+                        >
+                          Add to multi
+                        </button>
+                      </td>
+                    ) : null}
+                  </tr>
+                ))
+            : null}
+          {showUsers
+            ? favs
+                .map(f => f.replace(/^\//, ''))
+                .filter(
+                  f =>
+                    f.startsWith('u/') ||
+                    f.startsWith('user/') ||
+                    f.startsWith('u_'),
+                )
+                .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+                .map(f => (
+                  <tr key={f}>
+                    <td>
+                      <button onClick={() => store.setVal(f)}>{f}</button>
+                    </td>
+                    <td>
+                      <button onClick={() => store.removeFavorite(f)}>
+                        Remove
+                      </button>
+                    </td>
+                    {makeMultiReddit ? (
+                      <td>
+                        <button
+                          onClick={() =>
+                            setMulti([
+                              ...multi,
+                              f.replace('user/', 'u_').replace('r/', ''),
+                            ])
+                          }
+                        >
+                          Add to multi
+                        </button>
+                      </td>
+                    ) : null}
+                  </tr>
+                ))
+            : null}
+        </tbody>
+      </table>
     </div>
   )
 }
@@ -311,7 +416,8 @@ function Sorts() {
 function Settings() {
   const store = useAppStore()
   return (
-    <div>
+    <div className="lg:m-10">
+      <h4>Settings</h4>
       <div>
         <input
           id="nogifs"
@@ -322,6 +428,24 @@ function Settings() {
         <label htmlFor="nogifs">
           No gifs? The actual, slow bloated filetype
         </label>
+      </div>
+      <div>
+        <input
+          id="infiniteScroll"
+          type="checkbox"
+          checked={store.infiniteScroll}
+          onChange={event => store.setInfiniteScroll(event.target.checked)}
+        />
+        <label htmlFor="infiniteScroll">Infinite scroll</label>
+      </div>
+      <div>
+        <input
+          id="skipPinned"
+          type="checkbox"
+          checked={store.skipPinned}
+          onChange={event => store.setSkipPinned(event.target.checked)}
+        />
+        <label htmlFor="skipPinned">Skip pinned posts</label>
       </div>
       <div>
         <input
@@ -394,7 +518,7 @@ function FormBox() {
             store.addFavorite(text)
           }}
         >
-          Add to favorites
+          Add to favs
         </button>
       </form>
     </div>
@@ -418,7 +542,6 @@ function ErrorMessage({ error }: { error: unknown }) {
 function Header() {
   const [showSettings, setShowSettings] = useState(false)
   const [showFavorites, setShowFavorites] = useState(false)
-  const [showSorts, setShowSorts] = useState(false)
 
   return (
     <div className="mb-10">
@@ -432,15 +555,12 @@ function Header() {
           {showSettings ? 'Hide settings' : 'Show settings'}
         </button>
         <button onClick={() => setShowFavorites(!showFavorites)}>
-          {showFavorites ? 'Hide favorites' : 'Show favorites'}
-        </button>
-        <button onClick={() => setShowSorts(!showSorts)}>
-          {showSorts ? 'Hide sorts' : 'Show sorts'}
+          {showFavorites ? 'Hide favs' : 'Show favs'}
         </button>
       </div>
       {showSettings ? <Settings /> : null}
       {showFavorites ? <Favorites /> : null}
-      {showSorts ? <Sorts /> : null}
+      <Sorts />
     </div>
   )
 }
@@ -452,6 +572,7 @@ function PrevNextButtons({ data }: { data: Data }) {
     <div className="flex justify-center m-10">
       <button
         className="text-4xl m-2"
+        disabled={!prev}
         onClick={() => {
           store.setPage(prev ?? '')
           window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -474,7 +595,19 @@ function PrevNextButtons({ data }: { data: Data }) {
 }
 export default function App() {
   const store = useAppStore()
-  const { page, mode, confirmed, favorites, noGifs, redGifsOnly, val } = store
+  const {
+    page,
+    mode,
+    infiniteScroll,
+    confirmed,
+    favs,
+    noGifs,
+    redGifsOnly,
+    val,
+  } = store
+  const { isIntersecting, ref } = useIntersectionObserver({
+    threshold: 1,
+  })
 
   const modeString = {
     topall: '/top.json?t=all',
@@ -484,6 +617,7 @@ export default function App() {
     hot: '.json',
     new: '/new.json',
   } as Record<string, string>
+  const [recharge, setRecharge] = useState(false)
 
   const url =
     `https://www.reddit.com/${val}${modeString[mode] || ''}` +
@@ -505,29 +639,47 @@ export default function App() {
     setBool('noGifs', noGifs)
     setBool('redGifsOnly', redGifsOnly)
     setBool('confirmed', confirmed)
-    setStringArray('favorites', favorites)
-  }, [noGifs, favorites, confirmed, redGifsOnly])
+    setStringArray('favorites', favs)
+  }, [noGifs, favs, confirmed, redGifsOnly])
 
   useEffect(() => {
     window.history.pushState(null, '', `?${queryString.stringify({ val })}`)
   }, [val])
 
+  useEffect(() => {
+    if (isIntersecting && data?.after && !recharge && !isLoading) {
+      store.setPage(data?.after)
+      setRecharge(true)
+      setTimeout(() => {
+        setRecharge(false)
+      })
+    }
+  }, [recharge, isIntersecting, data?.after, store, isLoading])
+
   return (
     <div className="lg:m-5">
       <Header />
       <div>
-        <div>
-          {isLoading ? (
+        {isLoading ? (
+          <div className="flex justify-center">
             <LoadingSpinner />
-          ) : error ? (
-            <ErrorMessage error={error as unknown} />
-          ) : data ? (
-            <>
-              <Posts data={data} />
+          </div>
+        ) : error ? (
+          <ErrorMessage error={error as unknown} />
+        ) : data ? (
+          <>
+            <Posts data={data} />
+            {infiniteScroll ? (
+              <div ref={ref} style={{ height: 400 }}>
+                {data?.after
+                  ? 'Scroll all the way down to load more...'
+                  : 'No more posts'}
+              </div>
+            ) : (
               <PrevNextButtons data={data} />
-            </>
-          ) : null}
-        </div>
+            )}
+          </>
+        ) : null}
       </div>
       <footer>
         <a

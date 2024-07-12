@@ -25,19 +25,19 @@ export function useDialogShown(open: boolean) {
 
 export function redGifUrlToId(url: string) {
   // watch to ifr
-  const matches = url.match(/redgifs.com\/watch\/([\w-]+)\/?/i)
+  const matches = /redgifs.com\/watch\/([\w-]+)\/?/i.exec(url)
   if (matches?.length) {
     return matches[1]
   }
 
   // already iframe
-  const matches2 = url.match(/redgifs.com\/ifr\/([\w-]+)\/?/i)
+  const matches2 = /redgifs.com\/ifr\/([\w-]+)\/?/i.exec(url)
   if (matches2?.length) {
     return matches2[1]
   }
 
   // image
-  const matches3 = url.match(/redgifs.com\/i\/([\w-]+)\/?/i)
+  const matches3 = /redgifs.com\/i\/([\w-]+)\/?/i.exec(url)
   if (matches3?.length) {
     return matches3[1]
   }
@@ -54,7 +54,7 @@ export function decode(html: string) {
 type Hasher<T> = (input: T) => string
 
 // from https://github.com/seriousManual/dedupe/blob/master/LICENSE
-export function de<T>(list: T[], hasher: Hasher<T> = JSON.stringify) {
+export function deduplicate<T>(list: T[], hasher: Hasher<T> = JSON.stringify) {
   const clone: T[] = []
   const lookup = new Set<string>()
 
@@ -71,14 +71,23 @@ export function de<T>(list: T[], hasher: Hasher<T> = JSON.stringify) {
 }
 
 export interface Post {
+  score: number
+  created: number
   id: string
   subreddit_name_prefixed: string
   title: string
+  pinned: boolean
   url: string
   permalink: string
   author: string
   media_metadata: Record<string, { s: { u: string } }>
-  gallery_data: { items: { media_id: string; caption: string }[] }
+  gallery_data: {
+    items: {
+      media_id: string
+      caption: string
+    }[]
+  }
+  crosspost_parent_list: Post[]
 }
 
 export interface Data {

@@ -5,18 +5,22 @@ interface AppState {
   noGifs: boolean
   redGifsOnly: boolean
   fullscreen: boolean
+  infiniteScroll: boolean
   page?: string
   prev?: string
   mode: string
-  favorites: string[]
+  favs: string[]
   val: string
+  skipPinned: boolean
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  setInfiniteScroll: (arg: boolean) => void
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
   setDedupe: (arg: boolean) => void
   setNoGifs: (arg: boolean) => void
+  setSkipPinned: (arg: boolean) => void
   setFullscreen: (arg: boolean) => void
   setRedGifsOnly: (arg: boolean) => void
   setPage: (arg?: string) => void
@@ -61,25 +65,29 @@ export function setStringArray(key: string, val: string[]) {
 }
 
 export const useAppStore = create<AppState>()(set => ({
+  infiniteScroll: getBool('infiniteScroll'),
   noGifs: getBool('noGifs'),
   fullscreen: getBool('fullscreen'),
   redGifsOnly: getBool('redGifsOnly'),
   hideButtons: getBool('hideButtons'),
+  skipPinned: getBool('skipPinned'),
   dedupe: getBool('dedupe'),
   confirmed: getBool('confirmed'),
   mode: `${mode as string}`,
   page: undefined as string | undefined,
   prev: undefined as string | undefined,
   val: val as string,
-  favorites: getStringArray('favorites', [
+  favs: getStringArray('favorites', [
     'r/funny',
     'r/midriff+gonemild',
     'r/gonewild',
   ]),
+  setInfiniteScroll: flag => set(() => ({ infiniteScroll: flag })),
   setConfirmed: flag => set(() => ({ confirmed: flag })),
   setNoGifs: flag => set(() => ({ noGifs: flag })),
   setDedupe: flag => set(() => ({ dedupe: flag })),
   setFullscreen: flag => set(() => ({ fullscreen: flag })),
+  setSkipPinned: flag => set(() => ({ skipPinned: flag })),
   setHideButtons: flag => set(() => ({ hideButtons: flag })),
   setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
   setPage: page => set(store => ({ page, prev: store.page })),
@@ -91,11 +99,9 @@ export const useAppStore = create<AppState>()(set => ({
   addFavorite: val => {
     const s = val.replace('u/', 'user/')
     return set(state => ({
-      favorites: state.favorites.includes(s)
-        ? state.favorites
-        : [...state.favorites, s],
+      favs: state.favs.includes(s) ? state.favs : [...state.favs, s],
     }))
   },
   removeFavorite: val =>
-    set(state => ({ favorites: state.favorites.filter(f => f !== val) })),
+    set(state => ({ favs: state.favs.filter(f => f !== val) })),
 }))
