@@ -515,7 +515,7 @@ export default function App() {
   return (
     <div className="lg:m-5">
       <Header />
-      <div className="flex justify-center">
+      <div>
         <div>
           {isLoading ? (
             <LoadingSpinner />
