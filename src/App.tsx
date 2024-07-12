@@ -87,15 +87,27 @@ function Post({ post }: { post: Post }) {
   return (
     <div>
       <h4 className="inline">{decode(title)}</h4> (
-      <a href={`https://reddit.com/u/${author}`} target="_blank">
+      <a
+        href={`https://reddit.com/u/${author}`}
+        target="_blank"
+        rel="noreferrer"
+      >
         user
       </a>
       ) (
-      <a href={`https://reddit.com/${subreddit}`} target="_blank">
+      <a
+        href={`https://reddit.com/${subreddit}`}
+        target="_blank"
+        rel="noreferrer"
+      >
         subreddit
       </a>
       ) (
-      <a href={`https://reddit.com${permalink}`} target="_blank">
+      <a
+        href={`https://reddit.com${permalink}`}
+        target="_blank"
+        rel="noreferrer"
+      >
         comments
       </a>
       ){hideButtons ? null : <Buttons post={post} />}
@@ -147,8 +159,8 @@ function Posts({ data }: { data: Data }) {
     result = de(result, r => r.data.url)
   }
   return (
-    <div className={!fullscreen ? 'flex justify-center' : undefined}>
-      <div className={!fullscreen ? 'lg:w-1/2' : undefined}>
+    <div className={fullscreen ? undefined : 'flex justify-center'}>
+      <div className={fullscreen ? undefined : 'lg:w-1/2'}>
         <div className="flex flex-col space-y-20">
           {result.length > 0 ? (
             result.map(({ data }) => <Post key={data.id} post={data} />)
@@ -168,28 +180,60 @@ function Posts({ data }: { data: Data }) {
 function Favorites() {
   const store = useAppStore()
   const { favorites } = store
-
+  const [multi, setMulti] = useState<string[]>([])
+  const [makeMultiReddit, setMakeMultiReddit] = useState(false)
+  const multiVal = '/r/' + multi.join('+')
   return (
-    <div>
-      <table>
-        <tbody>
-          {favorites
-            .map(f => f.replace(/^\//, ''))
-            .sort()
-            .map(f => (
-              <tr key={f}>
-                <td>
-                  <button onClick={() => store.setVal(f)}>{f}</button>
-                </td>
-                <td>
-                  <button onClick={() => store.removeFavorite(f)}>
-                    Remove
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+    <div className="m-10">
+      <h4>Favorites</h4>
+      <div className="flex space-x-20">
+        <table>
+          <tbody>
+            {favorites
+              .map(f => f.replace(/^\//, ''))
+              .sort()
+              .map(f => (
+                <tr key={f}>
+                  <td>
+                    <button onClick={() => store.setVal(f)}>{f}</button>
+                  </td>
+                  <td>
+                    <button onClick={() => store.removeFavorite(f)}>
+                      Remove
+                    </button>
+                  </td>
+                  {makeMultiReddit ? (
+                    <td>
+                      <button
+                        onClick={() =>
+                          setMulti([
+                            ...multi,
+                            f.replace('user/', 'u_').replace('r/', ''),
+                          ])
+                        }
+                      >
+                        Add to multi
+                      </button>
+                    </td>
+                  ) : null}
+                </tr>
+              ))}
+          </tbody>
+        </table>
+        <div>
+          <button onClick={() => setMakeMultiReddit(!makeMultiReddit)}>
+            {makeMultiReddit ? 'Hide multi-reddit maker' : 'Make multi-reddit?'}
+          </button>
+          {makeMultiReddit ? (
+            <div>
+              <label htmlFor="multireddit">Multi-reddit</label>
+              <input id="multireddit" readOnly type="text" value={multiVal} />
+              <button onClick={() => store.setVal(multiVal)}>Submit</button>
+              <button onClick={() => setMulti([])}>Clear</button>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </div>
   )
 }
@@ -486,7 +530,11 @@ export default function App() {
         </div>
       </div>
       <footer>
-        <a href="https://github.com/codefeels/rpscroller/" target="_blank">
+        <a
+          href="https://github.com/codefeels/rpscroller/"
+          target="_blank"
+          rel="noreferrer"
+        >
           Source code/report issues
         </a>
       </footer>

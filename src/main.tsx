@@ -3,6 +3,6 @@ import AppPreConfirmation from './AppPreConfirmation'
 
 import './index.css'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.querySelector('#root')!).render(
   <AppPreConfirmation />,
 )

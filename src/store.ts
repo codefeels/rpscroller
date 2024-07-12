@@ -35,8 +35,8 @@ export function getBool(key: string, def = false): boolean {
     return JSON.parse(
       localStorage.getItem(key) ?? JSON.stringify(def),
     ) as boolean
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    console.error(error)
     return def
   }
 }
@@ -50,8 +50,8 @@ export function getStringArray(key: string, def = [] as string[]): string[] {
     return JSON.parse(
       localStorage.getItem(key) ?? JSON.stringify(def),
     ) as string[]
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    console.error(error)
     return def
   }
 }
