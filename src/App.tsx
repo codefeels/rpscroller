@@ -62,6 +62,7 @@ function Gallery({ post }: { post: Post }) {
         {caption} {frame + 1}/{items.length}
       </div>
       <img
+        alt={caption}
         loading="lazy"
         className="w-full max-h-screen object-contain"
         src={decode(media_metadata[media_id].s.u)}
@@ -87,7 +88,7 @@ function Gallery({ post }: { post: Post }) {
   )
 }
 
-function Post({ post }: { post: Post }) {
+function Card({ post }: { post: Post }) {
   const { hideButtons } = useAppStore()
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.4,
@@ -148,6 +149,7 @@ function Post({ post }: { post: Post }) {
           url.endsWith('.gif') ||
           url.endsWith('.webp')) ? (
         <img
+          alt={title}
           loading="lazy"
           className="w-full max-h-screen object-contain"
           src={url}
@@ -155,6 +157,7 @@ function Post({ post }: { post: Post }) {
       ) : url.includes('redgifs') ? (
         debouncedIsIntersecting ? (
           <iframe
+            title={title}
             src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
             className="h-screen w-full"
             loading="lazy"
@@ -167,10 +170,10 @@ function Post({ post }: { post: Post }) {
             style={{ width: '100%', height: '100vh' }}
             className="flex flex-col animate-pulse space-y-4 m-20"
           >
-            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
-            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
-            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
-            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
+            <div className="rounded-full bg-slate-700 h-10 w-10" />
+            <div className="rounded-full bg-slate-700 h-10 w-10" />
+            <div className="rounded-full bg-slate-700 h-10 w-10" />
+            <div className="rounded-full bg-slate-700 h-10 w-10" />
           </div>
         )
       ) : null}
@@ -178,7 +181,7 @@ function Post({ post }: { post: Post }) {
   )
 }
 
-function Posts({ data }: { data: Data }) {
+function Cards({ data }: { data: Data }) {
   const { noGifs, skipPinned, dedupe, fullscreen, redGifsOnly } = useAppStore()
   let result = data.children
     .filter(({ data }) => !('comment_type' in data))
@@ -205,7 +208,7 @@ function Posts({ data }: { data: Data }) {
       <div className={fullscreen ? 'lg:w-11/12' : 'lg:w-1/2'}>
         <div className="flex flex-col space-y-20">
           {result.length > 0 ? (
-            result.map(({ data }) => <Post key={data.id} post={data} />)
+            result.map(({ data }) => <Card key={data.id} post={data} />)
           ) : (
             <h1>
               No results on this page, check your filters in the settings or
@@ -226,7 +229,7 @@ function Favorites() {
   const [makeMultiReddit, setMakeMultiReddit] = useState(false)
   const [showUsers, setShowUsers] = useState(true)
   const [showSubreddits, setShowSubreddits] = useState(true)
-  const multiVal = '/r/' + multi.join('+')
+  const multiVal = `/r/${multi.join('+')}`
   return (
     <div className="lg:m-10">
       <h4>
@@ -546,7 +549,7 @@ function Header() {
   return (
     <div className="mb-10">
       <h1>
-        rpscroller <img className="h-8" src={flame} />
+        rpscroller <img className="h-8" src={flame} alt="app icon of flames" />
       </h1>
       <FormBox />
 
@@ -619,9 +622,7 @@ export default function App() {
   } as Record<string, string>
   const [recharge, setRecharge] = useState(false)
 
-  const url =
-    `https://www.reddit.com/${val}${modeString[mode] || ''}` +
-    (page ? `?after=${page}` : '')
+  const url = `https://www.reddit.com/${val}${modeString[mode] || ''}${page ? `?after=${page}` : ''}`
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, error, isLoading } = useSWR(url, async (url: string) => {
@@ -668,7 +669,7 @@ export default function App() {
           <ErrorMessage error={error as unknown} />
         ) : data ? (
           <>
-            <Posts data={data} />
+            <Cards data={data} />
             {infiniteScroll ? (
               <div ref={ref} style={{ height: 400 }}>
                 {data?.after
