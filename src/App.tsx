@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react'
 import queryString from 'query-string'
 import useSWR from 'swr'
+import { useIntersectionObserver } from 'usehooks-ts'
 
 // components
 import LoadingSpinner from './LoadingSpinner'
-
-// data
-import type { Data } from './util'
-import { setBool, setStringArray, useAppStore } from './store'
-
-import { useIntersectionObserver } from 'usehooks-ts'
 import Header from './Header'
 import ErrorMessage from './ErrorMessage'
 import PrevNextButtons from './PrevNextButtons'
 import CardList from './CardList'
+
+// data
+import type { Data } from './util'
+import { setBool, setString, setStringArray, useAppStore } from './store'
 
 // refresh page after back button
 window.addEventListener('popstate', () => window.location.reload())
@@ -23,10 +22,12 @@ export default function App() {
   const {
     page,
     mode,
+    fullscreen,
     infiniteScroll,
     confirmed,
     favs,
     noGifs,
+    defaultPage,
     redGifsOnly,
     val,
   } = store
@@ -60,10 +61,12 @@ export default function App() {
 
   useEffect(() => {
     setBool('noGifs', noGifs)
+    setString('defaultPage', defaultPage)
+    setBool('fullscreen', fullscreen)
     setBool('redGifsOnly', redGifsOnly)
     setBool('confirmed', confirmed)
     setStringArray('favorites', favs)
-  }, [noGifs, favs, confirmed, redGifsOnly])
+  }, [noGifs, favs, fullscreen, confirmed, defaultPage, redGifsOnly])
 
   useEffect(() => {
     window.history.pushState(null, '', `?${queryString.stringify({ val })}`)

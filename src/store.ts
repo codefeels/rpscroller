@@ -6,6 +6,7 @@ interface AppState {
   redGifsOnly: boolean
   fullscreen: boolean
   infiniteScroll: boolean
+  defaultPage: string
   page?: string
   prev?: string
   mode: string
@@ -15,6 +16,7 @@ interface AppState {
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  setDefaultPage: (arg: string) => void
   setInfiniteScroll: (arg: boolean) => void
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
@@ -30,7 +32,8 @@ interface AppState {
   removeFavorite: (arg: string) => void
 }
 
-const { mode = 'hot', val = '/r/gonemild' } = queryString.parse(
+const defaultPage = getString('defaultPage', '/r/funny')
+const { mode = 'hot', val = defaultPage } = queryString.parse(
   window.location.search,
 )
 
@@ -40,13 +43,26 @@ export function getBool(key: string, def = false): boolean {
       localStorage.getItem(key) ?? JSON.stringify(def),
     ) as boolean
   } catch (error) {
-    console.error(error)
+    console.error('key:', key, error)
     return def
   }
 }
 
 export function setBool(key: string, val: boolean) {
   localStorage.setItem(key, JSON.stringify(val))
+}
+
+export function setString(key: string, val: string) {
+  localStorage.setItem(key, val)
+}
+
+export function getString(key: string, def = ''): string {
+  try {
+    return localStorage.getItem(key) ?? def
+  } catch (error) {
+    console.error(error)
+    return def
+  }
 }
 
 export function getStringArray(key: string, def = [] as string[]): string[] {
@@ -65,6 +81,7 @@ export function setStringArray(key: string, val: string[]) {
 }
 
 export const useAppStore = create<AppState>()(set => ({
+  defaultPage,
   infiniteScroll: getBool('infiniteScroll'),
   noGifs: getBool('noGifs'),
   fullscreen: getBool('fullscreen'),
@@ -92,6 +109,7 @@ export const useAppStore = create<AppState>()(set => ({
   setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
   setPage: page => set(store => ({ page, prev: store.page })),
   setMode: mode => set(() => ({ mode, page: undefined, prev: undefined })),
+  setDefaultPage: defaultPage => set(() => ({ defaultPage })),
   setVal: val => {
     const s = val?.replace('u/', 'user/')
     return set(() => ({ val: s, page: undefined, prev: undefined }))

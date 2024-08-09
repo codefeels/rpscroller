@@ -65,6 +65,11 @@ export default function Favorites() {
                         Remove
                       </button>
                     </td>
+                    <td>
+                      <button onClick={() => store.setDefaultPage(f)}>
+                        Make default
+                      </button>
+                    </td>
                     {makeMultiReddit ? (
                       <td>
                         <button
@@ -100,6 +105,11 @@ export default function Favorites() {
                     <td>
                       <button onClick={() => store.removeFavorite(f)}>
                         Remove
+                      </button>
+                    </td>
+                    <td>
+                      <button onClick={() => store.setDefaultPage(f)}>
+                        Make default
                       </button>
                     </td>
                     {makeMultiReddit ? (
