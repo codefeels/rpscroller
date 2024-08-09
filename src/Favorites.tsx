@@ -25,26 +25,32 @@ export default function Favorites() {
               <button onClick={() => setMulti([])}>Clear</button>
             </div>
           ) : null}
-          <label htmlFor="reddits">Show subreddits</label>
-          <input
-            id="reddits"
-            type="checkbox"
-            checked={showSubreddits}
-            onChange={event => setShowSubreddits(event.target.checked)}
-          />
-          <label htmlFor="users">Show users</label>
-          <input
-            id="users"
-            type="checkbox"
-            checked={showUsers}
-            onChange={event => setShowUsers(event.target.checked)}
-          />
+          <div>
+            <label htmlFor="reddits">Show subreddits</label>
+            <input
+              id="reddits"
+              type="checkbox"
+              checked={showSubreddits}
+              onChange={event => setShowSubreddits(event.target.checked)}
+            />
+          </div>
+          <div>
+            <label htmlFor="users">Show users</label>
+            <input
+              id="users"
+              type="checkbox"
+              checked={showUsers}
+              onChange={event => setShowUsers(event.target.checked)}
+            />
+          </div>
         </span>
       </h4>
-      <table>
-        <tbody>
-          {showSubreddits
-            ? favs
+      {showSubreddits ? (
+        <>
+          <h6>Subreddits</h6>
+          <table>
+            <tbody>
+              {favs
                 .filter(
                   f =>
                     !(
@@ -89,10 +95,18 @@ export default function Favorites() {
                       </td>
                     ) : null}
                   </tr>
-                ))
-            : null}
-          {showUsers
-            ? favs
+                ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
+
+      {showUsers ? (
+        <>
+          <h6>Users</h6>
+          <table>
+            <tbody>
+              {favs
                 .filter(
                   f =>
                     f.startsWith('/u/') ||
@@ -135,10 +149,11 @@ export default function Favorites() {
                       </td>
                     ) : null}
                   </tr>
-                ))
-            : null}
-        </tbody>
-      </table>
+                ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
     </div>
   )
 }
