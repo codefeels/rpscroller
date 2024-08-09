@@ -58,7 +58,8 @@ export function setString(key: string, val: string) {
 
 export function getString(key: string, def = ''): string {
   try {
-    return localStorage.getItem(key) ?? def
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    return localStorage.getItem(key) || def
   } catch (error) {
     console.error(error)
     return def
