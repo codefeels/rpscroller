@@ -45,12 +45,13 @@ export default function Favorites() {
         <tbody>
           {showSubreddits
             ? favs
-                .map(f => f.replace(/^\//, ''))
                 .filter(
                   f =>
                     !(
+                      f.startsWith('/u/') ||
                       f.startsWith('u/') ||
                       f.startsWith('user/') ||
+                      f.startsWith('/user/') ||
                       f.startsWith('u_')
                     ),
                 )
@@ -76,7 +77,10 @@ export default function Favorites() {
                           onClick={() =>
                             setMulti([
                               ...multi,
-                              f.replace('user/', 'u_').replace('r/', ''),
+                              f
+                                .replace(/^\//, '')
+                                .replace('user/', 'u_')
+                                .replace('r/', ''),
                             ])
                           }
                         >
@@ -89,10 +93,11 @@ export default function Favorites() {
             : null}
           {showUsers
             ? favs
-                .map(f => f.replace(/^\//, ''))
                 .filter(
                   f =>
+                    f.startsWith('/u/') ||
                     f.startsWith('u/') ||
+                    f.startsWith('/user/') ||
                     f.startsWith('user/') ||
                     f.startsWith('u_'),
                 )
@@ -118,7 +123,10 @@ export default function Favorites() {
                           onClick={() =>
                             setMulti([
                               ...multi,
-                              f.replace('user/', 'u_').replace('r/', ''),
+                              f
+                                .replace(/^\//, '')
+                                .replace('user/', 'u_')
+                                .replace('r/', ''),
                             ])
                           }
                         >
