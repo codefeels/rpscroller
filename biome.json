@@ -9,6 +9,9 @@
       },
       "a11y": {
         "useButtonType": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
       }
     }
   }
