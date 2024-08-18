@@ -60,15 +60,6 @@ export default function App() {
   })
 
   useEffect(() => {
-    setBool('noGifs', noGifs)
-    setString('defaultPage', defaultPage)
-    setBool('fullscreen', fullscreen)
-    setBool('redGifsOnly', redGifsOnly)
-    setBool('confirmed', confirmed)
-    setStringArray('favorites', favs)
-  }, [noGifs, favs, fullscreen, confirmed, defaultPage, redGifsOnly])
-
-  useEffect(() => {
     window.history.pushState(null, '', `?${queryString.stringify({ val })}`)
   }, [val])
 

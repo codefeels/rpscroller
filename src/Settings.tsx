@@ -41,7 +41,7 @@ export default function Settings() {
           checked={store.dedupe}
           onChange={event => store.setDedupe(event.target.checked)}
         />
-        <label htmlFor="nogifs">De-duplicate repeat URLs on each page</label>
+        <label htmlFor="dedupe">De-duplicate repeat URLs on each page</label>
       </div>
 
       <div>

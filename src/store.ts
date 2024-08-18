@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import queryString from 'query-string'
 
 interface AppState {
@@ -81,46 +82,55 @@ export function setStringArray(key: string, val: string[]) {
   return localStorage.setItem(key, JSON.stringify(val))
 }
 
-export const useAppStore = create<AppState>()(set => ({
-  defaultPage,
-  infiniteScroll: getBool('infiniteScroll'),
-  noGifs: getBool('noGifs'),
-  fullscreen: getBool('fullscreen'),
-  redGifsOnly: getBool('redGifsOnly'),
-  hideButtons: getBool('hideButtons'),
-  skipPinned: getBool('skipPinned'),
-  dedupe: getBool('dedupe'),
-  confirmed: getBool('confirmed'),
-  mode: `${mode as string}`,
-  page: undefined as string | undefined,
-  prev: undefined as string | undefined,
-  val: val as string,
-  favs: getStringArray('favorites', [
-    'r/funny',
-    'r/midriff+gonemild',
-    'r/gonewild',
-  ]),
-  setInfiniteScroll: flag => set(() => ({ infiniteScroll: flag })),
-  setConfirmed: flag => set(() => ({ confirmed: flag })),
-  setNoGifs: flag => set(() => ({ noGifs: flag })),
-  setDedupe: flag => set(() => ({ dedupe: flag })),
-  setFullscreen: flag => set(() => ({ fullscreen: flag })),
-  setSkipPinned: flag => set(() => ({ skipPinned: flag })),
-  setHideButtons: flag => set(() => ({ hideButtons: flag })),
-  setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
-  setPage: page => set(store => ({ page, prev: store.page })),
-  setMode: mode => set(() => ({ mode, page: undefined, prev: undefined })),
-  setDefaultPage: defaultPage => set(() => ({ defaultPage })),
-  setVal: val => {
-    const s = val?.replace('u/', 'user/')
-    return set(() => ({ val: s, page: undefined, prev: undefined }))
-  },
-  addFavorite: val => {
-    const s = val.replace('u/', 'user/')
-    return set(state => ({
-      favs: state.favs.includes(s) ? state.favs : [...state.favs, s],
-    }))
-  },
-  removeFavorite: val =>
-    set(state => ({ favs: state.favs.filter(f => f !== val) })),
-}))
+const filterSet = new Set(['page', 'prev'])
+
+export const useAppStore = create<AppState>()(
+  persist(
+    set => ({
+      defaultPage,
+      infiniteScroll: false,
+      noGifs: true,
+      fullscreen: false,
+      redGifsOnly: false,
+      hideButtons: false,
+      skipPinned: false,
+      dedupe: false,
+      confirmed: false,
+      mode: `${mode as string}`,
+      page: undefined as string | undefined,
+      prev: undefined as string | undefined,
+      val: val as string,
+      favs: ['r/funny', 'r/midriff+gonemild', 'r/gonewild'],
+      setInfiniteScroll: flag => set(() => ({ infiniteScroll: flag })),
+      setConfirmed: flag => set(() => ({ confirmed: flag })),
+      setNoGifs: flag => set(() => ({ noGifs: flag })),
+      setDedupe: flag => set(() => ({ dedupe: flag })),
+      setFullscreen: flag => set(() => ({ fullscreen: flag })),
+      setSkipPinned: flag => set(() => ({ skipPinned: flag })),
+      setHideButtons: flag => set(() => ({ hideButtons: flag })),
+      setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
+      setPage: page => set(store => ({ page, prev: store.page })),
+      setMode: mode => set(() => ({ mode, page: undefined, prev: undefined })),
+      setDefaultPage: defaultPage => set(() => ({ defaultPage })),
+      setVal: val => {
+        const s = val?.replace('u/', 'user/')
+        return set(() => ({ val: s, page: undefined, prev: undefined }))
+      },
+      addFavorite: val => {
+        const s = val.replace('u/', 'user/')
+        return set(state => ({
+          favs: state.favs.includes(s) ? state.favs : [...state.favs, s],
+        }))
+      },
+      removeFavorite: val =>
+        set(s => ({ favs: s.favs.filter(f => f !== val) })),
+    }),
+    {
+      name: 'settings',
+      partialize: state =>
+        Object.fromEntries(
+          Object.entries(state).filter(([key]) => filterSet.has(key)),
+        ),
+    },
+  ),
+)
