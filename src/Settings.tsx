@@ -10,7 +10,9 @@ export default function Settings() {
           id="nogifs"
           type="checkbox"
           checked={store.noGifs}
-          onChange={event => store.setNoGifs(event.target.checked)}
+          onChange={event => {
+            store.setNoGifs(event.target.checked)
+          }}
         />
         <label htmlFor="nogifs">
           No gifs? The actual, slow bloated filetype
@@ -21,7 +23,9 @@ export default function Settings() {
           id="infiniteScroll"
           type="checkbox"
           checked={store.infiniteScroll}
-          onChange={event => store.setInfiniteScroll(event.target.checked)}
+          onChange={event => {
+            store.setInfiniteScroll(event.target.checked)
+          }}
         />
         <label htmlFor="infiniteScroll">Infinite scroll</label>
       </div>
@@ -30,7 +34,9 @@ export default function Settings() {
           id="skipPinned"
           type="checkbox"
           checked={store.skipPinned}
-          onChange={event => store.setSkipPinned(event.target.checked)}
+          onChange={event => {
+            store.setSkipPinned(event.target.checked)
+          }}
         />
         <label htmlFor="skipPinned">Skip pinned posts</label>
       </div>
@@ -39,7 +45,9 @@ export default function Settings() {
           id="dedupe"
           type="checkbox"
           checked={store.dedupe}
-          onChange={event => store.setDedupe(event.target.checked)}
+          onChange={event => {
+            store.setDedupe(event.target.checked)
+          }}
         />
         <label htmlFor="dedupe">De-duplicate repeat URLs on each page</label>
       </div>
@@ -49,7 +57,9 @@ export default function Settings() {
           id="redgifs"
           type="checkbox"
           checked={store.redGifsOnly}
-          onChange={event => store.setRedGifsOnly(event.target.checked)}
+          onChange={event => {
+            store.setRedGifsOnly(event.target.checked)
+          }}
         />
         <label htmlFor="redgifs">RedGifs only (the image host)</label>
       </div>
@@ -59,7 +69,9 @@ export default function Settings() {
           id="fullscreen"
           type="checkbox"
           checked={store.fullscreen}
-          onChange={event => store.setFullscreen(event.target.checked)}
+          onChange={event => {
+            store.setFullscreen(event.target.checked)
+          }}
         />
         <label htmlFor="fullscreen">Fullscreen</label>
       </div>
@@ -68,7 +80,9 @@ export default function Settings() {
           id="hidebuttons"
           type="checkbox"
           checked={store.hideButtons}
-          onChange={event => store.setHideButtons(event.target.checked)}
+          onChange={event => {
+            store.setHideButtons(event.target.checked)
+          }}
         />
         <label htmlFor="hidebuttons">Hide buttons to add to favs/browse</label>
       </div>

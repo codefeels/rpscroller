@@ -21,7 +21,9 @@ export default function SearchBox() {
           id="box"
           type="text"
           value={text}
-          onChange={event => setText(event.target.value)}
+          onChange={event => {
+            setText(event.target.value)
+          }}
         />
         <button type="submit">Submit</button>
         <button

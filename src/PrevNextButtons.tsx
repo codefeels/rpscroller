@@ -18,9 +18,9 @@ export default function PrevNextButtons({ data }: { data: Data }) {
       </button>
       <button
         className="text-4xl m-2"
-        disabled={!data?.after}
+        disabled={!data.after}
         onClick={() => {
-          store.setPage(data?.after ?? '')
+          store.setPage(data.after ?? '')
           window.scrollTo({ top: 0, behavior: 'smooth' })
         }}
       >

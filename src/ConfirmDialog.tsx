@@ -14,7 +14,13 @@ export default function ConfirmDialog({
         This app displays adult content. Please confirm that you are over the
         age of 18+ to use this app.
       </h1>
-      <button onClick={() => onClose()}>confirm</button>
+      <button
+        onClick={() => {
+          onClose()
+        }}
+      >
+        confirm
+      </button>
       <button
         onClick={() => {
           window.location.href = 'https://google.com'

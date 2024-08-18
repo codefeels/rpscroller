@@ -9,6 +9,11 @@ export default function AppPreConfirmation() {
   return confirmed ? (
     <App />
   ) : (
-    <ConfirmDialog open onClose={() => store.setConfirmed(true)} />
+    <ConfirmDialog
+      open
+      onClose={() => {
+        store.setConfirmed(true)
+      }}
+    />
   )
 }

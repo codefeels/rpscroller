@@ -14,15 +14,31 @@ export default function Favorites() {
       <h4>
         Favorites{' '}
         <span>
-          <button onClick={() => setMakeMultiReddit(!makeMultiReddit)}>
+          <button
+            onClick={() => {
+              setMakeMultiReddit(!makeMultiReddit)
+            }}
+          >
             {makeMultiReddit ? 'Hide multi-reddit maker' : 'Make multi-reddit?'}
           </button>
           {makeMultiReddit ? (
             <div>
               <label htmlFor="multireddit">Multi-reddit</label>
               <input id="multireddit" readOnly type="text" value={multiVal} />
-              <button onClick={() => store.setVal(multiVal)}>Submit</button>
-              <button onClick={() => setMulti([])}>Clear</button>
+              <button
+                onClick={() => {
+                  store.setVal(multiVal)
+                }}
+              >
+                Submit
+              </button>
+              <button
+                onClick={() => {
+                  setMulti([])
+                }}
+              >
+                Clear
+              </button>
             </div>
           ) : null}
           <div>
@@ -31,7 +47,9 @@ export default function Favorites() {
               id="reddits"
               type="checkbox"
               checked={showSubreddits}
-              onChange={event => setShowSubreddits(event.target.checked)}
+              onChange={event => {
+                setShowSubreddits(event.target.checked)
+              }}
             />
           </div>
           <div>
@@ -40,7 +58,9 @@ export default function Favorites() {
               id="users"
               type="checkbox"
               checked={showUsers}
-              onChange={event => setShowUsers(event.target.checked)}
+              onChange={event => {
+                setShowUsers(event.target.checked)
+              }}
             />
           </div>
         </span>
@@ -65,22 +85,36 @@ export default function Favorites() {
                 .map(f => (
                   <tr key={f}>
                     <td>
-                      <button onClick={() => store.setVal(f)}>{f}</button>
+                      <button
+                        onClick={() => {
+                          store.setVal(f)
+                        }}
+                      >
+                        {f}
+                      </button>
                     </td>
                     <td>
-                      <button onClick={() => store.removeFavorite(f)}>
+                      <button
+                        onClick={() => {
+                          store.removeFavorite(f)
+                        }}
+                      >
                         Remove
                       </button>
                     </td>
                     <td>
-                      <button onClick={() => store.setDefaultPage(f)}>
+                      <button
+                        onClick={() => {
+                          store.setDefaultPage(f)
+                        }}
+                      >
                         Make default
                       </button>
                     </td>
                     {makeMultiReddit ? (
                       <td>
                         <button
-                          onClick={() =>
+                          onClick={() => {
                             setMulti([
                               ...multi,
                               f
@@ -88,7 +122,7 @@ export default function Favorites() {
                                 .replace('user/', 'u_')
                                 .replace('r/', ''),
                             ])
-                          }
+                          }}
                         >
                           Add to multi
                         </button>
@@ -119,22 +153,36 @@ export default function Favorites() {
                 .map(f => (
                   <tr key={f}>
                     <td>
-                      <button onClick={() => store.setVal(f)}>{f}</button>
+                      <button
+                        onClick={() => {
+                          store.setVal(f)
+                        }}
+                      >
+                        {f}
+                      </button>
                     </td>
                     <td>
-                      <button onClick={() => store.removeFavorite(f)}>
+                      <button
+                        onClick={() => {
+                          store.removeFavorite(f)
+                        }}
+                      >
                         Remove
                       </button>
                     </td>
                     <td>
-                      <button onClick={() => store.setDefaultPage(f)}>
+                      <button
+                        onClick={() => {
+                          store.setDefaultPage(f)
+                        }}
+                      >
                         Make default
                       </button>
                     </td>
                     {makeMultiReddit ? (
                       <td>
                         <button
-                          onClick={() =>
+                          onClick={() => {
                             setMulti([
                               ...multi,
                               f
@@ -142,7 +190,7 @@ export default function Favorites() {
                                 .replace('user/', 'u_')
                                 .replace('r/', ''),
                             ])
-                          }
+                          }}
                         >
                           Add to multi
                         </button>

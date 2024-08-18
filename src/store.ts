@@ -33,61 +33,14 @@ interface AppState {
   removeFavorite: (arg: string) => void
 }
 
-const defaultPage = getString('defaultPage', '/r/funny')
-const { mode = 'hot', val = defaultPage } = queryString.parse(
-  window.location.search,
-)
+const { mode, val } = queryString.parse(window.location.search)
 
-export function getBool(key: string, def = false): boolean {
-  try {
-    return JSON.parse(
-      localStorage.getItem(key) ?? JSON.stringify(def),
-    ) as boolean
-  } catch (error) {
-    console.error('key:', key, error)
-    return def
-  }
-}
-
-export function setBool(key: string, val: boolean) {
-  localStorage.setItem(key, JSON.stringify(val))
-}
-
-export function setString(key: string, val: string) {
-  localStorage.setItem(key, val)
-}
-
-export function getString(key: string, def = ''): string {
-  try {
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    return localStorage.getItem(key) || def
-  } catch (error) {
-    console.error(error)
-    return def
-  }
-}
-
-export function getStringArray(key: string, def = [] as string[]): string[] {
-  try {
-    return JSON.parse(
-      localStorage.getItem(key) ?? JSON.stringify(def),
-    ) as string[]
-  } catch (error) {
-    console.error(error)
-    return def
-  }
-}
-
-export function setStringArray(key: string, val: string[]) {
-  return localStorage.setItem(key, JSON.stringify(val))
-}
-
-const filterSet = new Set(['page', 'prev'])
+const filterSet = new Set(['page', 'prev', 'val'])
 
 export const useAppStore = create<AppState>()(
   persist(
     set => ({
-      defaultPage,
+      defaultPage: '/r/funny',
       infiniteScroll: false,
       noGifs: true,
       fullscreen: false,
@@ -96,41 +49,73 @@ export const useAppStore = create<AppState>()(
       skipPinned: false,
       dedupe: false,
       confirmed: false,
-      mode: `${mode as string}`,
+      mode: `${mode ?? ''}` || 'hot',
       page: undefined as string | undefined,
       prev: undefined as string | undefined,
-      val: val as string,
+      val: `${val}`,
       favs: ['r/funny', 'r/midriff+gonemild', 'r/gonewild'],
-      setInfiniteScroll: flag => set(() => ({ infiniteScroll: flag })),
-      setConfirmed: flag => set(() => ({ confirmed: flag })),
-      setNoGifs: flag => set(() => ({ noGifs: flag })),
-      setDedupe: flag => set(() => ({ dedupe: flag })),
-      setFullscreen: flag => set(() => ({ fullscreen: flag })),
-      setSkipPinned: flag => set(() => ({ skipPinned: flag })),
-      setHideButtons: flag => set(() => ({ hideButtons: flag })),
-      setRedGifsOnly: flag => set(() => ({ redGifsOnly: flag })),
-      setPage: page => set(store => ({ page, prev: store.page })),
-      setMode: mode => set(() => ({ mode, page: undefined, prev: undefined })),
-      setDefaultPage: defaultPage => set(() => ({ defaultPage })),
+      setInfiniteScroll: flag => {
+        set(() => ({ infiniteScroll: flag }))
+      },
+      setConfirmed: flag => {
+        set(() => ({ confirmed: flag }))
+      },
+      setNoGifs: flag => {
+        set(() => ({ noGifs: flag }))
+      },
+      setDedupe: flag => {
+        set(() => ({ dedupe: flag }))
+      },
+      setFullscreen: flag => {
+        set(() => ({ fullscreen: flag }))
+      },
+      setSkipPinned: flag => {
+        set(() => ({ skipPinned: flag }))
+      },
+      setHideButtons: flag => {
+        set(() => ({ hideButtons: flag }))
+      },
+      setRedGifsOnly: flag => {
+        set(() => ({ redGifsOnly: flag }))
+      },
+      setPage: page => {
+        set(store => ({ page, prev: store.page }))
+      },
+      setMode: mode => {
+        set(() => ({ mode, page: undefined, prev: undefined }))
+      },
+      setDefaultPage: defaultPage => {
+        set(() => ({ defaultPage }))
+      },
       setVal: val => {
         const s = val?.replace('u/', 'user/')
-        return set(() => ({ val: s, page: undefined, prev: undefined }))
+        set(() => ({ val: s, page: undefined, prev: undefined }))
       },
       addFavorite: val => {
         const s = val.replace('u/', 'user/')
-        return set(state => ({
+        set(state => ({
           favs: state.favs.includes(s) ? state.favs : [...state.favs, s],
         }))
       },
-      removeFavorite: val =>
-        set(s => ({ favs: s.favs.filter(f => f !== val) })),
+      removeFavorite: val => {
+        set(s => ({ favs: s.favs.filter(f => f !== val) }))
+      },
     }),
     {
       name: 'settings',
-      partialize: state =>
-        Object.fromEntries(
-          Object.entries(state).filter(([key]) => filterSet.has(key)),
-        ),
+      partialize: state => {
+        return Object.fromEntries(
+          Object.entries(state).filter(([key]) => !filterSet.has(key)),
+        )
+      },
+      onRehydrateStorage: () => {
+        return state => {
+          if (state) {
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            state.val = `${val || ''}` || state.defaultPage
+          }
+        }
+      },
     },
   ),
 )

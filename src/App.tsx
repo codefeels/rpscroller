@@ -12,25 +12,16 @@ import CardList from './CardList'
 
 // data
 import type { Data } from './util'
-import { setBool, setString, setStringArray, useAppStore } from './store'
+import { useAppStore } from './store'
 
 // refresh page after back button
-window.addEventListener('popstate', () => window.location.reload())
+window.addEventListener('popstate', () => {
+  window.location.reload()
+})
 
 export default function App() {
   const store = useAppStore()
-  const {
-    page,
-    mode,
-    fullscreen,
-    infiniteScroll,
-    confirmed,
-    favs,
-    noGifs,
-    defaultPage,
-    redGifsOnly,
-    val,
-  } = store
+  const { page, mode, infiniteScroll, val } = store
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.9,
   })
@@ -65,7 +56,7 @@ export default function App() {
 
   useEffect(() => {
     if (isIntersecting && data?.after && !recharge && !isLoading) {
-      store.setPage(data?.after)
+      store.setPage(data.after)
       setRecharge(true)
       setTimeout(() => {
         setRecharge(false)
@@ -88,7 +79,7 @@ export default function App() {
             <CardList data={data} />
             {infiniteScroll ? (
               <div ref={ref} style={{ height: 400 }}>
-                {data?.after
+                {data.after
                   ? 'Scroll all the way down to load more...'
                   : 'No more posts'}
               </div>

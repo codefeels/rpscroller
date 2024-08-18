@@ -1,55 +1,25 @@
-import { fixupConfigRules } from '@eslint/compat'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import globals from 'globals'
-import tsParser from '@typescript-eslint/parser'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import js from '@eslint/js'
-import { FlatCompat } from '@eslint/eslintrc'
+import eslint from '@eslint/js'
+import eslintPluginReact from 'eslint-plugin-react'
+import eslintPluginReactHooks from 'eslint-plugin-react-hooks'
+import eslintPluginReactRefresh from 'eslint-plugin-react-refresh'
+import eslintPluginUnicorn from 'eslint-plugin-unicorn'
+import tseslint from 'typescript-eslint'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-})
-
-export default [
+export default tseslint.config(
   {
-    ignores: ['**/dist', '**/.eslintrc.cjs', '**/vite.config.ts'],
+    ignores: [
+      '**/dist',
+      '**/vite.config.ts',
+      'tailwind.config.js',
+      'postcss.config.js',
+      'eslint.config.mjs',
+    ],
   },
-  ...fixupConfigRules(
-    compat.extends(
-      'eslint:recommended',
-      'plugin:react/recommended',
-      'plugin:react-hooks/recommended',
-      'plugin:@typescript-eslint/recommended',
-      'plugin:@typescript-eslint/recommended-type-checked',
-      'plugin:@typescript-eslint/stylistic-type-checked',
-      'plugin:unicorn/recommended',
-    ),
-  ),
   {
-    plugins: {
-      'react-refresh': reactRefresh,
-    },
-
     languageOptions: {
-      globals: {
-        ...globals.browser,
-      },
-
-      parser: tsParser,
-      ecmaVersion: 5,
-      sourceType: 'script',
-
       parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-
-        project: './tsconfig.app.json',
+        project: ['./tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
       },
     },
 
@@ -58,7 +28,27 @@ export default [
         version: 'detect',
       },
     },
-
+  },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...tseslint.configs.stylisticTypeChecked,
+  ...tseslint.configs.strictTypeChecked,
+  eslintPluginReact.configs.flat.recommended,
+  {
+    plugins: {
+      'react-hooks': eslintPluginReactHooks,
+    },
+    rules: eslintPluginReactHooks.configs.recommended.rules,
+  },
+  eslintPluginUnicorn.configs['flat/recommended'],
+  {
+    // in main config for TSX/JSX source files
+    plugins: {
+      'react-refresh': eslintPluginReactRefresh,
+    },
+    rules: {},
+  },
+  {
     rules: {
       'no-console': [
         'warn',
@@ -68,6 +58,7 @@ export default [
       ],
 
       '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/no-null': 'off',
       'unicorn/no-nested-ternary': 'off',
@@ -82,4 +73,4 @@ export default [
       ],
     },
   },
-]
+)

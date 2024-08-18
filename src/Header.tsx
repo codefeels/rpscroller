@@ -19,10 +19,18 @@ export default function Header() {
       <SearchBox />
 
       <div>
-        <button onClick={() => setShowSettings(!showSettings)}>
+        <button
+          onClick={() => {
+            setShowSettings(!showSettings)
+          }}
+        >
           {showSettings ? 'Hide settings' : 'Show settings'}
         </button>
-        <button onClick={() => setShowFavorites(!showFavorites)}>
+        <button
+          onClick={() => {
+            setShowFavorites(!showFavorites)
+          }}
+        >
           {showFavorites ? 'Hide favs' : 'Show favs'}
         </button>
       </div>

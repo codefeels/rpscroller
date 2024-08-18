@@ -80,9 +80,9 @@ export interface Post {
   url: string
   permalink: string
   author: string
-  media_metadata: Record<string, { s: { u: string } }>
+  media_metadata?: Record<string, { s: { u: string } }>
   gallery_data: {
-    items: {
+    items?: {
       media_id: string
       caption: string
     }[]

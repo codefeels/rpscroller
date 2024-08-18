@@ -13,7 +13,9 @@ export default function Sorts() {
           value="topall"
           type="radio"
           checked={mode === 'topall'}
-          onChange={event => store.setMode(event.target.value)}
+          onChange={event => {
+            store.setMode(event.target.value)
+          }}
         />
       </div>
       <div>
@@ -23,7 +25,9 @@ export default function Sorts() {
           value="topyear"
           type="radio"
           checked={mode === 'topyear'}
-          onChange={event => store.setMode(event.target.value)}
+          onChange={event => {
+            store.setMode(event.target.value)
+          }}
         />
       </div>
       <div>
@@ -33,7 +37,9 @@ export default function Sorts() {
           value="topday"
           type="radio"
           checked={mode === 'topday'}
-          onChange={event => store.setMode(event.target.value)}
+          onChange={event => {
+            store.setMode(event.target.value)
+          }}
         />
       </div>
       <div>
@@ -43,7 +49,9 @@ export default function Sorts() {
           value="topmonth"
           type="radio"
           checked={mode === 'topmonth'}
-          onChange={event => store.setMode(event.target.value)}
+          onChange={event => {
+            store.setMode(event.target.value)
+          }}
         />
       </div>
       <div>
@@ -53,7 +61,9 @@ export default function Sorts() {
           value="hot"
           type="radio"
           checked={mode === 'hot'}
-          onChange={event => store.setMode(event.target.value)}
+          onChange={event => {
+            store.setMode(event.target.value)
+          }}
         />
       </div>
       <div>
@@ -63,7 +73,9 @@ export default function Sorts() {
           value="new"
           type="radio"
           checked={mode === 'new'}
-          onChange={event => store.setMode(event.target.value)}
+          onChange={event => {
+            store.setMode(event.target.value)
+          }}
         />
       </div>
     </div>
