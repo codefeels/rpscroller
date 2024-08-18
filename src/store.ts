@@ -37,6 +37,45 @@ const { mode, val } = queryString.parse(window.location.search)
 
 const filterSet = new Set(['page', 'prev', 'val'])
 
+export const settingsMap = {
+  infiniteScroll: [
+    'Infinite scroll?',
+    (f: boolean, store: AppState) => {
+      store.setInfiniteScroll(f)
+    },
+  ],
+  noGifs: [
+    'No gifs?',
+    (f: boolean, store: AppState) => {
+      store.setNoGifs(f)
+    },
+  ],
+  redGifsOnly: [
+    'RedGifs only?',
+    (f: boolean, store: AppState) => {
+      store.setRedGifsOnly(f)
+    },
+  ],
+  hideButtons: [
+    'Hide card buttons?',
+    (f: boolean, store: AppState) => {
+      store.setHideButtons(f)
+    },
+  ],
+  dedupe: [
+    'De-duplicate posts?',
+    (f: boolean, store: AppState) => {
+      store.setDedupe(f)
+    },
+  ],
+  skipPinned: [
+    'Skip pinned posts?',
+    (f: boolean, store: AppState) => {
+      store.setSkipPinned(f)
+    },
+  ],
+} as const
+
 export const useAppStore = create<AppState>()(
   persist(
     set => ({
@@ -54,6 +93,7 @@ export const useAppStore = create<AppState>()(
       prev: undefined as string | undefined,
       val: `${val}`,
       favs: ['r/funny', 'r/midriff+gonemild', 'r/gonewild'],
+
       setInfiniteScroll: flag => {
         set(() => ({ infiniteScroll: flag }))
       },
@@ -89,7 +129,7 @@ export const useAppStore = create<AppState>()(
       },
       setVal: val => {
         const s = val?.replace('u/', 'user/')
-        set(() => ({ val: s, page: undefined, prev: undefined }))
+        set(() => ({ val: s, page: undefined, prev: undefined, sort: 'hot' }))
       },
       addFavorite: val => {
         const s = val.replace('u/', 'user/')
