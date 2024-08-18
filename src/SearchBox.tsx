@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAppStore } from './store'
+import { MdFavorite } from 'react-icons/md'
 
 export default function SearchBox() {
   const store = useAppStore()
@@ -9,7 +10,7 @@ export default function SearchBox() {
     setText(val)
   }, [val])
   return (
-    <div>
+    <div className="m-2">
       <form
         onSubmit={event => {
           event.preventDefault()
@@ -26,14 +27,15 @@ export default function SearchBox() {
           }}
         />
         <button type="submit">Submit</button>
-        <button
-          onClick={event => {
-            event.preventDefault() // not sure why but otherwise does onSubmit
-            store.addFavorite(text)
-          }}
-        >
-          Add to favs
-        </button>
+        {store.favs.includes(text) ? null : (
+          <button
+            onClick={() => {
+              store.addFavorite(text)
+            }}
+          >
+            Add to favs <MdFavorite />
+          </button>
+        )}
       </form>
     </div>
   )

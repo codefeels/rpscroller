@@ -3,13 +3,20 @@ import { useState } from 'react'
 import Settings from './Settings'
 import Favorites from './Favorites'
 import SearchBox from './SearchBox'
-
-import flame from './favicon.svg'
 import Sorts from './Sorts'
 
+import flame from './favicon.svg'
+
+// icons
+import { FaShoppingCart } from 'react-icons/fa'
+import { MdFavorite } from 'react-icons/md'
+import { IoIosSettings } from 'react-icons/io'
+import MakeMultiReddit from './MakeMultiReddit'
+
 export default function Header() {
-  const [showSettings, setShowSettings] = useState(false)
-  const [showFavorites, setShowFavorites] = useState(false)
+  const [currentlyOpen, setCurrentlyOpen] = useState<
+    'settings' | 'favs' | 'multi'
+  >()
 
   return (
     <div className="mb-10">
@@ -21,22 +28,36 @@ export default function Header() {
       <div>
         <button
           onClick={() => {
-            setShowSettings(!showSettings)
+            setCurrentlyOpen(
+              currentlyOpen === 'settings' ? undefined : 'settings',
+            )
           }}
         >
-          {showSettings ? 'Hide settings' : 'Show settings'}
+          {currentlyOpen === 'settings' ? 'Hide settings' : 'Show settings'}{' '}
+          <IoIosSettings />
         </button>
         <button
           onClick={() => {
-            setShowFavorites(!showFavorites)
+            setCurrentlyOpen(currentlyOpen === 'favs' ? undefined : 'favs')
           }}
         >
-          {showFavorites ? 'Hide favs' : 'Show favs'}
+          {currentlyOpen === 'favs' ? 'Hide favs' : 'Show favs'} <MdFavorite />
         </button>
+        <button
+          onClick={() => {
+            setCurrentlyOpen(currentlyOpen === 'multi' ? undefined : 'multi')
+          }}
+        >
+          {currentlyOpen === 'multi'
+            ? 'Hide multi-reddit maker'
+            : 'Show multi-reddit maker'}{' '}
+          <FaShoppingCart />
+        </button>
+        <Sorts />
       </div>
-      {showSettings ? <Settings /> : null}
-      {showFavorites ? <Favorites /> : null}
-      <Sorts />
+      {currentlyOpen === 'settings' ? <Settings /> : null}
+      {currentlyOpen === 'favs' ? <Favorites /> : null}
+      {currentlyOpen === 'multi' ? <MakeMultiReddit /> : null}
     </div>
   )
 }

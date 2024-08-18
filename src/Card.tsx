@@ -1,9 +1,13 @@
 import { useDebounceValue, useIntersectionObserver } from 'usehooks-ts'
-import { useAppStore } from './store'
 import { formatDistance } from 'date-fns'
-import { decode, redGifUrlToId, type Post } from './util'
+// components
 import GalleryCard from './GalleryCard'
 import CardButtons from './CardButtons'
+// utils
+import { useAppStore } from './store'
+import { decode, redGifUrlToId, type Post } from './util'
+
+import { BiSolidUpvote } from 'react-icons/bi'
 
 function CardHeader({ post }: { post: Post }) {
   const { hideButtons } = useAppStore()
@@ -21,7 +25,7 @@ function CardHeader({ post }: { post: Post }) {
         {formatDistance(new Date(post.created * 1000), new Date(), {
           addSuffix: true,
         })}
-        ) [{post.score}]
+        ) [{post.score} <BiSolidUpvote />]
       </h4>{' '}
       (
       <a

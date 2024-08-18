@@ -89,15 +89,21 @@ export default function App() {
           </>
         ) : null}
       </div>
-      <footer>
-        <a
-          href="https://github.com/codefeels/rpscroller/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Source code/report issues
-        </a>
-      </footer>
+      <Footer />
     </div>
+  )
+}
+
+function Footer() {
+  return (
+    <footer>
+      <a
+        href="https://github.com/codefeels/rpscroller/"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Source code/report issues
+      </a>
+    </footer>
   )
 }

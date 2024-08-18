@@ -1,3 +1,4 @@
+import { MdFavorite } from 'react-icons/md'
 import { useAppStore } from './store'
 import type { Post } from './util'
 
@@ -20,7 +21,7 @@ export default function CardButtons({ post }: { post: Post }) {
             store.addFavorite(`/user/${author}`)
           }}
         >
-          Add {`/u/${author}`} to favs
+          <MdFavorite /> {`/u/${author}`}
         </button>
       </div>
       <div>
@@ -37,7 +38,7 @@ export default function CardButtons({ post }: { post: Post }) {
             store.addFavorite(subreddit)
           }}
         >
-          Add {subreddit} to favs
+          <MdFavorite /> {subreddit}
         </button>
       </div>
     </div>
