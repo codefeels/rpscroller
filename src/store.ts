@@ -78,11 +78,11 @@ export const settingsMap = {
 
 export function isUserSubreddit(f: string) {
   const s = normalizeSubreddit(f)
-  return s.startsWith('u/') || s.startsWith('u_')
+  return s.startsWith('user/') || s.startsWith('u_')
 }
 
 export function normalizeSubreddit(val: string) {
-  return val.replace('u/', 'user/').replace(/^\//, '')
+  return val.replace(/^\//, '').replace('u/', 'user/')
 }
 
 export function maybeNormalizeSubreddit(val?: string) {
