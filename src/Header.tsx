@@ -15,7 +15,7 @@ import MakeMultiReddit from './MakeMultiReddit'
 
 export default function Header() {
   const [currentlyOpen, setCurrentlyOpen] = useState<
-    'settings' | 'favs' | 'multi'
+    'settings' | 'favorites' | 'multi'
   >()
 
   return (
@@ -38,10 +38,13 @@ export default function Header() {
         </button>
         <button
           onClick={() => {
-            setCurrentlyOpen(currentlyOpen === 'favs' ? undefined : 'favs')
+            setCurrentlyOpen(
+              currentlyOpen === 'favorites' ? undefined : 'favorites',
+            )
           }}
         >
-          {currentlyOpen === 'favs' ? 'Hide favs' : 'Show favs'} <MdFavorite />
+          {currentlyOpen === 'favorites' ? 'Hide favorites' : 'Show favorites'}{' '}
+          <MdFavorite />
         </button>
         <button
           onClick={() => {
@@ -56,7 +59,7 @@ export default function Header() {
         <Sorts />
       </div>
       {currentlyOpen === 'settings' ? <Settings /> : null}
-      {currentlyOpen === 'favs' ? <Favorites /> : null}
+      {currentlyOpen === 'favorites' ? <Favorites /> : null}
       {currentlyOpen === 'multi' ? <MakeMultiReddit /> : null}
     </div>
   )

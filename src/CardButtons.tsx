@@ -16,7 +16,7 @@ export default function CardButtons({ post }: { post: Post }) {
           Browse {`/u/${author}`}
         </button>
         <button
-          disabled={store.favs.includes(`/user/${author}`)}
+          disabled={store.favorites.includes(`/user/${author}`)}
           onClick={() => {
             store.addFavorite(`/user/${author}`)
           }}
@@ -33,7 +33,7 @@ export default function CardButtons({ post }: { post: Post }) {
           Browse {subreddit}
         </button>
         <button
-          disabled={store.favs.includes(subreddit)}
+          disabled={store.favorites.includes(subreddit)}
           onClick={() => {
             store.addFavorite(subreddit)
           }}

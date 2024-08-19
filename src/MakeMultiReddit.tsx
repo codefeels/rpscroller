@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import { useAppStore } from './store'
+import { isUserSubreddit, normalizeSubreddit, useAppStore } from './store'
 
 import { FaCartShopping } from 'react-icons/fa6'
 
 export default function MakeMultiReddit() {
   const store = useAppStore()
-  const { favs } = store
+  const { favorites } = store
   const [multi, setMulti] = useState<string[]>([])
-  const multiVal = `/r/${multi.join('+')}`
+  const multiVal = `/r/${multi.map(s => s.replace('r/', '')).join('+')}`
   return (
     <div className="lg:m-10">
       <h4>
@@ -35,77 +35,28 @@ export default function MakeMultiReddit() {
       <>
         <table>
           <tbody>
-            {favs
-              .filter(
-                f =>
-                  !(
-                    f.startsWith('/u/') ||
-                    f.startsWith('u/') ||
-                    f.startsWith('user/') ||
-                    f.startsWith('/user/') ||
-                    f.startsWith('u_')
-                  ),
-              )
-              .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-              .map(f => (
-                <tr key={f}>
-                  <td>{f}</td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        setMulti([
-                          ...multi,
-                          f
-                            .replace(/^\//, '')
-                            .replace('user/', 'u_')
-                            .replace('r/', ''),
-                        ])
-                      }}
-                    >
-                      <FaCartShopping />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-            {favs
-              .filter(
-                f =>
-                  f.startsWith('/u/') ||
-                  f.startsWith('u/') ||
-                  f.startsWith('/user/') ||
-                  f.startsWith('user/') ||
-                  f.startsWith('u_'),
-              )
-              .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-              .map(f => (
-                <tr key={f}>
-                  <td>
-                    <button
-                      onClick={() => {
-                        store.setVal(f)
-                      }}
-                    >
-                      {f}
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        setMulti([
-                          ...multi,
-                          f
-                            .replace(/^\//, '')
-                            .replace('user/', 'u_')
-                            .replace('r/', ''),
-                        ])
-                      }}
-                    >
-                      <FaCartShopping />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+            {[
+              ...favorites
+                .filter(f => !isUserSubreddit(f))
+                .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
+              ...favorites
+                .filter(f => isUserSubreddit(f))
+                .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
+            ].map(f => (
+              <tr key={f}>
+                <td>{f}</td>
+                <td>
+                  <button
+                    disabled={multi.includes(f)}
+                    onClick={() => {
+                      setMulti([...multi, normalizeSubreddit(f)])
+                    }}
+                  >
+                    <FaCartShopping />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </>

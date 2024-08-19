@@ -11,7 +11,7 @@ interface AppState {
   page?: string
   prev?: string
   mode: string
-  favs: string[]
+  favorites: string[]
   val: string
   skipPinned: boolean
   dedupe: boolean
@@ -76,6 +76,22 @@ export const settingsMap = {
   ],
 } as const
 
+export function isUserSubreddit(f: string) {
+  const s = normalizeSubreddit(f)
+  return s.startsWith('u/') || s.startsWith('u_')
+}
+
+export function normalizeSubreddit(val: string) {
+  return val.replace('u/', 'user/').replace(/^\//, '')
+}
+
+export function maybeNormalizeSubreddit(val?: string) {
+  return val === undefined ? undefined : normalizeSubreddit(val)
+}
+export function hasFavorite(val: string, favorites: string[]) {
+  return favorites.includes(normalizeSubreddit(val))
+}
+
 export const useAppStore = create<AppState>()(
   persist(
     set => ({
@@ -92,53 +108,87 @@ export const useAppStore = create<AppState>()(
       page: undefined as string | undefined,
       prev: undefined as string | undefined,
       val: `${val}`,
-      favs: ['r/funny', 'r/midriff+gonemild', 'r/gonewild'],
+      favorites: ['r/funny', 'r/midriff+gonemild', 'r/gonewild'],
 
       setInfiniteScroll: flag => {
-        set(() => ({ infiniteScroll: flag }))
+        set(() => ({
+          infiniteScroll: flag,
+        }))
       },
       setConfirmed: flag => {
-        set(() => ({ confirmed: flag }))
+        set(() => ({
+          confirmed: flag,
+        }))
       },
       setNoGifs: flag => {
-        set(() => ({ noGifs: flag }))
+        set(() => ({
+          noGifs: flag,
+        }))
       },
       setDedupe: flag => {
-        set(() => ({ dedupe: flag }))
+        set(() => ({
+          dedupe: flag,
+        }))
       },
       setFullscreen: flag => {
-        set(() => ({ fullscreen: flag }))
+        set(() => ({
+          fullscreen: flag,
+        }))
       },
       setSkipPinned: flag => {
-        set(() => ({ skipPinned: flag }))
+        set(() => ({
+          skipPinned: flag,
+        }))
       },
       setHideButtons: flag => {
-        set(() => ({ hideButtons: flag }))
+        set(() => ({
+          hideButtons: flag,
+        }))
       },
       setRedGifsOnly: flag => {
-        set(() => ({ redGifsOnly: flag }))
+        set(() => ({
+          redGifsOnly: flag,
+        }))
       },
       setPage: page => {
-        set(store => ({ page, prev: store.page }))
+        set(store => ({
+          page,
+          prev: store.page,
+        }))
       },
       setMode: mode => {
-        set(() => ({ mode, page: undefined, prev: undefined }))
+        set(() => ({
+          mode,
+          page: undefined,
+          prev: undefined,
+        }))
       },
       setDefaultPage: defaultPage => {
-        set(() => ({ defaultPage }))
+        set(() => ({
+          defaultPage,
+        }))
       },
       setVal: val => {
-        const s = val?.replace('u/', 'user/')
-        set(() => ({ val: s, page: undefined, prev: undefined, sort: 'hot' }))
+        const s = maybeNormalizeSubreddit(val)
+        set(() => ({
+          val: s,
+          page: undefined,
+          prev: undefined,
+          sort: 'hot',
+        }))
       },
       addFavorite: val => {
-        const s = val.replace('u/', 'user/')
+        const s = normalizeSubreddit(val)
         set(state => ({
-          favs: state.favs.includes(s) ? state.favs : [...state.favs, s],
+          favorites: hasFavorite(s, state.favorites)
+            ? state.favorites
+            : [...state.favorites, s],
         }))
       },
       removeFavorite: val => {
-        set(s => ({ favs: s.favs.filter(f => f !== val) }))
+        set(s => ({
+          favorites: s.favorites.filter(f => f !== val),
+        }))
       },
     }),
     {

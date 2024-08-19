@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useAppStore } from './store'
+import { hasFavorite, useAppStore } from './store'
 import { MdFavorite } from 'react-icons/md'
 
 export default function SearchBox() {
@@ -27,13 +27,13 @@ export default function SearchBox() {
           }}
         />
         <button type="submit">Submit</button>
-        {store.favs.includes(text) ? null : (
+        {hasFavorite(text, store.favorites) ? null : (
           <button
             onClick={() => {
               store.addFavorite(text)
             }}
           >
-            Add to favs <MdFavorite />
+            Add to favorites <MdFavorite />
           </button>
         )}
       </form>
