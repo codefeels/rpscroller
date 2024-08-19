@@ -36,6 +36,8 @@ export default function Header() {
           {currentlyOpen === 'settings' ? 'Hide settings' : 'Show settings'}{' '}
           <IoIosSettings />
         </button>
+      </div>
+      <div>
         <button
           onClick={() => {
             setCurrentlyOpen(
@@ -46,6 +48,8 @@ export default function Header() {
           {currentlyOpen === 'favorites' ? 'Hide favorites' : 'Show favorites'}{' '}
           <MdFavorite />
         </button>
+      </div>
+      <div>
         <button
           onClick={() => {
             setCurrentlyOpen(currentlyOpen === 'multi' ? undefined : 'multi')
@@ -56,6 +60,8 @@ export default function Header() {
             : 'Show multi-reddit maker'}{' '}
           <FaShoppingCart />
         </button>
+      </div>
+      <div>
         <Sorts />
       </div>
       {currentlyOpen === 'settings' ? <Settings /> : null}

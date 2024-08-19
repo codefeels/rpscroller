@@ -81,7 +81,7 @@ export interface Post {
   permalink: string
   author: string
   media_metadata?: Record<string, { s: { u: string } }>
-  gallery_data: {
+  gallery_data?: {
     items?: {
       media_id: string
       caption: string

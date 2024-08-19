@@ -8,6 +8,7 @@ import { useAppStore } from './store'
 import { decode, redGifUrlToId, type Post } from './util'
 
 import { BiSolidUpvote } from 'react-icons/bi'
+import ImageCard from './ImageCard'
 
 function CardHeader({ post }: { post: Post }) {
   const { hideButtons } = useAppStore()
@@ -122,12 +123,7 @@ export default function Card({ post }: { post: Post }) {
           )}
         </div>
       ) : isPic(url) ? (
-        <img
-          alt={title}
-          loading="lazy"
-          className="w-full max-h-screen object-contain"
-          src={url}
-        />
+        <ImageCard title={title} url={url} />
       ) : null}
     </div>
   )
