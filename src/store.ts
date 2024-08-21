@@ -74,6 +74,12 @@ export const settingsMap = {
       store.setSkipPinned(f)
     },
   ],
+  fullscreen: [
+    'Fullscreen?',
+    (f: boolean, store: AppState) => {
+      store.setFullscreen(f)
+    },
+  ],
 } as const
 
 export function isUserSubreddit(f: string) {
@@ -174,7 +180,7 @@ export const useAppStore = create<AppState>()(
           val: s,
           page: undefined,
           prev: undefined,
-          sort: 'hot',
+          mode: 'hot',
         }))
       },
       addFavorite: val => {
