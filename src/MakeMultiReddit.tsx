@@ -52,7 +52,7 @@ export default function MakeMultiReddit() {
                       setMulti([...multi, normalizeSubreddit(f)])
                     }}
                   >
-                    <FaCartShopping />
+                    <FaCartShopping className="inline" />
                   </button>
                 </td>
               </tr>

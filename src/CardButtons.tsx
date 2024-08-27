@@ -1,6 +1,7 @@
 import { MdFavorite } from 'react-icons/md'
 import { hasFavorite, useAppStore } from './store'
 import type { Post } from './util'
+import Button from './Button'
 
 export default function CardButtons({ post }: { post: Post }) {
   const store = useAppStore()
@@ -8,38 +9,38 @@ export default function CardButtons({ post }: { post: Post }) {
   return (
     <div>
       <div>
-        <button
+        <Button
           onClick={() => {
             store.setVal(`/user/${author}`)
           }}
         >
           Browse {`/u/${author}`}
-        </button>
-        <button
+        </Button>
+        <Button
           disabled={hasFavorite(`/user/${author}`, store.favorites)}
           onClick={() => {
             store.addFavorite(`/user/${author}`)
           }}
         >
-          <MdFavorite /> {`/u/${author}`}
-        </button>
+          <MdFavorite className="inline" /> {`/u/${author}`}
+        </Button>
       </div>
       <div>
-        <button
+        <Button
           onClick={() => {
             store.setVal(subreddit)
           }}
         >
           Browse {subreddit}
-        </button>
-        <button
+        </Button>
+        <Button
           disabled={hasFavorite(subreddit, store.favorites)}
           onClick={() => {
             store.addFavorite(subreddit)
           }}
         >
-          <MdFavorite /> {subreddit}
-        </button>
+          <MdFavorite className="inline" /> {subreddit}
+        </Button>
       </div>
     </div>
   )

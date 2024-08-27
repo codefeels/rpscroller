@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import Settings from './Settings'
 import Favorites from './Favorites'
@@ -12,6 +12,7 @@ import { FaShoppingCart } from 'react-icons/fa'
 import { MdFavorite } from 'react-icons/md'
 import { IoIosSettings } from 'react-icons/io'
 import { GiHamburgerMenu } from 'react-icons/gi'
+import Link from './Link'
 
 export default function Header() {
   const [currentlyOpen, setCurrentlyOpen] = useState<
@@ -19,11 +20,24 @@ export default function Header() {
   >()
 
   const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
   return (
     <div className="mb-10 sticky top-0">
       <h1>
-        <span className="relative">
+        <span ref={ref} className="relative">
           <GiHamburgerMenu
+            className="h-6 w-6 inline hover:bg-gray-300 dark:hover:bg-gray-600"
             onClick={() => {
               setOpen(!open)
             }}
@@ -35,46 +49,53 @@ export default function Header() {
               aria-orientation="vertical"
               aria-labelledby="menu-button"
             >
-              <button
-                onClick={() => {
-                  setCurrentlyOpen(
-                    currentlyOpen === 'settings' ? undefined : 'settings',
-                  )
-                }}
-              >
-                {currentlyOpen === 'settings'
-                  ? 'Hide settings'
-                  : 'Show settings'}{' '}
-                <IoIosSettings />
-              </button>
-              <button
-                onClick={() => {
-                  setCurrentlyOpen(
-                    currentlyOpen === 'favorites' ? undefined : 'favorites',
-                  )
-                }}
-              >
-                {currentlyOpen === 'favorites'
-                  ? 'Hide favorites'
-                  : 'Show favorites'}{' '}
-                <MdFavorite />
-              </button>
-              <button
-                onClick={() => {
-                  setCurrentlyOpen(
-                    currentlyOpen === 'multi' ? undefined : 'multi',
-                  )
-                }}
-              >
-                {currentlyOpen === 'multi'
-                  ? 'Hide multi-reddit maker'
-                  : 'Show multi-reddit maker'}{' '}
-                <FaShoppingCart />
-              </button>
+              <div className="hover:bg-gray-300 dark:hover:bg-gray-600">
+                <button
+                  onClick={() => {
+                    setCurrentlyOpen(
+                      currentlyOpen === 'settings' ? undefined : 'settings',
+                    )
+                  }}
+                >
+                  <IoIosSettings className="inline" /> Settings
+                </button>
+              </div>
+              <div className="hover:bg-gray-300 dark:hover:bg-gray-600">
+                <button
+                  onClick={() => {
+                    setCurrentlyOpen(
+                      currentlyOpen === 'favorites' ? undefined : 'favorites',
+                    )
+                  }}
+                >
+                  <MdFavorite className="inline" /> Favorites
+                </button>
+              </div>
+              <div className="hover:bg-gray-300 dark:hover:bg-gray-600">
+                <button
+                  onClick={() => {
+                    setCurrentlyOpen(
+                      currentlyOpen === 'multi' ? undefined : 'multi',
+                    )
+                  }}
+                >
+                  <FaShoppingCart className="inline" /> Multi-reddit maker
+                </button>
+              </div>
+              <div>
+                <Link
+                  href="https://github.com/codefeels/rpscroller/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  About
+                </Link>
+              </div>
             </div>
           ) : null}
         </span>{' '}
-        rpscroller <img className="h-8" src={flame} alt="app icon of flames" />
+        rpscroller{' '}
+        <img className="h-8 inline" src={flame} alt="app icon of flames" />
         <SearchBox />
       </h1>
 

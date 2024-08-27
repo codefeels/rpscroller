@@ -36,7 +36,7 @@ export default function Favorites() {
                     store.removeFavorite(f)
                   }}
                 >
-                  <MdDelete />
+                  <MdDelete className="inline" />
                 </button>
               </td>
               <td>
@@ -45,7 +45,7 @@ export default function Favorites() {
                     store.setDefaultPage(f)
                   }}
                 >
-                  <IoMdHome />
+                  <IoMdHome className="inline" />
                 </button>
               </td>
             </tr>
@@ -55,10 +55,10 @@ export default function Favorites() {
       <div>
         <p>Legend:</p>
         <div>
-          <IoMdHome /> = Set as default page
+          <IoMdHome className="inline" /> = Set as default page
         </div>
         <div>
-          <MdDelete /> = Delete from favorites
+          <MdDelete className="inline" /> = Delete from favorites
         </div>
       </div>
     </div>

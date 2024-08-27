@@ -6,6 +6,7 @@ import { useAppStore } from './store'
 import { decode, type Post } from './util'
 // icons
 import { BiSolidUpvote } from 'react-icons/bi'
+import Link from './Link'
 
 export default function CardHeader({ post }: { post: Post }) {
   const { hideButtons } = useAppStore()
@@ -23,36 +24,36 @@ export default function CardHeader({ post }: { post: Post }) {
         {formatDistance(new Date(post.created * 1000), new Date(), {
           addSuffix: true,
         })}
-        ) [{post.score} <BiSolidUpvote />]
+        ) [{post.score} <BiSolidUpvote className="inline" />]
       </h4>{' '}
       (
-      <a
+      <Link
         href={`https://reddit.com/u/${author}`}
         target="_blank"
         rel="noreferrer"
       >
         user
-      </a>
+      </Link>
       ) (
-      <a href={url} target="_blank" rel="noreferrer">
+      <Link href={url} target="_blank" rel="noreferrer">
         url
-      </a>
+      </Link>
       ) (
-      <a
+      <Link
         href={`https://reddit.com/${subreddit}`}
         target="_blank"
         rel="noreferrer"
       >
         subreddit
-      </a>
+      </Link>
       ) (
-      <a
+      <Link
         href={`https://reddit.com${permalink}`}
         target="_blank"
         rel="noreferrer"
       >
         comments
-      </a>
+      </Link>
       ){hideButtons ? null : <CardButtons post={post} />}
     </div>
   )
