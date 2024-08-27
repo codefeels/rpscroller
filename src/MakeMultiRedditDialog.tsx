@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { isUserSubreddit, normalizeSubreddit, useAppStore } from './store'
+import {
+  isUserSubreddit,
+  normalizeForDisplay,
+  normalizeSubreddit,
+  useAppStore,
+} from './store'
 
-import { FaCartShopping } from 'react-icons/fa6'
+import { FaCartShopping, FaChevronDown, FaChevronUp } from 'react-icons/fa6'
 import Button from './Button'
 import { useDialogShown } from './util'
+import { formatDistance } from 'date-fns'
 
 export default function MakeMultiReddit({
   open,
@@ -15,7 +21,7 @@ export default function MakeMultiReddit({
   const store = useAppStore()
   const { favorites } = store
   const [multi, setMulti] = useState<string[]>([])
-  const multiVal = `/r/${multi.map(s => s.replace('r/', '')).join('+')}`
+  const multiVal = `/r/${multi.map(s => s.replace('user/', 'u_').replace('r/', '')).join('+')}`
   const ref = useDialogShown(open)
   const ref2 = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -29,6 +35,20 @@ export default function MakeMultiReddit({
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [setOpen])
+  const [sortVisits, setSortVisits] = useState(0)
+  const [sortDateAdded, setSortDateAdded] = useState(0)
+  const now = Date.now()
+  const favs = [
+    ...favorites
+      .filter(f => !isUserSubreddit(f.name))
+      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
+    ...favorites
+      .filter(f => isUserSubreddit(f.name))
+      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
+  ]
+    .map(f => ({ ...f, dateAdded: new Date(f.dateAdded) }))
+    .sort((a, b) => (a.visitedCount - b.visitedCount) * sortVisits)
+    .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
     <dialog ref={ref} className="max-w-xl">
       <div ref={ref2} className="lg:m-10">
@@ -54,32 +74,84 @@ export default function MakeMultiReddit({
             </div>
           </div>
         </h4>
+
         <div className="max-h-[80vh] overflow-auto">
           <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th className="whitespace-nowrap">
+                  <Button
+                    onClick={() => {
+                      setSortDateAdded(0)
+                      if (sortVisits === 0) {
+                        setSortVisits(-1)
+                      } else if (sortVisits === -1) {
+                        setSortVisits(1)
+                      } else {
+                        setSortVisits(0)
+                      }
+                    }}
+                  >
+                    # Visits{' '}
+                    {sortVisits === 1 ? (
+                      <FaChevronUp className="inline" />
+                    ) : sortVisits === -1 ? (
+                      <FaChevronDown className="inline" />
+                    ) : null}
+                  </Button>
+                </th>
+                <th className="whitespace-nowrap">
+                  <Button
+                    onClick={() => {
+                      setSortVisits(0)
+                      if (sortDateAdded === 0) {
+                        setSortDateAdded(-1)
+                      } else if (sortDateAdded === -1) {
+                        setSortDateAdded(1)
+                      } else {
+                        setSortDateAdded(0)
+                      }
+                    }}
+                  >
+                    Date added{' '}
+                    {sortDateAdded === 1 ? (
+                      <FaChevronUp className="inline" />
+                    ) : sortDateAdded === -1 ? (
+                      <FaChevronDown className="inline" />
+                    ) : null}
+                  </Button>
+                </th>
+                <th className="whitespace-nowrap">Add to multi</th>
+              </tr>
+            </thead>
             <tbody>
-              {[
-                ...favorites
-                  .filter(f => !isUserSubreddit(f))
-                  .sort((a, b) =>
-                    a.toLowerCase().localeCompare(b.toLowerCase()),
-                  ),
-                ...favorites
-                  .filter(f => isUserSubreddit(f))
-                  .sort((a, b) =>
-                    a.toLowerCase().localeCompare(b.toLowerCase()),
-                  ),
-              ].map(f => (
-                <tr key={f}>
-                  <td>{f}</td>
-                  <td>
+              {favs.map(f => (
+                <tr key={f.name}>
+                  <td className="whitespace-nowrap">
                     <Button
-                      disabled={multi.includes(f)}
                       onClick={() => {
-                        setMulti([...multi, normalizeSubreddit(f)])
+                        store.setVal(f.name)
                       }}
                     >
-                      <FaCartShopping className="inline" />
+                      {normalizeForDisplay(f.name)}
                     </Button>
+                  </td>
+                  <td>{f.visitedCount}</td>
+                  <td>
+                    {formatDistance(f.dateAdded, now, { addSuffix: true })}
+                  </td>
+                  <td>
+                    {multi.includes(normalizeSubreddit(f.name)) ? null : (
+                      <Button
+                        disabled={multi.includes(normalizeSubreddit(f.name))}
+                        onClick={() => {
+                          setMulti([...multi, normalizeSubreddit(f.name)])
+                        }}
+                      >
+                        <FaCartShopping className="inline" />
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ))}

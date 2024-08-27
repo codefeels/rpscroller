@@ -2,6 +2,12 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import queryString from 'query-string'
 
+interface Favorite {
+  visitedCount: number
+  name: string
+  dateAdded: Date
+}
+
 interface AppState {
   noGifs: boolean
   redGifsOnly: boolean
@@ -10,13 +16,15 @@ interface AppState {
   defaultPage: string
   page?: string
   prev?: string
+  recentlyVisited: string[]
   mode: string
-  favorites: string[]
+  favorites: Favorite[]
   val: string
   skipPinned: boolean
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  clearRecentlyVisited: () => void
   setDefaultPage: (arg: string) => void
   setInfiniteScroll: (arg: boolean) => void
   setHideButtons: (arg: boolean) => void
@@ -83,19 +91,30 @@ export const settingsMap = {
 } as const
 
 export function isUserSubreddit(f: string) {
-  const s = normalizeSubreddit(f)
+  const s = normalizeForComparison(f)
   return s.startsWith('user/') || s.startsWith('u_')
 }
 
+export function normalizeForComparison(val: string) {
+  return normalizeSubreddit(val).toLowerCase()
+}
+
+export function normalizeForDisplay(val: string) {
+  return normalizeSubreddit(val).replace('user/', 'u/')
+}
+
 export function normalizeSubreddit(val: string) {
-  return val.replace(/^\//, '').replace('u/', 'user/').toLowerCase()
+  return val.replace(/^\//, '').replace('u/', 'user/')
 }
 
 export function maybeNormalizeSubreddit(val?: string) {
   return val === undefined ? undefined : normalizeSubreddit(val)
 }
-export function hasFavorite(val: string, favorites: string[]) {
-  return favorites.includes(normalizeSubreddit(val))
+
+export function hasFavorite(val: string, favorites: Favorite[]) {
+  return favorites
+    .map(s => normalizeForComparison(s.name))
+    .includes(normalizeForComparison(val))
 }
 
 export const useAppStore = create<AppState>()(
@@ -104,6 +123,7 @@ export const useAppStore = create<AppState>()(
       defaultPage: '/r/funny',
       infiniteScroll: false,
       noGifs: true,
+      recentlyVisited: [],
       fullscreen: false,
       redGifsOnly: false,
       hideButtons: false,
@@ -114,8 +134,12 @@ export const useAppStore = create<AppState>()(
       page: undefined as string | undefined,
       prev: undefined as string | undefined,
       val: `${val}`,
-      favorites: ['r/funny', 'r/midriff+gonemild', 'r/gonewild'],
-
+      favorites: [],
+      clearRecentlyVisited: () => {
+        set(() => ({
+          recentlyVisited: [],
+        }))
+      },
       setInfiniteScroll: flag => {
         set(() => ({
           infiniteScroll: flag,
@@ -176,11 +200,27 @@ export const useAppStore = create<AppState>()(
       },
       setVal: val => {
         const s = maybeNormalizeSubreddit(val)
-        set(() => ({
+        set(state => ({
           val: s,
           page: undefined,
           prev: undefined,
           mode: 'hot',
+          favorites: state.favorites.map(favorite => ({
+            ...favorite,
+            visitedCount:
+              s &&
+              normalizeForComparison(s) ===
+                normalizeForComparison(favorite.name) &&
+              normalizeForComparison(s) !== normalizeForComparison(state.val)
+                ? favorite.visitedCount + 1
+                : favorite.visitedCount,
+          })),
+          recentlyVisited:
+            s === undefined
+              ? state.recentlyVisited
+              : state.recentlyVisited.length > 5
+                ? [...new Set([s, ...state.recentlyVisited.slice(1)])]
+                : [...new Set([s, ...state.recentlyVisited])],
         }))
       },
       addFavorite: val => {
@@ -188,12 +228,19 @@ export const useAppStore = create<AppState>()(
         set(state => ({
           favorites: hasFavorite(s, state.favorites)
             ? state.favorites
-            : [...state.favorites, s],
+            : [
+                ...state.favorites,
+                {
+                  name: s,
+                  visitedCount: 0,
+                  dateAdded: new Date(),
+                },
+              ],
         }))
       },
       removeFavorite: val => {
         set(s => ({
-          favorites: s.favorites.filter(f => f !== val),
+          favorites: s.favorites.filter(f => f.name !== val),
         }))
       },
     }),

@@ -3,21 +3,16 @@ import { useEffect, useRef, useState } from 'react'
 import SettingsDialog from './SettingsDialog'
 import FavoritesDialog from './FavoritesDialog'
 import MakeMultiRedditDialog from './MakeMultiRedditDialog'
-import SearchBox from './SearchBox'
 
 import flame from './favicon.svg'
 
 // icons
-import { FaShoppingCart } from 'react-icons/fa'
-import { MdFavorite } from 'react-icons/md'
-import { IoIosSettings } from 'react-icons/io'
 import { GiHamburgerMenu } from 'react-icons/gi'
-import Link from './Link'
-import Sorts from './Sorts'
+import HeaderMenu from './HeaderMenu'
 
 export default function Header() {
   const [currentlyOpen, setCurrentlyOpen] = useState<
-    'settings' | 'favorites' | 'multi'
+    'settings' | 'favorites' | 'multi' | undefined
   >()
 
   const [open, setOpen] = useState(false)
@@ -38,63 +33,18 @@ export default function Header() {
       <h1>
         <span ref={ref} className="relative">
           <GiHamburgerMenu
-            className="h-6 w-6 inline hover:bg-gray-300 dark:hover:bg-gray-600"
+            className="h-8 w-8 inline hover:bg-gray-300 dark:hover:bg-gray-600"
             onClick={() => {
               setOpen(!open)
             }}
           />
           {open ? (
-            <div
-              className="absolute left-0 z-10 mt-2 origin-top-right rounded-md shadow-lg focus:outline-none bg-white dark:bg-black"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="menu-button"
-            >
-              <SearchBox />
-              <div
-                className="hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer"
-                onClick={() => {
-                  setCurrentlyOpen(
-                    currentlyOpen === 'settings' ? undefined : 'settings',
-                  )
-                  setOpen(false)
-                }}
-              >
-                <IoIosSettings className="inline" /> Settings
-              </div>
-              <div
-                className="hover:bg-gray-300 dark:hover:bg-gray-600  cursor-pointer"
-                onClick={() => {
-                  setCurrentlyOpen(
-                    currentlyOpen === 'favorites' ? undefined : 'favorites',
-                  )
-                  setOpen(false)
-                }}
-              >
-                <MdFavorite className="inline" /> Favorites
-              </div>
-              <div
-                className="hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer"
-                onClick={() => {
-                  setCurrentlyOpen(
-                    currentlyOpen === 'multi' ? undefined : 'multi',
-                  )
-                  setOpen(false)
-                }}
-              >
-                <FaShoppingCart className="inline" /> Multi-reddit maker
-              </div>
-              <Sorts />
-              <div>
-                <Link
-                  href="https://github.com/codefeels/rpscroller/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  About
-                </Link>
-              </div>
-            </div>
+            <HeaderMenu
+              setCurrentlyOpen={arg => {
+                setCurrentlyOpen(arg)
+                setOpen(false)
+              }}
+            />
           ) : null}
         </span>{' '}
         rpscroller{' '}

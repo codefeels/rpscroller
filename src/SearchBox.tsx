@@ -17,11 +17,11 @@ export default function SearchBox() {
         store.setVal(text)
       }}
     >
-      <div className="m-2 inline flex">
+      <div className="flex max-w-full">
         <input
           id="box"
           type="text"
-          className="p-2 rounded text-sm"
+          className="m-1 rounded"
           value={text}
           onChange={event => {
             setText(event.target.value)

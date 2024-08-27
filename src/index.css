@@ -25,3 +25,7 @@ dialog::backdrop {
   left: 0px;
   background: rgba(0, 0, 0, 0.5);
 }
+
+html:has(dialog[open]:modal) {
+  overflow: hidden;
+}
