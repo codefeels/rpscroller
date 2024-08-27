@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { decode, type Post } from './util'
 import ImageCard from './ImageCard'
+import Button from './Button'
 
 export default function GalleryCard({ post }: { post: Post }) {
   const { gallery_data, crosspost_parent_list } = post
@@ -25,24 +26,22 @@ export default function GalleryCard({ post }: { post: Post }) {
       />
 
       <div className={'flex justify-center'}>
-        <button
-          className="text-4xl m-2"
+        <Button
           disabled={frame <= 0}
           onClick={() => {
             setFrame(frame - 1)
           }}
         >
           &lt;
-        </button>
-        <button
-          className="text-4xl m-2"
+        </Button>
+        <Button
           disabled={frame >= items.length - 1}
           onClick={() => {
             setFrame(frame + 1)
           }}
         >
           &gt;
-        </button>
+        </Button>
       </div>
     </div>
   )

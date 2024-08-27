@@ -16,14 +16,15 @@ export default function CardButtons({ post }: { post: Post }) {
         >
           Browse {`/u/${author}`}
         </Button>
-        <Button
-          disabled={hasFavorite(`/user/${author}`, store.favorites)}
-          onClick={() => {
-            store.addFavorite(`/user/${author}`)
-          }}
-        >
-          <MdFavorite className="inline" /> {`/u/${author}`}
-        </Button>
+        {hasFavorite(`/user/${author}`, store.favorites) ? null : (
+          <Button
+            onClick={() => {
+              store.addFavorite(`/user/${author}`)
+            }}
+          >
+            <MdFavorite className="inline" /> {`/u/${author}`}
+          </Button>
+        )}
       </div>
       <div>
         <Button
@@ -33,14 +34,15 @@ export default function CardButtons({ post }: { post: Post }) {
         >
           Browse {subreddit}
         </Button>
-        <Button
-          disabled={hasFavorite(subreddit, store.favorites)}
-          onClick={() => {
-            store.addFavorite(subreddit)
-          }}
-        >
-          <MdFavorite className="inline" /> {subreddit}
-        </Button>
+        {hasFavorite(subreddit, store.favorites) ? null : (
+          <Button
+            onClick={() => {
+              store.addFavorite(subreddit)
+            }}
+          >
+            <MdFavorite className="inline" /> {subreddit}
+          </Button>
+        )}
       </div>
     </div>
   )

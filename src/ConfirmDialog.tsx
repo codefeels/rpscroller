@@ -1,3 +1,4 @@
+import Button from './Button'
 import { useDialogShown } from './util'
 
 export default function ConfirmDialog({
@@ -9,25 +10,25 @@ export default function ConfirmDialog({
 }) {
   const ref = useDialogShown(open)
   return (
-    <dialog ref={ref} style={{ maxWidth: 500 }}>
+    <dialog ref={ref} className="max-w-xl">
       <h1>
         This app displays adult content. Please confirm that you are over the
         age of 18+ to use this app.
       </h1>
-      <button
+      <Button
         onClick={() => {
           onClose()
         }}
       >
         confirm
-      </button>
-      <button
+      </Button>
+      <Button
         onClick={() => {
           window.location.href = 'https://google.com'
         }}
       >
         get me out of here
-      </button>
+      </Button>
     </dialog>
   )
 }

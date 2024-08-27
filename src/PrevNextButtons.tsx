@@ -1,3 +1,4 @@
+import Button from './Button'
 import { useAppStore } from './store'
 import type { Data } from './util'
 
@@ -6,8 +7,7 @@ export default function PrevNextButtons({ data }: { data: Data }) {
   const { prev } = store
   return (
     <div className="flex justify-center m-10">
-      <button
-        className="text-4xl m-2"
+      <Button
         disabled={!prev}
         onClick={() => {
           store.setPage(prev ?? '')
@@ -15,9 +15,8 @@ export default function PrevNextButtons({ data }: { data: Data }) {
         }}
       >
         Prev
-      </button>
-      <button
-        className="text-4xl m-2"
+      </Button>
+      <Button
         disabled={!data.after}
         onClick={() => {
           store.setPage(data.after ?? '')
@@ -25,7 +24,7 @@ export default function PrevNextButtons({ data }: { data: Data }) {
         }}
       >
         Next
-      </button>
+      </Button>
     </div>
   )
 }

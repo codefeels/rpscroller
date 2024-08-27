@@ -11,13 +11,13 @@ export default function SearchBox() {
     setText(val)
   }, [val])
   return (
-    <span className="m-2">
-      <form
-        onSubmit={event => {
-          event.preventDefault()
-          store.setVal(text)
-        }}
-      >
+    <form
+      onSubmit={event => {
+        event.preventDefault()
+        store.setVal(text)
+      }}
+    >
+      <div className="m-2 inline flex">
         <input
           id="box"
           type="text"
@@ -37,7 +37,7 @@ export default function SearchBox() {
             <MdFavorite />
           </Button>
         )}
-      </form>
-    </span>
+      </div>
+    </form>
   )
 }

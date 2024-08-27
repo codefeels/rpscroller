@@ -13,6 +13,10 @@ body {
   color-scheme: dark;
 }
 
+.header {
+  background-color: Canvas;
+}
+
 dialog::backdrop {
   position: fixed;
   top: 0px;

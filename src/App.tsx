@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import queryString from 'query-string'
 import useSWR from 'swr'
-import { Drawer } from 'vaul'
 import { useIntersectionObserver } from 'usehooks-ts'
 
 // components
@@ -15,7 +14,7 @@ import CardList from './CardList'
 import type { Data } from './util'
 import { useAppStore } from './store'
 
-// refresh page after back button
+// refresh page after back Button
 window.addEventListener('popstate', () => {
   window.location.reload()
 })

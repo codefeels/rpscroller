@@ -57,7 +57,7 @@ export const settingsMap = {
     },
   ],
   hideButtons: [
-    'Hide card buttons?',
+    'Hide card Buttons?',
     (f: boolean, store: AppState) => {
       store.setHideButtons(f)
     },
