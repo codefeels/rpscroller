@@ -88,7 +88,7 @@ export function isUserSubreddit(f: string) {
 }
 
 export function normalizeSubreddit(val: string) {
-  return val.replace(/^\//, '').replace('u/', 'user/')
+  return val.replace(/^\//, '').replace('u/', 'user/').toLowerCase()
 }
 
 export function maybeNormalizeSubreddit(val?: string) {

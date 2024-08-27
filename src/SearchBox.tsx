@@ -10,14 +10,13 @@ export default function SearchBox() {
     setText(val)
   }, [val])
   return (
-    <div className="m-2">
+    <span className="m-2">
       <form
         onSubmit={event => {
           event.preventDefault()
           store.setVal(text)
         }}
       >
-        <label htmlFor="box">Reddit:</label>
         <input
           id="box"
           type="text"
@@ -33,10 +32,10 @@ export default function SearchBox() {
               store.addFavorite(text)
             }}
           >
-            Add to favorites <MdFavorite />
+            <MdFavorite />
           </button>
         )}
       </form>
-    </div>
+    </span>
   )
 }

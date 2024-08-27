@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import queryString from 'query-string'
 import useSWR from 'swr'
+import { Drawer } from 'vaul'
 import { useIntersectionObserver } from 'usehooks-ts'
 
 // components
@@ -65,8 +66,9 @@ export default function App() {
   }, [recharge, isIntersecting, data?.after, store, isLoading])
 
   return (
-    <div className="lg:m-5">
+    <div className="lg:m-5 relative">
       <Header />
+
       <div>
         {isLoading ? (
           <div className="flex justify-center">
