@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAppStore } from './store'
 import Button from './Button'
 import { GoChevronDown } from 'react-icons/go'
+import MenuItem from './MenuItem'
 
 const map = {
   hot: 'Hot',
@@ -51,7 +52,12 @@ export default function Sorts() {
         >
           {Object.entries(map).map(([key, val]) => {
             return (
-              <div key={key}>
+              <MenuItem
+                key={key}
+                onClick={() => {
+                  store.setMode(key)
+                }}
+              >
                 <label htmlFor={key}>{val}</label>
                 <input
                   id={key}
@@ -62,7 +68,7 @@ export default function Sorts() {
                     store.setMode(event.target.value)
                   }}
                 />
-              </div>
+              </MenuItem>
             )
           })}
         </div>

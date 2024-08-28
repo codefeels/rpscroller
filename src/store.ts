@@ -46,6 +46,12 @@ const { mode, val } = queryString.parse(window.location.search)
 const filterSet = new Set(['page', 'prev', 'val'])
 
 export const settingsMap = {
+  keepMenuOpen: [
+    'Keep menu open?',
+    (f: boolean, store: AppState) => {
+      store.setKeepMenuOpen(f)
+    },
+  ],
   noGifs: [
     'No gifs?',
     (f: boolean, store: AppState) => {

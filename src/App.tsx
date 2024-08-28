@@ -57,7 +57,7 @@ export default function App() {
   } as Record<string, string>
   const isRecharging = useRef(false)
 
-  const url = `https://www.reddit.com/${val}${modeString[mode] || ''}`
+  const url = `https://www.reddit.com/${val}${modeString[mode] ?? ''}`
 
   const {
     data: data2,
@@ -80,7 +80,6 @@ export default function App() {
 
   // example for isLoadingMore from https://swr.vercel.app/examples/infinite-loading
   const isLoadingMore =
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     isLoading || (size > 0 && data2 && data2[size - 1] === undefined)
 
   useEffect(() => {
@@ -91,11 +90,14 @@ export default function App() {
     if (isIntersecting && !isRecharging.current && !isLoading) {
       isRecharging.current = true
       setTimeout(() => {
-        isRecharging.current = false
-        setSize(size + 1).catch((error: unknown) => {
-          console.error(error)
-        })
-      }, 1000)
+        setSize(size + 1)
+          .then(() => {
+            isRecharging.current = false
+          })
+          .catch((error: unknown) => {
+            console.error(error)
+          })
+      }, 400)
     }
   }, [isIntersecting, setSize, size, isLoading])
 
@@ -113,10 +115,16 @@ export default function App() {
         ) : data ? (
           <>
             <CardList posts={data} />
-            <div ref={ref} style={{ height: 400 }}>
-              {isLoadingMore
-                ? 'Loading...'
-                : 'Scroll all the way down to load more...'}
+            <div
+              ref={ref}
+              style={{ height: 400 }}
+              className="flex justify-center mt-10"
+            >
+              {isLoadingMore ? (
+                <LoadingSpinner />
+              ) : (
+                'Scroll all the way down to load more...'
+              )}
             </div>
           </>
         ) : null}

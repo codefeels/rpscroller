@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { hasFavorite, useAppStore } from './store'
 import { MdFavorite } from 'react-icons/md'
 import Button from './Button'
+import Sorts from './Sorts'
 
 export default function SearchBox() {
   const store = useAppStore()
@@ -12,12 +13,13 @@ export default function SearchBox() {
   }, [val])
   return (
     <form
+      className="inline"
       onSubmit={event => {
         event.preventDefault()
         store.setVal(text)
       }}
     >
-      <div className="flex max-w-full">
+      <div className="max-w-full">
         <input
           id="box"
           type="text"
@@ -34,9 +36,11 @@ export default function SearchBox() {
               store.addFavorite(text)
             }}
           >
-            <MdFavorite />
+            <MdFavorite className="inline" />
           </Button>
         )}
+
+        <Sorts />
       </div>
     </form>
   )

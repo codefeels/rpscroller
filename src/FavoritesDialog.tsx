@@ -31,7 +31,7 @@ export default function Favorites({
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [setOpen])
-  const [sortVisits, setSortVisits] = useState(0)
+  const [sortVisits, setSortVisits] = useState(-1)
   const [sortDateAdded, setSortDateAdded] = useState(0)
   const now = Date.now()
   const favs = [
