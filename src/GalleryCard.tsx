@@ -13,7 +13,7 @@ export default function GalleryCard({ post }: { post: Post }) {
   if (!items) {
     return <div>Unknown gallery format</div>
   }
-  const { media_id, caption } = items[frame]
+  const { media_id = '', caption = '' } = items[frame] ?? {}
   return (
     <div>
       <div className="text-center">
@@ -22,7 +22,7 @@ export default function GalleryCard({ post }: { post: Post }) {
 
       <ImageCard
         title={caption}
-        url={decode(media_metadata?.[media_id].s.u ?? '')}
+        url={decode(media_metadata?.[media_id]?.s.u ?? '')}
       />
 
       <div className={'flex justify-center'}>

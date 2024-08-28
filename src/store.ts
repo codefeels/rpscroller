@@ -13,6 +13,7 @@ interface AppState {
   redGifsOnly: boolean
   fullscreen: boolean
   defaultPage: string
+  keepMenuOpen: boolean
   page?: string
   prev?: string
   recentlyVisited: string[]
@@ -24,6 +25,7 @@ interface AppState {
   hideButtons: boolean
   confirmed: boolean
   clearRecentlyVisited: () => void
+  setKeepMenuOpen: (arg: boolean) => void
   setDefaultPage: (arg: string) => void
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
@@ -119,6 +121,7 @@ export const useAppStore = create<AppState>()(
       redGifsOnly: false,
       hideButtons: false,
       skipPinned: false,
+      keepMenuOpen: false,
       dedupe: false,
       confirmed: false,
       mode: `${mode ?? ''}` || 'hot',
@@ -129,6 +132,12 @@ export const useAppStore = create<AppState>()(
       clearRecentlyVisited: () => {
         set(() => ({
           recentlyVisited: [],
+        }))
+      },
+
+      setKeepMenuOpen: flag => {
+        set(() => ({
+          keepMenuOpen: flag,
         }))
       },
 

@@ -9,8 +9,10 @@ import flame from './favicon.svg'
 // icons
 import { GiHamburgerMenu } from 'react-icons/gi'
 import HeaderMenu from './HeaderMenu'
+import { useAppStore } from './store'
 
 export default function Header() {
+  const { keepMenuOpen } = useAppStore()
   const [currentlyOpen, setCurrentlyOpen] = useState<
     'settings' | 'favorites' | 'multi' | undefined
   >()
@@ -19,7 +21,11 @@ export default function Header() {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      if (
+        ref.current &&
+        !ref.current.contains(event.target as Node) &&
+        !keepMenuOpen
+      ) {
         setOpen(false)
       }
     }
@@ -27,7 +33,7 @@ export default function Header() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [])
+  }, [keepMenuOpen])
   return (
     <div className="mb-10 sticky top-0 bg-inherit header">
       <h1>

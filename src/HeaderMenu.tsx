@@ -17,7 +17,7 @@ export default function HeaderMenu({
   ) => void
 }) {
   const store = useAppStore()
-  const { recentlyVisited } = store
+  const { favorites, keepMenuOpen, recentlyVisited } = store
 
   return (
     <div
@@ -26,6 +26,18 @@ export default function HeaderMenu({
       aria-orientation="vertical"
       aria-labelledby="menu-button"
     >
+      <div>
+        <label htmlFor="keepopen">Keep menu open?</label>
+        <input
+          id="keepopen"
+          type="checkbox"
+          checked={keepMenuOpen}
+          onChange={event => {
+            store.setKeepMenuOpen(event.target.checked)
+          }}
+        />
+      </div>
+
       <SearchBox />
       <MenuItem
         onClick={() => {
@@ -68,6 +80,21 @@ export default function HeaderMenu({
       >
         Clear
       </Button>
+      <hr />
+      <div>Most visited: </div>
+      {favorites
+        .sort((a, b) => b.visitedCount - a.visitedCount)
+        .slice(0, 5)
+        .map(l => (
+          <MenuItem
+            key={l.name}
+            onClick={() => {
+              store.setVal(l.name)
+            }}
+          >
+            - {normalizeForDisplay(l.name)} ({l.visitedCount})
+          </MenuItem>
+        ))}
       <hr />
       <div>
         <Link
