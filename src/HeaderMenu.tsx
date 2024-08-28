@@ -7,6 +7,7 @@ import Sorts from './Sorts'
 import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
 import { normalizeForDisplay, useAppStore } from './store'
+import Button from './Button'
 
 export default function HeaderMenu({
   setCurrentlyOpen,
@@ -49,7 +50,7 @@ export default function HeaderMenu({
       </MenuItem>
       <Sorts />
       <hr />
-      <div>Recently visited:</div>
+      <div>Recently visited: </div>
       {recentlyVisited.map(l => (
         <MenuItem
           key={l}
@@ -60,20 +61,21 @@ export default function HeaderMenu({
           - {normalizeForDisplay(l)}
         </MenuItem>
       ))}
-      <MenuItem
+      <Button
         onClick={() => {
           store.clearRecentlyVisited()
         }}
       >
         Clear
-      </MenuItem>
+      </Button>
+      <hr />
       <div>
         <Link
           href="https://github.com/codefeels/rpscroller/"
           target="_blank"
           rel="noreferrer"
         >
-          About
+          Source code/about
         </Link>
       </div>
     </div>

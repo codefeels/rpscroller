@@ -1,27 +1,48 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import queryString from 'query-string'
-import useSWR from 'swr'
 import { useIntersectionObserver } from 'usehooks-ts'
 
 // components
 import LoadingSpinner from './LoadingSpinner'
 import Header from './Header'
 import ErrorMessage from './ErrorMessage'
-import PrevNextButtons from './PrevNextButtons'
 import CardList from './CardList'
 
 // data
 import type { Data } from './util'
 import { useAppStore } from './store'
+import useSWRInfinite from 'swr/infinite'
 
 // refresh page after back Button
 window.addEventListener('popstate', () => {
   window.location.reload()
 })
 
+const getKey = (url: string) => {
+  return (
+    pageIndex: number,
+    previousPageData?: {
+      after?: string
+    },
+  ) => {
+    // reached the end
+    if (previousPageData && !previousPageData.after) {
+      return null
+    }
+
+    // first page, we don't have `previousPageData`
+    if (pageIndex === 0) {
+      return `${url}${url.includes('?') ? '&' : '?'}limit=25`
+    }
+
+    // add the cursor to the API endpoint
+    return `${url}${url.includes('?') ? '&' : '?'}after=${previousPageData?.after}&limit=25`
+  }
+}
+
 export default function App() {
   const store = useAppStore()
-  const { page, mode, infiniteScroll, val } = store
+  const { mode, val } = store
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.9,
   })
@@ -34,12 +55,18 @@ export default function App() {
     hot: '.json',
     new: '/new.json',
   } as Record<string, string>
-  const [recharge, setRecharge] = useState(false)
+  const isRecharging = useRef(false)
 
-  const url = `https://www.reddit.com/${val}${modeString[mode] || ''}${page ? `?after=${page}` : ''}`
+  const url = `https://www.reddit.com/${val}${modeString[mode] || ''}`
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { data, error, isLoading } = useSWR(url, async (url: string) => {
+  const {
+    data: data2,
+    size,
+    setSize,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    error,
+    isLoading,
+  } = useSWRInfinite(getKey(url), async (url: string) => {
     const res = await fetch(url)
     if (!res.ok) {
       throw new Error(`HTTP ${res.status} fetching ${url} ${await res.text()}`)
@@ -49,20 +76,28 @@ export default function App() {
     }
     return ret.data
   })
+  const data = data2?.flatMap(d => d.children).map(d => d.data)
+
+  // example for isLoadingMore from https://swr.vercel.app/examples/infinite-loading
+  const isLoadingMore =
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    isLoading || (size > 0 && data2 && data2[size - 1] === undefined)
 
   useEffect(() => {
     window.history.pushState(null, '', `?${queryString.stringify({ val })}`)
   }, [val])
 
   useEffect(() => {
-    if (isIntersecting && data?.after && !recharge && !isLoading) {
-      store.setPage(data.after)
-      setRecharge(true)
+    if (isIntersecting && !isRecharging.current && !isLoading) {
+      isRecharging.current = true
       setTimeout(() => {
-        setRecharge(false)
-      })
+        isRecharging.current = false
+        setSize(size + 1).catch((error: unknown) => {
+          console.error(error)
+        })
+      }, 1000)
     }
-  }, [recharge, isIntersecting, data?.after, store, isLoading])
+  }, [isIntersecting, setSize, size, isLoading])
 
   return (
     <div className="lg:m-5 relative">
@@ -77,16 +112,12 @@ export default function App() {
           <ErrorMessage error={error as unknown} />
         ) : data ? (
           <>
-            <CardList data={data} />
-            {infiniteScroll ? (
-              <div ref={ref} style={{ height: 400 }}>
-                {data.after
-                  ? 'Scroll all the way down to load more...'
-                  : 'No more posts'}
-              </div>
-            ) : (
-              <PrevNextButtons data={data} />
-            )}
+            <CardList posts={data} />
+            <div ref={ref} style={{ height: 400 }}>
+              {isLoadingMore
+                ? 'Loading...'
+                : 'Scroll all the way down to load more...'}
+            </div>
           </>
         ) : null}
       </div>

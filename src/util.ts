@@ -87,7 +87,7 @@ export interface Post {
       caption: string
     }[]
   }
-  crosspost_parent_list: Post[]
+  crosspost_parent_list?: Post[]
 }
 
 export interface Data {

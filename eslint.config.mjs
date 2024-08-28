@@ -56,6 +56,7 @@ export default tseslint.config(
           allow: ['error', 'warn'],
         },
       ],
+      curly: 'error',
 
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',

@@ -12,7 +12,6 @@ interface AppState {
   noGifs: boolean
   redGifsOnly: boolean
   fullscreen: boolean
-  infiniteScroll: boolean
   defaultPage: string
   page?: string
   prev?: string
@@ -26,7 +25,6 @@ interface AppState {
   confirmed: boolean
   clearRecentlyVisited: () => void
   setDefaultPage: (arg: string) => void
-  setInfiniteScroll: (arg: boolean) => void
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
   setDedupe: (arg: boolean) => void
@@ -46,12 +44,6 @@ const { mode, val } = queryString.parse(window.location.search)
 const filterSet = new Set(['page', 'prev', 'val'])
 
 export const settingsMap = {
-  infiniteScroll: [
-    'Infinite scroll?',
-    (f: boolean, store: AppState) => {
-      store.setInfiniteScroll(f)
-    },
-  ],
   noGifs: [
     'No gifs?',
     (f: boolean, store: AppState) => {
@@ -121,7 +113,6 @@ export const useAppStore = create<AppState>()(
   persist(
     set => ({
       defaultPage: '/r/funny',
-      infiniteScroll: false,
       noGifs: true,
       recentlyVisited: [],
       fullscreen: false,
@@ -140,11 +131,7 @@ export const useAppStore = create<AppState>()(
           recentlyVisited: [],
         }))
       },
-      setInfiniteScroll: flag => {
-        set(() => ({
-          infiniteScroll: flag,
-        }))
-      },
+
       setConfirmed: flag => {
         set(() => ({
           confirmed: flag,
