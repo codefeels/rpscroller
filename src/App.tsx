@@ -9,14 +9,9 @@ import ErrorMessage from './ErrorMessage'
 import CardList from './CardList'
 
 // data
-import type { Data } from './util'
+import type { RedditResponse } from './util'
 import { useAppStore } from './store'
 import useSWRInfinite from 'swr/infinite'
-
-// refresh page after back Button
-window.addEventListener('popstate', () => {
-  window.location.reload()
-})
 
 const getKey = (url: string) => {
   return (
@@ -65,29 +60,38 @@ export default function App() {
     setSize,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     error,
+    isValidating,
     isLoading,
   } = useSWRInfinite(getKey(url), async (url: string) => {
     const res = await fetch(url)
     if (!res.ok) {
       throw new Error(`HTTP ${res.status} fetching ${url} ${await res.text()}`)
     }
-    const ret = (await res.json()) as {
-      data: Data
-    }
+    const ret = (await res.json()) as RedditResponse
     return ret.data
   })
+
   const data = data2?.flatMap(d => d.children).map(d => d.data)
 
-  // example for isLoadingMore from https://swr.vercel.app/examples/infinite-loading
+  // these flags from https://swr.vercel.app/examples/infinite-loading
   const isLoadingMore =
-    isLoading || (size > 0 && data2 && data2[size - 1] === undefined)
+    isLoading || (size > 0 && data2?.[size - 1] === undefined)
+  const isEmpty = (data2?.[0]?.children.length ?? 0) === 0
+  const isReachingEnd = isEmpty || (data2?.at(-1)?.children.length ?? 0) < 25
+  const isRefreshing = isValidating && data2 && data2.length === size
 
   useEffect(() => {
     window.history.pushState(null, '', `?${queryString.stringify({ val })}`)
   }, [val])
 
   useEffect(() => {
-    if (isIntersecting && !isRecharging.current && !isLoading) {
+    if (
+      isIntersecting &&
+      !isRecharging.current &&
+      !isLoading &&
+      !isRefreshing &&
+      !isReachingEnd
+    ) {
       isRecharging.current = true
       setTimeout(() => {
         setSize(size + 1)
@@ -99,7 +103,7 @@ export default function App() {
           })
       }, 400)
     }
-  }, [isIntersecting, setSize, size, isLoading])
+  }, [isIntersecting, setSize, size, isReachingEnd, isRefreshing, isLoading])
 
   return (
     <div className="lg:m-5 relative">
@@ -122,6 +126,8 @@ export default function App() {
             >
               {isLoadingMore ? (
                 <LoadingSpinner />
+              ) : isReachingEnd ? (
+                'End of feed!'
               ) : (
                 'Scroll all the way down to load more...'
               )}

@@ -90,6 +90,10 @@ export interface Post {
   crosspost_parent_list?: Post[]
 }
 
+export interface RedditResponse {
+  data: Data
+}
+
 export interface Data {
   before?: string
   after?: string
