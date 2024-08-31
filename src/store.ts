@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import queryString from 'query-string'
 
-interface Favorite {
+export interface Favorite {
   visitedCount: number
   name: string
   dateAdded: Date

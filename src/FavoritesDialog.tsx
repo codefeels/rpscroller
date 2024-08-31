@@ -1,23 +1,23 @@
-import { isUserSubreddit, normalizeForDisplay, useAppStore } from './store'
-
+import { useEffect, useRef, useState } from 'react'
 import { formatDistance } from 'date-fns'
 import { IoMdHome } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
-import { useDialogShown } from './util'
-import { useEffect, useRef, useState } from 'react'
 import { FaChevronUp } from 'react-icons/fa6'
 import { FaChevronDown } from 'react-icons/fa6'
+import { type Favorite, normalizeForDisplay, useAppStore } from './store'
+import { useDialogShown } from './util'
 import Button from './Button'
 
 export default function Favorites({
   open,
   setOpen,
+  favorites,
 }: {
   open: boolean
   setOpen: (arg: boolean) => void
+  favorites: Favorite[]
 }) {
   const store = useAppStore()
-  const { favorites } = store
   const ref = useDialogShown(open)
   const ref2 = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -34,14 +34,7 @@ export default function Favorites({
   const [sortVisits, setSortVisits] = useState(-1)
   const [sortDateAdded, setSortDateAdded] = useState(0)
   const now = Date.now()
-  const favs = [
-    ...favorites
-      .filter(f => !isUserSubreddit(f.name))
-      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
-    ...favorites
-      .filter(f => isUserSubreddit(f.name))
-      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
-  ]
+  const favs = [...favorites]
     .map(f => ({ ...f, dateAdded: new Date(f.dateAdded) }))
     .sort((a, b) => (a.visitedCount - b.visitedCount) * sortVisits)
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)

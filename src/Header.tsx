@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
 import SettingsDialog from './SettingsDialog'
-import FavoritesDialog from './FavoritesDialog'
+import FavoriteSubredditsDialog from './FavoriteSubredditsDialog'
+import FavoriteUsersDialog from './FavoriteUsersDialog'
 import MakeMultiRedditDialog from './MakeMultiRedditDialog'
 
 import flame from './favicon.svg'
@@ -11,11 +12,16 @@ import { GiHamburgerMenu } from 'react-icons/gi'
 import HeaderMenu from './HeaderMenu'
 import { useAppStore } from './store'
 
+export type DialogTypes =
+  | 'settings'
+  | 'favoriteSubreddits'
+  | 'favoriteUsers'
+  | 'multi'
+  | undefined
+
 export default function Header() {
   const { keepMenuOpen } = useAppStore()
-  const [currentlyOpen, setCurrentlyOpen] = useState<
-    'settings' | 'favorites' | 'multi' | undefined
-  >()
+  const [currentlyOpen, setCurrentlyOpen] = useState<DialogTypes>()
 
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -65,8 +71,16 @@ export default function Header() {
           }}
         />
       ) : null}
-      {currentlyOpen === 'favorites' ? (
-        <FavoritesDialog
+      {currentlyOpen === 'favoriteUsers' ? (
+        <FavoriteUsersDialog
+          open
+          setOpen={() => {
+            setCurrentlyOpen(undefined)
+          }}
+        />
+      ) : null}
+      {currentlyOpen === 'favoriteSubreddits' ? (
+        <FavoriteSubredditsDialog
           open
           setOpen={() => {
             setCurrentlyOpen(undefined)
