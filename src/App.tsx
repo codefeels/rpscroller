@@ -42,6 +42,19 @@ export default function App() {
     threshold: 0.9,
   })
 
+  useEffect(() => {
+    function onPopState(event: PopStateEvent) {
+      if (event.state) {
+        store.setVal((event.state as { val: string }).val)
+      }
+    }
+    // Handle forward/back buttons
+    window.addEventListener('popstate', onPopState)
+    return () => {
+      window.removeEventListener('popstate', onPopState)
+    }
+  }, [store])
+
   const modeString = {
     topall: '/top.json?t=all',
     topmonth: '/top.json?t=month',
@@ -81,7 +94,7 @@ export default function App() {
   const isRefreshing = isValidating && data2 && data2.length === size
 
   useEffect(() => {
-    window.history.pushState(null, '', `?${queryString.stringify({ val })}`)
+    window.history.pushState({ val }, '', `?${queryString.stringify({ val })}`)
   }, [val])
 
   useEffect(() => {

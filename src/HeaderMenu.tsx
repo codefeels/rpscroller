@@ -51,7 +51,7 @@ export default function HeaderMenu({
           <FaShoppingCart className="inline" /> Multi-reddit maker
         </MenuItem>
         <hr />
-        <div>Most visited: </div>
+        <div>Most visited favs: </div>
         {favorites
           .sort((a, b) => b.visitedCount - a.visitedCount)
           .slice(0, 5)
