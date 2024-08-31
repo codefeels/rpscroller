@@ -1,4 +1,5 @@
 import { MdFavorite } from 'react-icons/md'
+import { MdBlock } from 'react-icons/md'
 import { hasFavorite, useAppStore } from './store'
 import type { Post } from './util'
 import Button from './Button'
@@ -6,6 +7,7 @@ import Button from './Button'
 export default function CardButtons({ post }: { post: Post }) {
   const store = useAppStore()
   const { author, subreddit_name_prefixed: subreddit } = post
+  const { blocked } = store
   return (
     <div>
       <div>
@@ -23,6 +25,15 @@ export default function CardButtons({ post }: { post: Post }) {
             }}
           >
             <MdFavorite className="inline" /> {`/u/${author}`}
+          </Button>
+        )}
+        {blocked.includes(author) ? null : (
+          <Button
+            onClick={() => {
+              store.setBlocked(author)
+            }}
+          >
+            <MdBlock className="inline" /> {`/u/${author}`}
           </Button>
         )}
       </div>

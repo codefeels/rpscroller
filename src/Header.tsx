@@ -4,18 +4,19 @@ import SettingsDialog from './SettingsDialog'
 import FavoriteSubredditsDialog from './FavoriteSubredditsDialog'
 import FavoriteUsersDialog from './FavoriteUsersDialog'
 import MakeMultiRedditDialog from './MakeMultiRedditDialog'
-
-import flame from './favicon.svg'
-
-// icons
-import { GiHamburgerMenu } from 'react-icons/gi'
+import BlockedUsersDialog from './BlockedUsersDialog'
 import HeaderMenu from './HeaderMenu'
 import { useAppStore } from './store'
+
+// icons
+import flame from './favicon.svg'
+import { GiHamburgerMenu } from 'react-icons/gi'
 
 export type DialogTypes =
   | 'settings'
   | 'favoriteSubreddits'
   | 'favoriteUsers'
+  | 'blocked'
   | 'multi'
   | undefined
 
@@ -81,6 +82,14 @@ export default function Header() {
       ) : null}
       {currentlyOpen === 'favoriteSubreddits' ? (
         <FavoriteSubredditsDialog
+          open
+          setOpen={() => {
+            setCurrentlyOpen(undefined)
+          }}
+        />
+      ) : null}
+      {currentlyOpen === 'blocked' ? (
+        <BlockedUsersDialog
           open
           setOpen={() => {
             setCurrentlyOpen(undefined)

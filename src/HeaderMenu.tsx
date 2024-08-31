@@ -2,6 +2,8 @@
 import { FaShoppingCart } from 'react-icons/fa'
 import { MdFavorite } from 'react-icons/md'
 import { IoIosSettings } from 'react-icons/io'
+import { MdBlock } from 'react-icons/md'
+
 import Link from './Link'
 import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
@@ -40,7 +42,7 @@ export default function HeaderMenu({
             setCurrentlyOpen('favoriteSubreddits')
           }}
         >
-          <MdFavorite className="inline" /> Favorite subreddits
+          <MdFavorite className="inline" /> Favorite subs
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -56,10 +58,15 @@ export default function HeaderMenu({
         >
           <FaShoppingCart className="inline" /> Multi-reddit maker
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setCurrentlyOpen('blocked')
+          }}
+        >
+          <MdBlock className="inline" /> Blocked users
+        </MenuItem>
         <hr />
-        <div>
-          Most visited <MdFavorite className="inline" /> subreddits:
-        </div>
+        <div>Most visited subreddits:</div>
         {favorites
           .filter(f => !isUserSubreddit(f.name))
           .sort((a, b) => b.visitedCount - a.visitedCount)
@@ -75,9 +82,7 @@ export default function HeaderMenu({
             </MenuItem>
           ))}
         <hr />
-        <div>
-          Most visited <MdFavorite className="inline" /> users:{' '}
-        </div>
+        <div>Most visited users: </div>
         {favorites
           .filter(f => isUserSubreddit(f.name))
           .sort((a, b) => b.visitedCount - a.visitedCount)
@@ -120,6 +125,15 @@ export default function HeaderMenu({
             rel="noreferrer"
           >
             Source code/about
+          </Link>
+        </div>
+        <div>
+          <Link
+            href="https://github.com/codefeels/rpscroller?tab=readme-ov-file#auto-unmute-redgifs"
+            target="_blank"
+            rel="noreferrer"
+          >
+            UserScript to auto-unmute redgifs videos
           </Link>
         </div>
       </div>

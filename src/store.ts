@@ -11,6 +11,7 @@ export interface Favorite {
 interface AppState {
   noGifs: boolean
   redGifsOnly: boolean
+  blocked: string[]
   fullscreen: boolean
   defaultPage: string
   keepMenuOpen: boolean
@@ -24,6 +25,8 @@ interface AppState {
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  setBlocked: (arg: string) => void
+  removeBlocked: (arg: string) => void
   clearRecentlyVisited: () => void
   setKeepMenuOpen: (arg: boolean) => void
   setDefaultPage: (arg: string) => void
@@ -120,6 +123,7 @@ export function hasFavorite(val: string, favorites: Favorite[]) {
 export const useAppStore = create<AppState>()(
   persist(
     set => ({
+      blocked: [],
       defaultPage: '/r/funny',
       noGifs: true,
       recentlyVisited: [],
@@ -140,7 +144,16 @@ export const useAppStore = create<AppState>()(
           recentlyVisited: [],
         }))
       },
-
+      setBlocked: user => {
+        set(state => ({
+          blocked: [...new Set([...state.blocked, user])],
+        }))
+      },
+      removeBlocked: user => {
+        set(state => ({
+          blocked: state.blocked.filter(f => f !== user),
+        }))
+      },
       setKeepMenuOpen: flag => {
         set(() => ({
           keepMenuOpen: flag,
