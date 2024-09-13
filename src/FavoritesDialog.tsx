@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { formatDistance } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
+// icons
 import { IoMdHome } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
-import { FaChevronUp } from 'react-icons/fa6'
-import { FaChevronDown } from 'react-icons/fa6'
+import { FaChevronUp, FaChevronDown } from 'react-icons/fa6'
+// other
 import { type Favorite, normalizeForDisplay, useAppStore } from './store'
 import Button from './Button'
 import BaseDialog from './BaseDialog'
@@ -12,22 +13,23 @@ export default function Favorites({
   open,
   setOpen,
   favorites,
+  title,
 }: {
   open: boolean
+  title: string
   setOpen: (arg: boolean) => void
   favorites: Favorite[]
 }) {
   const store = useAppStore()
   const [sortVisits, setSortVisits] = useState(-1)
   const [sortDateAdded, setSortDateAdded] = useState(0)
-  const now = Date.now()
   const favs = [...favorites]
     .map(f => ({ ...f, dateAdded: new Date(f.dateAdded) }))
     .sort((a, b) => (a.visitedCount - b.visitedCount) * sortVisits)
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
     <BaseDialog open={open} setOpen={setOpen}>
-      <h4>Favorites</h4>
+      <h4 className="font-extrabold">{title}</h4>
       {favorites.length === 0 ? (
         <div>No favorites</div>
       ) : (
@@ -96,7 +98,7 @@ export default function Favorites({
                   </td>
                   <td>{f.visitedCount}</td>
                   <td>
-                    {formatDistance(f.dateAdded, now, { addSuffix: true })}
+                    {formatDistanceToNow(f.dateAdded, { addSuffix: true })}
                   </td>
                   <td>
                     <Button
@@ -123,15 +125,6 @@ export default function Favorites({
           </table>
         </div>
       )}
-      <div>
-        <p>Legend:</p>
-        <div>
-          <IoMdHome className="inline" /> = Set as default page
-        </div>
-        <div>
-          <MdDelete className="inline" /> = Delete from favorites
-        </div>
-      </div>
     </BaseDialog>
   )
 }

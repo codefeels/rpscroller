@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { decode, type Post } from './util'
+// components
 import ImageCard from './ImageCard'
 import Button from './Button'
 

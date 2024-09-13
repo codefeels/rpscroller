@@ -65,20 +65,7 @@ export default function CardButtons({ post }: { post: Post }) {
             <MdFavorite className="inline" /> {subreddit}
           </Button>
         )}
-        <Button
-          onClick={() => {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            ;(async () => {
-              try {
-                await savePost(post)
-              } catch (error) {
-                console.error(error)
-              }
-            })()
-          }}
-        >
-          <FaSave className="inline" /> Save post
-        </Button>
+
         {val === 'savedposts' ? (
           <Button
             onClick={() => {
@@ -95,7 +82,22 @@ export default function CardButtons({ post }: { post: Post }) {
           >
             <FaSave className="inline" /> Remove from saved
           </Button>
-        ) : null}
+        ) : (
+          <Button
+            onClick={() => {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              ;(async () => {
+                try {
+                  await savePost(post)
+                } catch (error) {
+                  console.error(error)
+                }
+              })()
+            }}
+          >
+            <FaSave className="inline" /> Save post
+          </Button>
+        )}
       </div>
     </div>
   )

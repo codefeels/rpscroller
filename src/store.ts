@@ -22,6 +22,7 @@ interface AppState {
   showMostVisitedUsers: boolean
   showMostVisitedSubreddits: boolean
   showRecentlyVisited: boolean
+  headerOnBottomOfScreen: boolean
   prev?: string
   recentlyVisited: string[]
   mode: string
@@ -31,6 +32,7 @@ interface AppState {
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  setHeaderOnBottomOfScreen: (arg: boolean) => void
   forceRerender: () => void
   addList: (val: string, name: string) => void
   removeList: (name: string) => void
@@ -63,45 +65,51 @@ const filterSet = new Set(['page', 'prev', 'val'])
 
 export const settingsMap = {
   keepMenuOpen: [
-    'Keep menu open?',
+    'Keep menu open',
     (f: boolean, store: AppState) => {
       store.setKeepMenuOpen(f)
     },
   ],
   noGifs: [
-    'No gifs?',
+    'No gifs',
     (f: boolean, store: AppState) => {
       store.setNoGifs(f)
     },
   ],
   redGifsOnly: [
-    'RedGifs only?',
+    'RedGifs only',
     (f: boolean, store: AppState) => {
       store.setRedGifsOnly(f)
     },
   ],
   hideButtons: [
-    'Hide card Buttons?',
+    'Hide card Buttons',
     (f: boolean, store: AppState) => {
       store.setHideButtons(f)
     },
   ],
   dedupe: [
-    'De-duplicate posts?',
+    'De-duplicate posts',
     (f: boolean, store: AppState) => {
       store.setDedupe(f)
     },
   ],
   skipPinned: [
-    'Skip pinned posts?',
+    'Skip pinned posts',
     (f: boolean, store: AppState) => {
       store.setSkipPinned(f)
     },
   ],
   fullscreen: [
-    'Fullscreen?',
+    'Fullscreen',
     (f: boolean, store: AppState) => {
       store.setFullscreen(f)
+    },
+  ],
+  headerOnBottomOfScreen: [
+    'Put header on bottom of screen (better for mobile hand position maybe)',
+    (f: boolean, store: AppState) => {
+      store.setHeaderOnBottomOfScreen(f)
     },
   ],
 } as const
@@ -140,7 +148,9 @@ export const useAppStore = create<AppState>()(
       defaultPage: '/r/funny',
       noGifs: true,
       lists: [],
+      headerOnBottomOfScreen: false,
       recentlyVisited: [],
+      bottomOfScreen: false,
       fullscreen: false,
       rerenderCount: 0,
       showLists: false,
@@ -158,6 +168,9 @@ export const useAppStore = create<AppState>()(
       prev: undefined as string | undefined,
       val: `${val}`,
       favorites: [],
+      setHeaderOnBottomOfScreen: arg => {
+        set(() => ({ headerOnBottomOfScreen: arg }))
+      },
       forceRerender: () => {
         set(state => ({ rerenderCount: state.rerenderCount + 1 }))
       },

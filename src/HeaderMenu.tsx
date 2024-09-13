@@ -1,18 +1,25 @@
 // icons
-import { FaShoppingCart } from 'react-icons/fa'
-import { MdFavorite } from 'react-icons/md'
 import { IoIosSettings } from 'react-icons/io'
-import { FaPlus, FaTrash } from 'react-icons/fa'
-import { FaMinus } from 'react-icons/fa'
-import { MdBlock } from 'react-icons/md'
-import { FaSave } from 'react-icons/fa'
+import { MdBlock, MdFavorite } from 'react-icons/md'
+import {
+  FaSave,
+  FaMinus,
+  FaPlus,
+  FaShoppingCart,
+  FaTrash,
+} from 'react-icons/fa'
 
+// store
+import { isUserSubreddit, normalizeForDisplay, useAppStore } from './store'
+
+// components
 import Link from './Link'
 import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
-import { isUserSubreddit, normalizeForDisplay, useAppStore } from './store'
 import Button from './Button'
-import type { DialogTypes } from './Header'
+import Sorts from './Sorts'
+// utils
+import type { DialogTypes } from './HeaderHamburger'
 
 export default function HeaderMenu({
   setCurrentlyOpen,
@@ -28,19 +35,19 @@ export default function HeaderMenu({
     lists,
     favorites,
     recentlyVisited,
+    headerOnBottomOfScreen,
   } = store
 
   return (
     <div
-      className="absolute left-0 z-10 m-1 p-1 origin-top-right rounded-md shadow-lg focus:outline-none bg-white dark:bg-black max-h-screen overflow-auto"
+      className={`absolute ${headerOnBottomOfScreen ? 'right-0 bottom-10 origin-bottom-right' : 'origin-top-right left-0'} z-10 m-1 p-1 rounded-md shadow-lg focus:outline-none bg-white dark:bg-black max-h-[85vh] overflow-auto`}
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="menu-button"
     >
       <div className="max-w-3xl ">
-        <div>
-          <SearchBox />
-        </div>
+        <SearchBox />
+        <Sorts />
         <MenuItem
           onClick={() => {
             setCurrentlyOpen('settings')
@@ -53,7 +60,7 @@ export default function HeaderMenu({
             setCurrentlyOpen('favoriteSubreddits')
           }}
         >
-          <MdFavorite className="inline" /> Fav subreddits
+          <MdFavorite className="inline" /> Fav subs
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -83,6 +90,7 @@ export default function HeaderMenu({
         >
           <MdBlock className="inline" /> Blocked users
         </MenuItem>
+
         <hr />
         {lists.length > 0 ? (
           <div>

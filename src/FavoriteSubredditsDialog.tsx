@@ -13,6 +13,7 @@ export default function FavoriteSubredditsDialog({
 
   return (
     <Favorites
+      title="Favorite subreddits"
       open={open}
       setOpen={setOpen}
       favorites={[

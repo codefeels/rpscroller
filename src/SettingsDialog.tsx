@@ -1,7 +1,8 @@
 import BaseDialog from './BaseDialog'
+import Checkbox from './Checkbox'
 import { settingsMap, useAppStore } from './store'
 
-export default function Settings({
+export default function SettingsDialog({
   open,
   setOpen,
 }: {
@@ -14,17 +15,15 @@ export default function Settings({
       <h4>Settings</h4>
       {Object.entries(settingsMap).map(([key, [title, callback]]) => {
         return (
-          <div key={key}>
-            <input
-              id={key}
-              type="checkbox"
-              checked={store[key as keyof typeof store] as boolean}
-              onChange={event => {
-                callback(event.target.checked, store)
-              }}
-            />
-            <label htmlFor={key}>{title}</label>
-          </div>
+          <Checkbox
+            id={key}
+            key={key}
+            checked={store[key as keyof typeof store] as boolean}
+            label={title}
+            onChange={event => {
+              callback(event.target.checked, store)
+            }}
+          />
         )
       })}
     </BaseDialog>

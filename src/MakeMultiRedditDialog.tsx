@@ -6,12 +6,14 @@ import {
   useAppStore,
 } from './store'
 
+import { formatDistanceToNowStrict } from 'date-fns'
+// icons
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6'
+// components
 import Button from './Button'
-import { formatDistance } from 'date-fns'
 import BaseDialog from './BaseDialog'
 
-export default function MakeMultiReddit({
+export default function MakeMultiRedditDialog({
   open,
   setOpen,
 }: {
@@ -26,7 +28,6 @@ export default function MakeMultiReddit({
   const [listName, setListName] = useState('')
   const [creatingList, setCreatingList] = useState(true)
   const multiVal = `/r/${multi.map(s => s.replace('user/', 'u_').replace('r/', '')).join('+')}`
-  const now = Date.now()
   const favs = [
     ...favorites
       .filter(f => !isUserSubreddit(f.name))
@@ -130,7 +131,9 @@ export default function MakeMultiReddit({
                     </td>
                     <td>{f.visitedCount}</td>
                     <td>
-                      {formatDistance(f.dateAdded, now, { addSuffix: true })}
+                      {formatDistanceToNowStrict(f.dateAdded, {
+                        addSuffix: true,
+                      })}
                     </td>
                   </tr>
                 ))}
@@ -139,12 +142,14 @@ export default function MakeMultiReddit({
           </div>
         </div>
       ) : (
-        <div>
+        <div className="m-8">
           <form
             onSubmit={event => {
               event.preventDefault()
-              store.addList(multiVal, listName)
-              setOpen(false)
+              if (listName) {
+                store.addList(multiVal, listName)
+                setOpen(false)
+              }
             }}
           >
             <div>
@@ -158,8 +163,8 @@ export default function MakeMultiReddit({
                   setListName(event.target.value)
                 }}
               />
+              <Button type="submit">Submit</Button>
             </div>
-            <Button type="submit">Submit</Button>
           </form>
         </div>
       )}

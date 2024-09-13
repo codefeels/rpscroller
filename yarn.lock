@@ -1333,9 +1333,9 @@ escape-string-regexp@^4.0.0:
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
 eslint-plugin-react-hooks@next:
-  version "5.1.0-rc-94e652d5-20240912"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-5.1.0-rc-94e652d5-20240912.tgz#9538f8a0dc6e00e965c10acffb1d32c26cdb797a"
-  integrity sha512-m9GVeutJUdvfTIC/1f21NurvYm4daYbVZRfNOJEhL6oFB42uxrOBU2LJQSfixzm1px5QskS6rKInuadut4BYtQ==
+  version "5.1.0-rc-206df66e-20240912"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-5.1.0-rc-206df66e-20240912.tgz#64c9f5d58790ac43ce2574f1ac9c2ccce897bbcd"
+  integrity sha512-7ApoGzoavioLFz1Vb2eQKnA6S9zdCWFkMNe17uBHQ0n0o9j1UiZxzaQumHrPNXMJwvCR1nuvpHxHOg7tRKw81g==
 
 eslint-plugin-react-refresh@^0.4.7:
   version "0.4.11"

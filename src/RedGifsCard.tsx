@@ -20,10 +20,7 @@ function RedGifsCardLoaded({ post }: { post: Post }) {
 
 function RedGifsLoading() {
   return (
-    <div
-      style={{ width: '100%', height: '90vh' }}
-      className="flex flex-col animate-pulse space-y-4 m-20"
-    >
+    <div className="flex flex-col animate-pulse space-y-4 m-20 w-full h-[80vh]">
       <div className="rounded-full bg-slate-700 h-10 w-10" />
       <div className="rounded-full bg-slate-700 h-10 w-10" />
       <div className="rounded-full bg-slate-700 h-10 w-10" />
@@ -36,7 +33,7 @@ export default function RedGifsCard({ post }: { post: Post }) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.4,
   })
-  const [debouncedIsIntersecting] = useDebounceValue(isIntersecting, 2000)
+  const [debouncedIsIntersecting] = useDebounceValue(isIntersecting, 1000)
 
   return (
     <div ref={ref}>

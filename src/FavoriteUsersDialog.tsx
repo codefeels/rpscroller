@@ -13,6 +13,7 @@ export default function FavoriteUsersDialog({
 
   return (
     <Favorites
+      title="Favorite users"
       open={open}
       setOpen={setOpen}
       favorites={[
