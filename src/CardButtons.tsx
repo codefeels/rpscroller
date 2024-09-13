@@ -4,9 +4,10 @@ import { FaSave } from 'react-icons/fa'
 import { hasFavorite, useAppStore } from './store'
 import type { Post } from './util'
 import Button from './Button'
-import { db } from './savedPostsDb'
+import { dbPromise } from './savedPostsDb'
 
 async function savePost(post: Post) {
+  const db = await dbPromise
   await db.put('savedPosts', post, post.id)
 }
 

@@ -12,7 +12,7 @@ import CardList from './CardList'
 import type { Post, RedditResponse } from './util'
 import { useAppStore } from './store'
 import useSWRInfinite from 'swr/infinite'
-import { db } from './savedPostsDb'
+import { dbPromise } from './savedPostsDb'
 
 const getKey = (url: string) => {
   return (
@@ -44,6 +44,7 @@ function SavedPosts() {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     ;(async () => {
       try {
+        const db = await dbPromise
         const data = await db.getAll('savedPosts')
         setData(data)
       } catch (error) {
