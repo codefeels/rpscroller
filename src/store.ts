@@ -9,6 +9,7 @@ export interface Favorite {
 }
 
 interface AppState {
+  rerenderCount: number
   noGifs: boolean
   redGifsOnly: boolean
   blocked: string[]
@@ -30,6 +31,7 @@ interface AppState {
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  forceRerender: () => void
   addList: (val: string, name: string) => void
   removeList: (name: string) => void
   setBlocked: (arg: string) => void
@@ -140,6 +142,7 @@ export const useAppStore = create<AppState>()(
       lists: [],
       recentlyVisited: [],
       fullscreen: false,
+      rerenderCount: 0,
       showLists: false,
       showMostVisitedUsers: false,
       showMostVisitedSubreddits: false,
@@ -155,6 +158,9 @@ export const useAppStore = create<AppState>()(
       prev: undefined as string | undefined,
       val: `${val}`,
       favorites: [],
+      forceRerender: () => {
+        set(state => ({ rerenderCount: state.rerenderCount + 1 }))
+      },
       setShowMostVisitedUsers: arg => {
         set(() => ({ showMostVisitedUsers: arg }))
       },

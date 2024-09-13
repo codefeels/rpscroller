@@ -11,10 +11,14 @@ async function savePost(post: Post) {
   await db.put('savedPosts', post, post.id)
 }
 
+async function removeSavedPost(post: Post) {
+  const db = await dbPromise
+  await db.delete('savedPosts', post.id)
+}
 export default function CardButtons({ post }: { post: Post }) {
   const store = useAppStore()
   const { author, subreddit_name_prefixed: subreddit } = post
-  const { blocked } = store
+  const { val, blocked } = store
   return (
     <div>
       <div>
@@ -75,6 +79,23 @@ export default function CardButtons({ post }: { post: Post }) {
         >
           <FaSave className="inline" /> Save post
         </Button>
+        {val === 'savedposts' ? (
+          <Button
+            onClick={() => {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              ;(async () => {
+                try {
+                  await removeSavedPost(post)
+                  store.forceRerender()
+                } catch (error) {
+                  console.error(error)
+                }
+              })()
+            }}
+          >
+            <FaSave className="inline" /> Remove from saved
+          </Button>
+        ) : null}
       </div>
     </div>
   )

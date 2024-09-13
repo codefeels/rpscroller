@@ -39,6 +39,7 @@ const getKey = (url: string) => {
 function SavedPosts() {
   const [data, setData] = useState<Post[]>()
   const [error, setError] = useState<unknown>()
+  const [inc, setInc] = useState(0)
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -63,7 +64,12 @@ function SavedPosts() {
       ) : error ? (
         <ErrorMessage error={error as unknown} />
       ) : (
-        <CardList posts={data} />
+        <CardList
+          forceRerender={() => {
+            setInc(inc + 1)
+          }}
+          posts={data}
+        />
       )}
     </div>
   )
