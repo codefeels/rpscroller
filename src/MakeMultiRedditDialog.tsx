@@ -6,7 +6,7 @@ import {
   useAppStore,
 } from './store'
 
-import { FaCartShopping, FaChevronDown, FaChevronUp } from 'react-icons/fa6'
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa6'
 import Button from './Button'
 import { formatDistance } from 'date-fns'
 import BaseDialog from './BaseDialog'
@@ -21,9 +21,11 @@ export default function MakeMultiReddit({
   const store = useAppStore()
   const { favorites } = store
   const [multi, setMulti] = useState<string[]>([])
-  const multiVal = `/r/${multi.map(s => s.replace('user/', 'u_').replace('r/', '')).join('+')}`
   const [sortVisits, setSortVisits] = useState(-1)
   const [sortDateAdded, setSortDateAdded] = useState(0)
+  const [listName, setListName] = useState('')
+  const [creatingList, setCreatingList] = useState(true)
+  const multiVal = `/r/${multi.map(s => s.replace('user/', 'u_').replace('r/', '')).join('+')}`
   const now = Date.now()
   const favs = [
     ...favorites
@@ -38,110 +40,129 @@ export default function MakeMultiReddit({
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
     <BaseDialog open={open} setOpen={setOpen}>
-      <h4>
-        Make multi-reddit
+      {creatingList ? (
         <div>
-          <div>
-            <input id="multireddit" readOnly type="text" value={multiVal} />
-            <Button
-              onClick={() => {
-                store.setVal(multiVal)
-              }}
-            >
-              Submit
-            </Button>
-            <Button
-              onClick={() => {
-                setMulti([])
-              }}
-            >
-              Clear
-            </Button>
-          </div>
-        </div>
-      </h4>
+          <h4>
+            Make multi-reddit
+            <div>
+              <div>
+                <input id="multireddit" readOnly type="text" value={multiVal} />
+                <Button
+                  onClick={() => {
+                    setCreatingList(false)
+                  }}
+                >
+                  Create list
+                </Button>
+                <Button
+                  onClick={() => {
+                    setMulti([])
+                  }}
+                >
+                  Clear
+                </Button>
+              </div>
+            </div>
+          </h4>
 
-      <div className="max-h-[80vh] overflow-auto">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th className="whitespace-nowrap">
-                <Button
-                  onClick={() => {
-                    setSortDateAdded(0)
-                    if (sortVisits === 0) {
-                      setSortVisits(-1)
-                    } else if (sortVisits === -1) {
-                      setSortVisits(1)
-                    } else {
-                      setSortVisits(0)
-                    }
-                  }}
-                >
-                  # Visits{' '}
-                  {sortVisits === 1 ? (
-                    <FaChevronUp className="inline" />
-                  ) : sortVisits === -1 ? (
-                    <FaChevronDown className="inline" />
-                  ) : null}
-                </Button>
-              </th>
-              <th className="whitespace-nowrap">
-                <Button
-                  onClick={() => {
-                    setSortVisits(0)
-                    if (sortDateAdded === 0) {
-                      setSortDateAdded(-1)
-                    } else if (sortDateAdded === -1) {
-                      setSortDateAdded(1)
-                    } else {
-                      setSortDateAdded(0)
-                    }
-                  }}
-                >
-                  Date added{' '}
-                  {sortDateAdded === 1 ? (
-                    <FaChevronUp className="inline" />
-                  ) : sortDateAdded === -1 ? (
-                    <FaChevronDown className="inline" />
-                  ) : null}
-                </Button>
-              </th>
-              <th className="whitespace-nowrap">Add to multi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {favs.map(f => (
-              <tr key={f.name}>
-                <td className="whitespace-nowrap">
-                  <Button
-                    onClick={() => {
-                      store.setVal(f.name)
-                    }}
-                  >
-                    {normalizeForDisplay(f.name)}
-                  </Button>
-                </td>
-                <td>{f.visitedCount}</td>
-                <td>{formatDistance(f.dateAdded, now, { addSuffix: true })}</td>
-                <td>
-                  {multi.includes(normalizeSubreddit(f.name)) ? null : (
+          <div className="max-h-[80vh] overflow-auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th className="whitespace-nowrap">
                     <Button
-                      disabled={multi.includes(normalizeSubreddit(f.name))}
                       onClick={() => {
-                        setMulti([...multi, normalizeSubreddit(f.name)])
+                        setSortDateAdded(0)
+                        if (sortVisits === 0) {
+                          setSortVisits(-1)
+                        } else if (sortVisits === -1) {
+                          setSortVisits(1)
+                        } else {
+                          setSortVisits(0)
+                        }
                       }}
                     >
-                      <FaCartShopping className="inline" />
+                      # Visits{' '}
+                      {sortVisits === 1 ? (
+                        <FaChevronUp className="inline" />
+                      ) : sortVisits === -1 ? (
+                        <FaChevronDown className="inline" />
+                      ) : null}
                     </Button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                  </th>
+                  <th className="whitespace-nowrap">
+                    <Button
+                      onClick={() => {
+                        setSortVisits(0)
+                        if (sortDateAdded === 0) {
+                          setSortDateAdded(-1)
+                        } else if (sortDateAdded === -1) {
+                          setSortDateAdded(1)
+                        } else {
+                          setSortDateAdded(0)
+                        }
+                      }}
+                    >
+                      Date added{' '}
+                      {sortDateAdded === 1 ? (
+                        <FaChevronUp className="inline" />
+                      ) : sortDateAdded === -1 ? (
+                        <FaChevronDown className="inline" />
+                      ) : null}
+                    </Button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {favs.map(f => (
+                  <tr key={f.name}>
+                    <td className="whitespace-nowrap">
+                      <Button
+                        onClick={() => {
+                          if (!multi.includes(normalizeSubreddit(f.name))) {
+                            setMulti([...multi, normalizeSubreddit(f.name)])
+                          }
+                        }}
+                      >
+                        {normalizeForDisplay(f.name)}
+                      </Button>
+                    </td>
+                    <td>{f.visitedCount}</td>
+                    <td>
+                      {formatDistance(f.dateAdded, now, { addSuffix: true })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <form
+            onSubmit={event => {
+              event.preventDefault()
+              store.addList(multiVal, listName)
+              setOpen(false)
+            }}
+          >
+            <div>
+              <label htmlFor="listname">List name:</label>
+              <input
+                autoFocus
+                id="listname"
+                type="text"
+                value={listName}
+                onChange={event => {
+                  setListName(event.target.value)
+                }}
+              />
+            </div>
+            <Button type="submit">Submit</Button>
+          </form>
+        </div>
+      )}
     </BaseDialog>
   )
 }

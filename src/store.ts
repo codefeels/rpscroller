@@ -14,8 +14,13 @@ interface AppState {
   blocked: string[]
   fullscreen: boolean
   defaultPage: string
+  lists: { val: string; name: string }[]
   keepMenuOpen: boolean
   page?: string
+  showLists: boolean
+  showMostVisitedUsers: boolean
+  showMostVisitedSubreddits: boolean
+  showRecentlyVisited: boolean
   prev?: string
   recentlyVisited: string[]
   mode: string
@@ -25,6 +30,8 @@ interface AppState {
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  addList: (val: string, name: string) => void
+  removeList: (name: string) => void
   setBlocked: (arg: string) => void
   removeBlocked: (arg: string) => void
   clearRecentlyVisited: () => void
@@ -33,6 +40,10 @@ interface AppState {
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
   setDedupe: (arg: boolean) => void
+  setShowMostVisitedUsers: (arg: boolean) => void
+  setShowMostVisitedSubreddits: (arg: boolean) => void
+  setShowRecentlyVisited: (arg: boolean) => void
+  setShowLists: (arg: boolean) => void
   setNoGifs: (arg: boolean) => void
   setSkipPinned: (arg: boolean) => void
   setFullscreen: (arg: boolean) => void
@@ -126,8 +137,13 @@ export const useAppStore = create<AppState>()(
       blocked: [],
       defaultPage: '/r/funny',
       noGifs: true,
+      lists: [],
       recentlyVisited: [],
       fullscreen: false,
+      showLists: false,
+      showMostVisitedUsers: false,
+      showMostVisitedSubreddits: false,
+      showRecentlyVisited: false,
       redGifsOnly: false,
       hideButtons: false,
       skipPinned: false,
@@ -139,6 +155,29 @@ export const useAppStore = create<AppState>()(
       prev: undefined as string | undefined,
       val: `${val}`,
       favorites: [],
+      setShowMostVisitedUsers: arg => {
+        set(() => ({ showMostVisitedUsers: arg }))
+      },
+      setShowMostVisitedSubreddits: arg => {
+        set(() => ({ showMostVisitedSubreddits: arg }))
+      },
+      setShowLists: arg => {
+        set(() => ({ showLists: arg }))
+      },
+      setShowRecentlyVisited: arg => {
+        set(() => ({ showRecentlyVisited: arg }))
+      },
+
+      addList: (val: string, name: string) => {
+        set(state => ({
+          lists: [...state.lists, { val, name }],
+        }))
+      },
+      removeList: (name: string) => {
+        set(state => ({
+          lists: state.lists.filter(f => f.name !== name),
+        }))
+      },
       clearRecentlyVisited: () => {
         set(() => ({
           recentlyVisited: [],

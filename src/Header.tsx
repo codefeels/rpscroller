@@ -11,6 +11,7 @@ import { useAppStore } from './store'
 // icons
 import flame from './favicon.svg'
 import { GiHamburgerMenu } from 'react-icons/gi'
+import Sorts from './Sorts'
 
 export type DialogTypes =
   | 'settings'
@@ -44,24 +45,32 @@ export default function Header() {
   return (
     <div className="mb-10 sticky top-0 bg-inherit header">
       <h1>
-        <span ref={ref} className="relative">
-          <GiHamburgerMenu
-            className="h-8 w-8 inline hover:bg-gray-300 dark:hover:bg-gray-600"
-            onClick={() => {
-              setOpen(!open)
-            }}
-          />
-          {open ? (
-            <HeaderMenu
-              setCurrentlyOpen={arg => {
-                setCurrentlyOpen(arg)
-                setOpen(false)
-              }}
-            />
-          ) : null}
-        </span>{' '}
-        rpscroller{' '}
-        <img className="h-8 inline" src={flame} alt="app icon of flames" />
+        <div className="flex">
+          <div>
+            <span ref={ref} className="relative">
+              <GiHamburgerMenu
+                className="h-8 w-8 inline hover:bg-gray-300 dark:hover:bg-gray-600 mr-1"
+                onClick={() => {
+                  setOpen(!open)
+                }}
+              />
+              {open ? (
+                <HeaderMenu
+                  setCurrentlyOpen={arg => {
+                    setCurrentlyOpen(arg)
+                    setOpen(false)
+                  }}
+                />
+              ) : null}
+            </span>{' '}
+            <a href="/" className="mr-1">
+              rpscroller
+            </a>
+            <img className="h-8 inline" src={flame} alt="app icon of flames" />
+          </div>
+          <div className="grow" />
+          <Sorts />
+        </div>
       </h1>
 
       {currentlyOpen === 'settings' ? (

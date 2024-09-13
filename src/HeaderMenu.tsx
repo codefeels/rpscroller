@@ -2,7 +2,10 @@
 import { FaShoppingCart } from 'react-icons/fa'
 import { MdFavorite } from 'react-icons/md'
 import { IoIosSettings } from 'react-icons/io'
+import { FaPlus, FaTrash } from 'react-icons/fa'
+import { FaMinus } from 'react-icons/fa'
 import { MdBlock } from 'react-icons/md'
+import { FaSave } from 'react-icons/fa'
 
 import Link from './Link'
 import MenuItem from './MenuItem'
@@ -17,7 +20,15 @@ export default function HeaderMenu({
   setCurrentlyOpen: (arg: DialogTypes) => void
 }) {
   const store = useAppStore()
-  const { favorites, recentlyVisited } = store
+  const {
+    showMostVisitedSubreddits,
+    showMostVisitedUsers,
+    showRecentlyVisited,
+    showLists,
+    lists,
+    favorites,
+    recentlyVisited,
+  } = store
 
   return (
     <div
@@ -42,21 +53,28 @@ export default function HeaderMenu({
             setCurrentlyOpen('favoriteSubreddits')
           }}
         >
-          <MdFavorite className="inline" /> Favorite subs
+          <MdFavorite className="inline" /> Fav subreddits
         </MenuItem>
         <MenuItem
           onClick={() => {
             setCurrentlyOpen('favoriteUsers')
           }}
         >
-          <MdFavorite className="inline" /> Favorite users
+          <MdFavorite className="inline" /> Fav users
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            store.setVal('savedposts')
+          }}
+        >
+          <FaSave className="inline" /> Saved posts
         </MenuItem>
         <MenuItem
           onClick={() => {
             setCurrentlyOpen('multi')
           }}
         >
-          <FaShoppingCart className="inline" /> Multi-reddit maker
+          <FaShoppingCart className="inline" /> Make list
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -66,56 +84,144 @@ export default function HeaderMenu({
           <MdBlock className="inline" /> Blocked users
         </MenuItem>
         <hr />
-        <div>Most visited subreddits:</div>
-        {favorites
-          .filter(f => !isUserSubreddit(f.name))
-          .sort((a, b) => b.visitedCount - a.visitedCount)
-          .slice(0, 5)
-          .map(l => (
-            <MenuItem
-              key={l.name}
-              onClick={() => {
-                store.setVal(l.name)
-              }}
-            >
-              - {normalizeForDisplay(l.name)} ({l.visitedCount})
-            </MenuItem>
-          ))}
+        {lists.length > 0 ? (
+          <div>
+            <div>
+              Lists:{' '}
+              <Button
+                onClick={() => {
+                  store.setShowLists(!showLists)
+                }}
+              >
+                {showLists ? (
+                  <FaMinus className="inline" />
+                ) : (
+                  <FaPlus className="inline" />
+                )}
+              </Button>
+            </div>
+            {showLists
+              ? lists.map(l => (
+                  <MenuItem
+                    key={l.name}
+                    onClick={() => {
+                      store.setVal(l.val)
+                    }}
+                  >
+                    - {l.name}{' '}
+                    <Button
+                      onClick={() => {
+                        store.removeList(l.name)
+                      }}
+                    >
+                      <FaTrash />
+                    </Button>
+                  </MenuItem>
+                ))
+              : null}
+          </div>
+        ) : null}
         <hr />
-        <div>Most visited users: </div>
-        {favorites
-          .filter(f => isUserSubreddit(f.name))
-          .sort((a, b) => b.visitedCount - a.visitedCount)
-          .slice(0, 5)
-          .map(l => (
-            <MenuItem
-              key={l.name}
-              onClick={() => {
-                store.setVal(l.name)
-              }}
-            >
-              - {normalizeForDisplay(l.name)} ({l.visitedCount})
-            </MenuItem>
-          ))}
-        <hr />
-        <div>Recently visited: </div>
-        {recentlyVisited.map(l => (
-          <MenuItem
-            key={l}
+        <div>
+          Most visited subreddits:{' '}
+          <Button
             onClick={() => {
-              store.setVal(l)
+              store.setShowMostVisitedSubreddits(!showMostVisitedSubreddits)
             }}
           >
-            - {normalizeForDisplay(l)}
-          </MenuItem>
-        ))}
-        <Button
-          onClick={() => {
-            store.clearRecentlyVisited()
-          }}
-        >
-          Clear
-        </Button>
+            {showMostVisitedSubreddits ? (
+              <FaMinus className="inline" />
+            ) : (
+              <FaPlus className="inline" />
+            )}
+          </Button>
+        </div>
+        {showMostVisitedSubreddits
+          ? favorites
+              .filter(f => !isUserSubreddit(f.name))
+              .sort((a, b) => b.visitedCount - a.visitedCount)
+              .slice(0, 5)
+              .map(l => (
+                <MenuItem
+                  key={l.name}
+                  onClick={() => {
+                    store.setVal(l.name)
+                  }}
+                >
+                  - {normalizeForDisplay(l.name)} ({l.visitedCount})
+                </MenuItem>
+              ))
+          : null}
+        <hr />
+        <div>
+          Most visited users:{' '}
+          <Button
+            onClick={() => {
+              store.setShowMostVisitedUsers(!showMostVisitedUsers)
+            }}
+          >
+            {showMostVisitedUsers ? (
+              <FaMinus className="inline" />
+            ) : (
+              <FaPlus className="inline" />
+            )}
+          </Button>
+        </div>
+        {showMostVisitedUsers
+          ? favorites
+              .filter(f => isUserSubreddit(f.name))
+              .sort((a, b) => b.visitedCount - a.visitedCount)
+              .slice(0, 5)
+              .map(l => (
+                <MenuItem
+                  key={l.name}
+                  onClick={() => {
+                    store.setVal(l.name)
+                  }}
+                >
+                  - {normalizeForDisplay(l.name)} ({l.visitedCount})
+                </MenuItem>
+              ))
+          : null}
+        <hr />
+        <div>
+          Recently visited:
+          <Button
+            onClick={() => {
+              store.setShowRecentlyVisited(!showRecentlyVisited)
+            }}
+          >
+            {showRecentlyVisited ? (
+              <FaMinus className="inline" />
+            ) : (
+              <FaPlus className="inline" />
+            )}
+          </Button>
+        </div>
+        {showRecentlyVisited ? (
+          <div>
+            {recentlyVisited
+              .filter(f => f !== 'savedposts')
+              .map(l => (
+                <MenuItem
+                  key={l}
+                  onClick={() => {
+                    store.setVal(l)
+                  }}
+                >
+                  - {normalizeForDisplay(l)}
+                </MenuItem>
+              ))}
+            <Button
+              onClick={() => {
+                store.clearRecentlyVisited()
+              }}
+            >
+              Clear
+            </Button>
+          </div>
+        ) : null}
+
         <hr />
 
         <div>
@@ -125,15 +231,6 @@ export default function HeaderMenu({
             rel="noreferrer"
           >
             Source code/about
-          </Link>
-        </div>
-        <div>
-          <Link
-            href="https://github.com/codefeels/rpscroller?tab=readme-ov-file#auto-unmute-redgifs"
-            target="_blank"
-            rel="noreferrer"
-          >
-            UserScript to auto-unmute redgifs videos
           </Link>
         </div>
       </div>

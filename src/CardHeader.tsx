@@ -1,12 +1,12 @@
 import { formatDistance } from 'date-fns'
 // components
 import CardButtons from './CardButtons'
+import Link from './Link'
 // utils
 import { useAppStore } from './store'
 import { decode, type Post } from './util'
 // icons
 import { BiSolidUpvote } from 'react-icons/bi'
-import Link from './Link'
 
 export default function CardHeader({ post }: { post: Post }) {
   const { hideButtons } = useAppStore()

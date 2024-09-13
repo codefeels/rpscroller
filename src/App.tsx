@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import queryString from 'query-string'
 import { useIntersectionObserver } from 'usehooks-ts'
 
@@ -9,9 +9,10 @@ import ErrorMessage from './ErrorMessage'
 import CardList from './CardList'
 
 // data
-import type { RedditResponse } from './util'
+import type { Post, RedditResponse } from './util'
 import { useAppStore } from './store'
 import useSWRInfinite from 'swr/infinite'
+import { db } from './savedPostsDb'
 
 const getKey = (url: string) => {
   return (
@@ -35,7 +36,39 @@ const getKey = (url: string) => {
   }
 }
 
-export default function App() {
+function SavedPosts() {
+  const [data, setData] = useState<Post[]>()
+  const [error, setError] = useState<unknown>()
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    ;(async () => {
+      try {
+        const data = await db.getAll('savedPosts')
+        setData(data)
+      } catch (error) {
+        console.error(error)
+        setError(error)
+      }
+    })()
+  }, [])
+
+  return (
+    <div>
+      {data === undefined ? (
+        <div className="flex justify-center">
+          <LoadingSpinner />
+        </div>
+      ) : error ? (
+        <ErrorMessage error={error as unknown} />
+      ) : (
+        <CardList posts={data} />
+      )}
+    </div>
+  )
+}
+
+function RedditPosts() {
   const store = useAppStore()
   const { mode, val } = store
   const { isIntersecting, ref } = useIntersectionObserver({
@@ -119,35 +152,57 @@ export default function App() {
   }, [isIntersecting, setSize, size, isReachingEnd, isRefreshing, isLoading])
 
   return (
+    <div>
+      {isLoading ? (
+        <div className="flex justify-center">
+          <LoadingSpinner />
+        </div>
+      ) : error ? (
+        <ErrorMessage error={error as unknown} />
+      ) : data ? (
+        <>
+          <CardList posts={data} />
+          <div
+            ref={ref}
+            style={{ height: 400 }}
+            className="flex justify-center mt-10"
+          >
+            {isLoadingMore ? (
+              <LoadingSpinner />
+            ) : isReachingEnd ? (
+              'End of feed!'
+            ) : (
+              'Scroll all the way down to load more...'
+            )}
+          </div>
+        </>
+      ) : null}
+    </div>
+  )
+}
+
+export default function App() {
+  const store = useAppStore()
+  const { val } = store
+  useEffect(() => {
+    function onPopState(event: PopStateEvent) {
+      if (event.state) {
+        store.setVal((event.state as { val: string }).val)
+      }
+    }
+    // Handle forward/back buttons
+    window.addEventListener('popstate', onPopState)
+    return () => {
+      window.removeEventListener('popstate', onPopState)
+    }
+  }, [store])
+  useEffect(() => {
+    window.history.pushState({ val }, '', `?${queryString.stringify({ val })}`)
+  }, [val])
+  return (
     <div className="lg:m-5 relative">
       <Header />
-
-      <div>
-        {isLoading ? (
-          <div className="flex justify-center">
-            <LoadingSpinner />
-          </div>
-        ) : error ? (
-          <ErrorMessage error={error as unknown} />
-        ) : data ? (
-          <>
-            <CardList posts={data} />
-            <div
-              ref={ref}
-              style={{ height: 400 }}
-              className="flex justify-center mt-10"
-            >
-              {isLoadingMore ? (
-                <LoadingSpinner />
-              ) : isReachingEnd ? (
-                'End of feed!'
-              ) : (
-                'Scroll all the way down to load more...'
-              )}
-            </div>
-          </>
-        ) : null}
-      </div>
+      {val === 'savedposts' ? <SavedPosts /> : <RedditPosts />}
     </div>
   )
 }

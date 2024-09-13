@@ -31,7 +31,7 @@ export default function Sorts() {
   }, [])
 
   return (
-    <span ref={ref} className="relative">
+    <div ref={ref}>
       <Button
         onClick={() => {
           setShowMenu(showMenu => !showMenu)
@@ -73,6 +73,6 @@ export default function Sorts() {
           })}
         </div>
       ) : null}
-    </span>
+    </div>
   )
 }

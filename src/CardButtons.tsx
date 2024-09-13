@@ -1,8 +1,14 @@
 import { MdFavorite } from 'react-icons/md'
 import { MdBlock } from 'react-icons/md'
+import { FaSave } from 'react-icons/fa'
 import { hasFavorite, useAppStore } from './store'
 import type { Post } from './util'
 import Button from './Button'
+import { db } from './savedPostsDb'
+
+async function savePost(post: Post) {
+  await db.put('savedPosts', post, post.id)
+}
 
 export default function CardButtons({ post }: { post: Post }) {
   const store = useAppStore()
@@ -33,7 +39,7 @@ export default function CardButtons({ post }: { post: Post }) {
               store.setBlocked(author)
             }}
           >
-            <MdBlock className="inline" /> {`/u/${author}`}
+            <MdBlock className="inline" /> Block {`/u/${author}`}
           </Button>
         )}
       </div>
@@ -54,6 +60,20 @@ export default function CardButtons({ post }: { post: Post }) {
             <MdFavorite className="inline" /> {subreddit}
           </Button>
         )}
+        <Button
+          onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            ;(async () => {
+              try {
+                await savePost(post)
+              } catch (error) {
+                console.error(error)
+              }
+            })()
+          }}
+        >
+          <FaSave className="inline" /> Save post
+        </Button>
       </div>
     </div>
   )

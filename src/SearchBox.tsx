@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { hasFavorite, useAppStore } from './store'
 import { MdFavorite } from 'react-icons/md'
 import Button from './Button'
-import Sorts from './Sorts'
 
 export default function SearchBox() {
   const store = useAppStore()
@@ -19,7 +18,7 @@ export default function SearchBox() {
         store.setVal(text)
       }}
     >
-      <div className="max-w-full">
+      <div className="max-w-full flex">
         <input
           id="box"
           type="text"
@@ -39,8 +38,6 @@ export default function SearchBox() {
             <MdFavorite className="inline" />
           </Button>
         )}
-
-        <Sorts />
       </div>
     </form>
   )
