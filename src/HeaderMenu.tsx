@@ -18,13 +18,15 @@ import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
 import Button from './Button'
 import Sorts from './Sorts'
+import BaseDialog from './BaseDialog'
+
 // utils
 import type { DialogTypes } from './HeaderHamburger'
 
 export default function HeaderMenu({
-  setCurrentlyOpen,
+  setOpen,
 }: {
-  setCurrentlyOpen: (arg: DialogTypes) => void
+  setOpen: (arg: DialogTypes) => void
 }) {
   const store = useAppStore()
   const {
@@ -35,36 +37,35 @@ export default function HeaderMenu({
     lists,
     favorites,
     recentlyVisited,
-    headerOnBottomOfScreen,
   } = store
 
   return (
-    <div
-      className={`absolute ${headerOnBottomOfScreen ? 'right-0 bottom-10 origin-bottom-right' : 'origin-top-right left-0'} z-10 m-1 p-1 rounded-md shadow-lg focus:outline-none bg-white dark:bg-black max-h-[85vh] overflow-auto`}
-      role="menu"
-      aria-orientation="vertical"
-      aria-labelledby="menu-button"
+    <BaseDialog
+      open
+      setOpen={() => {
+        setOpen(undefined)
+      }}
     >
       <div className="max-w-3xl ">
         <SearchBox />
         <Sorts />
         <MenuItem
           onClick={() => {
-            setCurrentlyOpen('settings')
+            setOpen('settings')
           }}
         >
           <IoIosSettings className="inline" /> Settings
         </MenuItem>
         <MenuItem
           onClick={() => {
-            setCurrentlyOpen('favoriteSubreddits')
+            setOpen('favoriteSubreddits')
           }}
         >
           <MdFavorite className="inline" /> Fav subs
         </MenuItem>
         <MenuItem
           onClick={() => {
-            setCurrentlyOpen('favoriteUsers')
+            setOpen('favoriteUsers')
           }}
         >
           <MdFavorite className="inline" /> Fav users
@@ -78,14 +79,14 @@ export default function HeaderMenu({
         </MenuItem>
         <MenuItem
           onClick={() => {
-            setCurrentlyOpen('multi')
+            setOpen('multi')
           }}
         >
           <FaShoppingCart className="inline" /> Make list
         </MenuItem>
         <MenuItem
           onClick={() => {
-            setCurrentlyOpen('blocked')
+            setOpen('blocked')
           }}
         >
           <MdBlock className="inline" /> Blocked users
@@ -242,6 +243,6 @@ export default function HeaderMenu({
           </Link>
         </div>
       </div>
-    </div>
+    </BaseDialog>
   )
 }

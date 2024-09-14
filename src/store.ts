@@ -16,7 +16,6 @@ interface AppState {
   fullscreen: boolean
   defaultPage: string
   lists: { val: string; name: string }[]
-  keepMenuOpen: boolean
   page?: string
   showLists: boolean
   showMostVisitedUsers: boolean
@@ -39,7 +38,6 @@ interface AppState {
   setBlocked: (arg: string) => void
   removeBlocked: (arg: string) => void
   clearRecentlyVisited: () => void
-  setKeepMenuOpen: (arg: boolean) => void
   setDefaultPage: (arg: string) => void
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
@@ -64,14 +62,8 @@ const { mode, val } = queryString.parse(window.location.search)
 const filterSet = new Set(['page', 'prev', 'val'])
 
 export const settingsMap = {
-  keepMenuOpen: [
-    'Keep menu open',
-    (f: boolean, store: AppState) => {
-      store.setKeepMenuOpen(f)
-    },
-  ],
   noGifs: [
-    'No gifs',
+    'No gifs (the slow, old file format)',
     (f: boolean, store: AppState) => {
       store.setNoGifs(f)
     },
@@ -160,7 +152,6 @@ export const useAppStore = create<AppState>()(
       redGifsOnly: false,
       hideButtons: false,
       skipPinned: false,
-      keepMenuOpen: false,
       dedupe: false,
       confirmed: false,
       mode: `${mode ?? ''}` || 'hot',
@@ -212,12 +203,6 @@ export const useAppStore = create<AppState>()(
           blocked: state.blocked.filter(f => f !== user),
         }))
       },
-      setKeepMenuOpen: flag => {
-        set(() => ({
-          keepMenuOpen: flag,
-        }))
-      },
-
       setConfirmed: flag => {
         set(() => ({
           confirmed: flag,

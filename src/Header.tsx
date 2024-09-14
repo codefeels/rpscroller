@@ -8,7 +8,7 @@ export default function Header() {
   const { headerOnBottomOfScreen } = useAppStore()
   return (
     <div
-      className={`bg-inherit header ${headerOnBottomOfScreen ? 'fixed bottom-0 right-0' : 'sticky top-0 mb-10'}`}
+      className={`bg-initial header p-2 ${headerOnBottomOfScreen ? 'fixed bottom-0 right-0' : 'sticky top-0'}`}
     >
       <HeaderHamburger />
       <button
