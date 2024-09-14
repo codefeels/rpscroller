@@ -16,7 +16,11 @@ function LargeScreen({
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      if (
+        ref.current &&
+        !ref.current.contains(event.target as Node) &&
+        (event.target as HTMLElement).id !== 'menubutton'
+      ) {
         onClose()
       }
     }

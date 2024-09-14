@@ -6,13 +6,14 @@ import { GiHamburgerMenu } from 'react-icons/gi'
 
 // lazies
 const HeaderMenu = lazy(() => import('./HeaderMenu'))
+const AboutDialog = lazy(() => import('./AboutDialog'))
 const SettingsDialog = lazy(() => import('./SettingsDialog'))
 const FavoriteUsersDialog = lazy(() => import('./FavoriteUsersDialog'))
+const BlockedUsersDialog = lazy(() => import('./BlockedUsersDialog'))
+const MakeMultiRedditDialog = lazy(() => import('./MakeMultiRedditDialog'))
 const FavoriteSubredditsDialog = lazy(
   () => import('./FavoriteSubredditsDialog'),
 )
-const BlockedUsersDialog = lazy(() => import('./BlockedUsersDialog'))
-const MakeMultiRedditDialog = lazy(() => import('./MakeMultiRedditDialog'))
 
 export type DialogTypes =
   | 'settings'
@@ -21,6 +22,7 @@ export type DialogTypes =
   | 'blocked'
   | 'multi'
   | 'menu'
+  | 'about'
   | undefined
 
 export default function HeaderHamburger() {
@@ -31,9 +33,10 @@ export default function HeaderHamburger() {
   return (
     <span ref={ref} className={headerOnBottomOfScreen ? undefined : 'relative'}>
       <GiHamburgerMenu
+        id="menubutton"
         className="h-8 w-8 inline hover:bg-gray-300 dark:hover:bg-gray-600 mr-1"
         onClick={() => {
-          setCurrentlyOpen('menu')
+          setCurrentlyOpen(currentlyOpen === 'menu' ? undefined : 'menu')
         }}
       />
       <Suspense fallback={null}>
@@ -79,6 +82,14 @@ export default function HeaderHamburger() {
         ) : null}
         {currentlyOpen === 'multi' ? (
           <MakeMultiRedditDialog
+            open
+            onClose={() => {
+              setCurrentlyOpen(undefined)
+            }}
+          />
+        ) : null}
+        {currentlyOpen === 'about' ? (
+          <AboutDialog
             open
             onClose={() => {
               setCurrentlyOpen(undefined)

@@ -13,7 +13,6 @@ import {
 import { isUserSubreddit, normalizeForDisplay, useAppStore } from './store'
 
 // components
-import Link from './Link'
 import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
 import Button from './Button'
@@ -233,15 +232,13 @@ export default function HeaderMenu({
 
         <hr />
 
-        <div>
-          <Link
-            href="https://github.com/codefeels/rpscroller/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Source code/about
-          </Link>
-        </div>
+        <MenuItem
+          onClick={() => {
+            setOpen('about')
+          }}
+        >
+          About
+        </MenuItem>
       </div>
     </HeaderMenuWrapper>
   )
