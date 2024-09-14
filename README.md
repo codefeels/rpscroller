@@ -10,7 +10,12 @@ Feel free to make feature requests in the issues
 
 ## Auto-unmute redgifs
 
-Install ViolentMonkey (doesn't seem to work in GreaseMonkey)
+RedGifs doesn't remember the volume setting across iframes, so you need to use a
+UserScript.
 
-Then install this user script
-https://greasyfork.org/en/scripts/506117-auto-unmute-redgifs
+Steps:
+
+1. Install ViolentMonkey (doesn't seem to work in GreaseMonkey)
+
+2. Then install this user script
+   https://greasyfork.org/en/scripts/506117-auto-unmute-redgifs
