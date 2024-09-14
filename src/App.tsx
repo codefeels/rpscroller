@@ -1,10 +1,11 @@
 import { lazy, Suspense, useEffect } from 'react'
-import queryString from 'query-string'
 
 // components
 import Header from './Header'
+
 // data
 import { useAppStore } from './store'
+
 // lazies
 const RedditPostFeed = lazy(() => import('./RedditPostFeed'))
 const SavedPostFeed = lazy(() => import('./SavedPostFeed'))
@@ -28,7 +29,9 @@ export default function App() {
 
   // update URL
   useEffect(() => {
-    window.history.pushState({ val }, '', `?${queryString.stringify({ val })}`)
+    const params = new URLSearchParams(window.location.search)
+    params.set('val', val)
+    window.history.pushState({ val }, '', `?${params.toString()}`)
   }, [val])
 
   return (

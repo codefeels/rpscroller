@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import queryString from 'query-string'
 
 export interface Favorite {
   visitedCount: number
@@ -57,7 +56,9 @@ interface AppState {
   removeFavorite: (arg: string) => void
 }
 
-const { mode, val } = queryString.parse(window.location.search)
+const params = new URLSearchParams(window.location.search)
+const mode = params.get('mode')
+const val = params.get('val')
 
 const filterSet = new Set(['page', 'prev', 'val'])
 
@@ -154,7 +155,7 @@ export const useAppStore = create<AppState>()(
       skipPinned: false,
       dedupe: false,
       confirmed: false,
-      mode: `${mode ?? ''}` || 'hot',
+      mode: mode || 'hot',
       page: undefined as string | undefined,
       prev: undefined as string | undefined,
       val: `${val}`,
@@ -313,7 +314,7 @@ export const useAppStore = create<AppState>()(
         return state => {
           if (state) {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            state.val = `${val || ''}` || state.defaultPage
+            state.val = val || '' || state.defaultPage
           }
         }
       },

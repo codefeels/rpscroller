@@ -1,4 +1,4 @@
-import { formatDistance } from 'date-fns'
+import { formatDistanceToNowStrict } from 'date-fns'
 // components
 import CardButtons from './CardButtons'
 import Link from './Link'
@@ -21,7 +21,7 @@ export default function CardHeader({ post }: { post: Post }) {
     <div>
       <h4 className="inline">
         {decode(title)} (
-        {formatDistance(new Date(post.created * 1000), new Date(), {
+        {formatDistanceToNowStrict(new Date(post.created * 1000), {
           addSuffix: true,
         })}
         ) [{post.score} <BiSolidUpvote className="inline" />]

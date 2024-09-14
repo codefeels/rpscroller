@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import queryString from 'query-string'
 import { useIntersectionObserver } from 'usehooks-ts'
 
 // components
@@ -91,10 +90,6 @@ export default function RedditPostFeed() {
   const isEmpty = (data2?.[0]?.children.length ?? 0) === 0
   const isReachingEnd = isEmpty || (data2?.at(-1)?.children.length ?? 0) < 25
   const isRefreshing = isValidating && data2 && data2.length === size
-
-  useEffect(() => {
-    window.history.pushState({ val }, '', `?${queryString.stringify({ val })}`)
-  }, [val])
 
   useEffect(() => {
     if (
