@@ -1,12 +1,13 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import queryString from 'query-string'
 
 // components
 import Header from './Header'
-import SavedPostFeed from './SavedPostFeed'
-import RedditPostFeed from './RedditPostFeed'
 // data
 import { useAppStore } from './store'
+// lazies
+const RedditPostFeed = lazy(() => import('./RedditPostFeed'))
+const SavedPostFeed = lazy(() => import('./SavedPostFeed'))
 
 export default function App() {
   const store = useAppStore()
@@ -33,7 +34,9 @@ export default function App() {
   return (
     <div className="lg:m-5 relative">
       <Header />
-      {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
+      <Suspense fallback={null}>
+        {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
+      </Suspense>
     </div>
   )
 }

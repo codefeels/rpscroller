@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef, useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useAppStore } from './store'
 
 // icons
@@ -28,10 +28,9 @@ export type DialogTypes =
 export default function HeaderHamburger() {
   const { headerOnBottomOfScreen } = useAppStore()
   const [currentlyOpen, setCurrentlyOpen] = useState<DialogTypes>()
-  const ref = useRef<HTMLDivElement>(null)
 
   return (
-    <span ref={ref} className={headerOnBottomOfScreen ? undefined : 'relative'}>
+    <span className={headerOnBottomOfScreen ? undefined : 'relative'}>
       <GiHamburgerMenu
         id="menubutton"
         className="h-8 w-8 inline hover:bg-gray-300 dark:hover:bg-gray-600 mr-1"

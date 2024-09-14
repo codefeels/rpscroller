@@ -1,10 +1,12 @@
+import { lazy } from 'react'
 // components
-import GalleryCard from './GalleryCard'
 import ImageCard from './ImageCard'
 import CardHeader from './CardHeader'
-import RedGifsCard from './RedGifsCard'
 // type
 import type { Post } from './util'
+// lazies
+const RedGifsCard = lazy(() => import('./RedGifsCard'))
+const GalleryCard = lazy(() => import('./GalleryCard'))
 
 function isPic(url: string) {
   return (
