@@ -70,6 +70,12 @@ export function deduplicate<T>(list: T[], hasher: Hasher<T> = JSON.stringify) {
   return clone
 }
 
+interface GalleryEntry {
+  s: {
+    u?: string
+    gif?: string
+  }
+}
 export interface Post {
   score: number
   created: number
@@ -80,7 +86,7 @@ export interface Post {
   url: string
   permalink: string
   author: string
-  media_metadata?: Record<string, { s: { u: string } }>
+  media_metadata?: Record<string, GalleryEntry>
   gallery_data?: {
     items?: {
       media_id: string

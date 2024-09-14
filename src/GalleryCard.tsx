@@ -11,11 +11,9 @@ export default function GalleryCard({ post }: { post: Post }) {
     gallery_data?.items ?? crosspost_parent_list?.[0]?.gallery_data?.items
   const media_metadata =
     post.media_metadata ?? crosspost_parent_list?.[0]?.media_metadata
-  if (!items) {
-    return <div>Unknown gallery format</div>
-  }
-  const { media_id = '', caption = '' } = items[frame] ?? {}
-  return (
+
+  const { media_id = '', caption = '' } = items?.[frame] ?? {}
+  return items ? (
     <div>
       <div className="text-center">
         {caption} {frame + 1}/{items.length}
@@ -23,7 +21,11 @@ export default function GalleryCard({ post }: { post: Post }) {
 
       <ImageCard
         title={caption}
-        url={decode(media_metadata?.[media_id]?.s.u ?? '')}
+        url={decode(
+          media_metadata?.[media_id]?.s.u ??
+            media_metadata?.[media_id]?.s.gif ??
+            '',
+        )}
       />
 
       <div className={'flex justify-center'}>
@@ -45,5 +47,7 @@ export default function GalleryCard({ post }: { post: Post }) {
         </Button>
       </div>
     </div>
+  ) : (
+    <div>Unknown gallery format</div>
   )
 }

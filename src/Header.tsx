@@ -11,14 +11,8 @@ export default function Header() {
       className={`bg-initial header p-2 ${headerOnBottomOfScreen ? 'fixed bottom-0 right-0' : 'sticky top-0'}`}
     >
       <HeaderHamburger />
-      <button
-        onClick={() => {
-          window.scrollTo(0, 0)
-        }}
-      >
-        rpscroller
-        <img className="h-8 inline" src={flame} alt="app icon" />
-      </button>
+      rpscroller
+      <img className="h-8 inline" src={flame} alt="app icon" />
     </div>
   )
 }
