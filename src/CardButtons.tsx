@@ -18,7 +18,9 @@ async function removeSavedPost(post: Post) {
 export default function CardButtons({ post }: { post: Post }) {
   const store = useAppStore()
   const { author, subreddit_name_prefixed: subreddit } = post
-  const { val, blocked } = store
+  const { val, favorites, blocked } = store
+  const hasFavUser = hasFavorite(`/user/${author}`, favorites)
+  const hasFavSub = hasFavorite(subreddit, store.favorites)
   return (
     <div>
       <div>
@@ -29,7 +31,7 @@ export default function CardButtons({ post }: { post: Post }) {
         >
           Browse {`/u/${author}`}
         </Button>
-        {hasFavorite(`/user/${author}`, store.favorites) ? null : (
+        {hasFavUser ? null : (
           <Button
             onClick={() => {
               store.addFavorite(`/user/${author}`)
@@ -38,7 +40,7 @@ export default function CardButtons({ post }: { post: Post }) {
             <MdFavorite className="inline" /> {`/u/${author}`}
           </Button>
         )}
-        {blocked.includes(author) ? null : (
+        {hasFavUser || blocked.includes(author) ? null : (
           <Button
             onClick={() => {
               store.setBlocked(author)
@@ -56,7 +58,7 @@ export default function CardButtons({ post }: { post: Post }) {
         >
           Browse {subreddit}
         </Button>
-        {hasFavorite(subreddit, store.favorites) ? null : (
+        {hasFavSub ? null : (
           <Button
             onClick={() => {
               store.addFavorite(subreddit)
