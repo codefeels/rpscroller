@@ -1,0 +1,2 @@
+import{u as a,j as m,i as p}from"./index-Bbcy9onJ.js";import{F as n}from"./FavoritesDialog-wQxtjbTX.js";import"./index-BFparOZP.js";import"./index-C-IyZe3C.js";import"./BaseDialog-DOGZryNy.js";function c({open:e,onClose:o}){const r=a(),{favorites:s}=r;return m.jsx(n,{title:"Favorite subreddits",open:e,onClose:o,favorites:[...s.filter(t=>!p(t.name)).sort((t,i)=>t.name.toLowerCase().localeCompare(i.name.toLowerCase()))]})}export{c as default};
+//# sourceMappingURL=FavoriteSubredditsDialog-DBtXLZHU.js.map
