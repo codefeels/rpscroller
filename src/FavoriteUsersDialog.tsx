@@ -3,10 +3,10 @@ import Favorites from './FavoritesDialog'
 
 export default function FavoriteUsersDialog({
   open,
-  setOpen,
+  onClose,
 }: {
   open: boolean
-  setOpen: (arg: boolean) => void
+  onClose: () => void
 }) {
   const store = useAppStore()
   const { favorites } = store
@@ -15,7 +15,7 @@ export default function FavoriteUsersDialog({
     <Favorites
       title="Favorite users"
       open={open}
-      setOpen={setOpen}
+      onClose={onClose}
       favorites={[
         ...favorites
           .filter(f => isUserSubreddit(f.name))

@@ -4,14 +4,14 @@ import { settingsMap, useAppStore } from './store'
 
 export default function SettingsDialog({
   open,
-  setOpen,
+  onClose,
 }: {
   open: boolean
-  setOpen: (arg: boolean) => void
+  onClose: () => void
 }) {
   const store = useAppStore()
   return (
-    <BaseDialog open={open} setOpen={setOpen}>
+    <BaseDialog open={open} onClose={onClose}>
       <h4>Settings</h4>
       {Object.entries(settingsMap).map(([key, [title, callback]]) => {
         return (

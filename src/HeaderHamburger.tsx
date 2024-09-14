@@ -20,12 +20,12 @@ export type DialogTypes =
   | 'favoriteUsers'
   | 'blocked'
   | 'multi'
+  | 'menu'
   | undefined
 
 export default function HeaderHamburger() {
   const { headerOnBottomOfScreen } = useAppStore()
   const [currentlyOpen, setCurrentlyOpen] = useState<DialogTypes>()
-  const [menuOpen, setMenuOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
   return (
@@ -33,15 +33,14 @@ export default function HeaderHamburger() {
       <GiHamburgerMenu
         className="h-8 w-8 inline hover:bg-gray-300 dark:hover:bg-gray-600 mr-1"
         onClick={() => {
-          setMenuOpen(true)
+          setCurrentlyOpen('menu')
         }}
       />
       <Suspense fallback={null}>
-        {menuOpen ? (
+        {currentlyOpen === 'menu' ? (
           <HeaderMenu
             setOpen={arg => {
               setCurrentlyOpen(arg)
-              setMenuOpen(false)
             }}
           />
         ) : null}
@@ -49,7 +48,7 @@ export default function HeaderHamburger() {
         {currentlyOpen === 'settings' ? (
           <SettingsDialog
             open
-            setOpen={() => {
+            onClose={() => {
               setCurrentlyOpen(undefined)
             }}
           />
@@ -57,7 +56,7 @@ export default function HeaderHamburger() {
         {currentlyOpen === 'favoriteUsers' ? (
           <FavoriteUsersDialog
             open
-            setOpen={() => {
+            onClose={() => {
               setCurrentlyOpen(undefined)
             }}
           />
@@ -65,7 +64,7 @@ export default function HeaderHamburger() {
         {currentlyOpen === 'favoriteSubreddits' ? (
           <FavoriteSubredditsDialog
             open
-            setOpen={() => {
+            onClose={() => {
               setCurrentlyOpen(undefined)
             }}
           />
@@ -73,7 +72,7 @@ export default function HeaderHamburger() {
         {currentlyOpen === 'blocked' ? (
           <BlockedUsersDialog
             open
-            setOpen={() => {
+            onClose={() => {
               setCurrentlyOpen(undefined)
             }}
           />
@@ -81,7 +80,7 @@ export default function HeaderHamburger() {
         {currentlyOpen === 'multi' ? (
           <MakeMultiRedditDialog
             open
-            setOpen={() => {
+            onClose={() => {
               setCurrentlyOpen(undefined)
             }}
           />

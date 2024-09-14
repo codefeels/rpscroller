@@ -5,15 +5,15 @@ import BaseDialog from './BaseDialog'
 
 export default function BlockedUsersDialog({
   open,
-  setOpen,
+  onClose,
 }: {
   open: boolean
-  setOpen: (arg: boolean) => void
+  onClose: () => void
 }) {
   const store = useAppStore()
   const { blocked } = store
   return (
-    <BaseDialog open={open} setOpen={setOpen}>
+    <BaseDialog open={open} onClose={onClose}>
       <h4>Blocked users</h4>
       {blocked.length === 0 ? (
         <div>No blocked users</div>

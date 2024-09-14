@@ -11,13 +11,13 @@ import BaseDialog from './BaseDialog'
 
 export default function Favorites({
   open,
-  setOpen,
+  onClose,
   favorites,
   title,
 }: {
   open: boolean
   title: string
-  setOpen: (arg: boolean) => void
+  onClose: () => void
   favorites: Favorite[]
 }) {
   const store = useAppStore()
@@ -28,7 +28,7 @@ export default function Favorites({
     .sort((a, b) => (a.visitedCount - b.visitedCount) * sortVisits)
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
-    <BaseDialog open={open} setOpen={setOpen}>
+    <BaseDialog open={open} onClose={onClose}>
       <h4 className="font-extrabold">{title}</h4>
       {favorites.length === 0 ? (
         <div>No favorites</div>

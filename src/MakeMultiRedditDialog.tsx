@@ -15,10 +15,10 @@ import BaseDialog from './BaseDialog'
 
 export default function MakeMultiRedditDialog({
   open,
-  setOpen,
+  onClose,
 }: {
   open: boolean
-  setOpen: (arg: boolean) => void
+  onClose: () => void
 }) {
   const store = useAppStore()
   const { favorites } = store
@@ -40,7 +40,7 @@ export default function MakeMultiRedditDialog({
     .sort((a, b) => (a.visitedCount - b.visitedCount) * sortVisits)
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
-    <BaseDialog open={open} setOpen={setOpen}>
+    <BaseDialog open={open} onClose={onClose}>
       {creatingList ? (
         <div>
           <h4>
@@ -148,7 +148,7 @@ export default function MakeMultiRedditDialog({
               event.preventDefault()
               if (listName) {
                 store.addList(multiVal, listName)
-                setOpen(false)
+                onClose()
               }
             }}
           >

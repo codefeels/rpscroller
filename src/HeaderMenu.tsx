@@ -18,10 +18,10 @@ import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
 import Button from './Button'
 import Sorts from './Sorts'
-import BaseDialog from './BaseDialog'
 
 // utils
 import type { DialogTypes } from './HeaderHamburger'
+import HeaderMenuWrapper from './HeaderMenuWrapper'
 
 export default function HeaderMenu({
   setOpen,
@@ -40,9 +40,9 @@ export default function HeaderMenu({
   } = store
 
   return (
-    <BaseDialog
+    <HeaderMenuWrapper
       open
-      setOpen={() => {
+      onClose={() => {
         setOpen(undefined)
       }}
     >
@@ -243,6 +243,6 @@ export default function HeaderMenu({
           </Link>
         </div>
       </div>
-    </BaseDialog>
+    </HeaderMenuWrapper>
   )
 }

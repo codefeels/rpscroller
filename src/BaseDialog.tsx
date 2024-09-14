@@ -3,11 +3,11 @@ import { useEffect, useRef } from 'react'
 
 export default function BaseDialog({
   open,
-  setOpen,
+  onClose,
   children,
 }: {
   open: boolean
-  setOpen: (arg: boolean) => void
+  onClose: () => void
   children: React.ReactNode
 }) {
   const ref = useDialogShown(open)
@@ -15,14 +15,14 @@ export default function BaseDialog({
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (ref2.current && !ref2.current.contains(event.target as Node)) {
-        setOpen(false)
+        onClose()
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [setOpen])
+  }, [onClose])
 
   return (
     <dialog ref={ref}>
