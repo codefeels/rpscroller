@@ -24,7 +24,7 @@
     "swr": "^2.2.5",
     "tailwindcss": "^3.4.4",
     "usehooks-ts": "^3.1.0",
-    "zustand": "next"
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@eslint/compat": "^1.1.1",
