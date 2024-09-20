@@ -22,6 +22,7 @@ export default function SearchBox() {
         <input
           id="box"
           type="text"
+          tabIndex={0}
           className="m-1 rounded"
           value={text}
           onChange={event => {

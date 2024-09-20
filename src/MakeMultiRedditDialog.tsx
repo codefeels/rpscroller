@@ -155,7 +155,6 @@ export default function MakeMultiRedditDialog({
             <div>
               <label htmlFor="listname">List name:</label>
               <input
-                autoFocus
                 id="listname"
                 type="text"
                 value={listName}

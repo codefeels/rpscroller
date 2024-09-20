@@ -37,7 +37,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "eslint": "^9.9.0",
     "eslint-plugin-react": "^7.34.3",
-    "eslint-plugin-react-hooks": "next",
+    "eslint-plugin-react-hooks": "^5.1.0-rc-e740d4b1-20240919",
     "eslint-plugin-react-refresh": "^0.4.12",
     "eslint-plugin-unicorn": "^55.0.0",
     "gh-pages": "^6.1.1",

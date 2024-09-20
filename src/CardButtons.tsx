@@ -5,6 +5,7 @@ import { hasFavorite, useAppStore } from './store'
 import type { Post } from './util'
 import Button from './Button'
 import { dbPromise } from './savedPostsDb'
+import { useState } from 'react'
 
 async function savePost(post: Post) {
   const db = await dbPromise
@@ -21,6 +22,7 @@ export default function CardButtons({ post }: { post: Post }) {
   const { val, favorites, blocked } = store
   const hasFavUser = hasFavorite(`/user/${author}`, favorites)
   const hasFavSub = hasFavorite(subreddit, store.favorites)
+  const [saved, setSaved] = useState(false)
   return (
     <div>
       <div>
@@ -95,9 +97,13 @@ export default function CardButtons({ post }: { post: Post }) {
                   console.error(error)
                 }
               })()
+              setSaved(true)
+              setTimeout(() => {
+                setSaved(false)
+              }, 400)
             }}
           >
-            <FaSave className="inline" /> Save post
+            <FaSave className="inline" /> {saved ? 'Saved!' : 'Save post'}
           </Button>
         )}
       </div>
