@@ -1,2 +1,0 @@
-import{r as n,j as s}from"./index-BhbqdorF.js";import{u as c}from"./util-qiXMaTRS.js";function f({open:o,onClose:t,children:u}){const i=c(o),e=n.useRef(null);return n.useEffect(()=>{function r(a){e.current&&!e.current.contains(a.target)&&t()}return document.addEventListener("mousedown",r),()=>{document.removeEventListener("mousedown",r)}},[t]),s.jsx("dialog",{ref:i,children:s.jsx("div",{ref:e,className:"lg:m-10",children:u})})}export{f as B};
-//# sourceMappingURL=BaseDialog-DuG4UYjL.js.map
