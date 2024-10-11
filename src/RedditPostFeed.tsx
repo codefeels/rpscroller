@@ -63,7 +63,7 @@ export default function RedditPostFeed() {
   } as Record<string, string>
   const isRecharging = useRef(false)
 
-  const url = `https://www.reddit.com/${val}${modeString[mode] ?? ''}`
+  const url = `https://www.reddit.com/${val.startsWith('/') ? val.slice(1) : val}${modeString[mode] ?? ''}`
 
   const {
     data: data2,
