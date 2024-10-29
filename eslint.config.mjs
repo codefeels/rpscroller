@@ -60,6 +60,8 @@ export default tseslint.config(
 
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
+
+      'unicorn/prefer-global-this': 'off',
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/no-null': 'off',
       'unicorn/no-nested-ternary': 'off',

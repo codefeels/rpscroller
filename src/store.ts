@@ -155,6 +155,7 @@ export const useAppStore = create<AppState>()(
       skipPinned: false,
       dedupe: false,
       confirmed: false,
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       mode: mode || 'hot',
       page: undefined as string | undefined,
       prev: undefined as string | undefined,
@@ -314,7 +315,7 @@ export const useAppStore = create<AppState>()(
         return state => {
           if (state) {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            state.val = val || '' || state.defaultPage
+            state.val = val || state.defaultPage || ''
           }
         }
       },

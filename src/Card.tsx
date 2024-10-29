@@ -22,6 +22,7 @@ function isPic(url: string) {
 
 export default function Card({ post }: { post: Post }) {
   const { title, url } = post
+  console.log({ post })
   return (
     <div>
       <CardHeader post={post} />
