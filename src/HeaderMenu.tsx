@@ -131,7 +131,7 @@ export default function HeaderMenu({
         ) : null}
         <hr />
         <div>
-          Most visited subreddits:{' '}
+          Most visited (fav'd) subreddits:{' '}
           <Button
             onClick={() => {
               store.setShowMostVisitedSubreddits(!showMostVisitedSubreddits)
@@ -162,7 +162,7 @@ export default function HeaderMenu({
           : null}
         <hr />
         <div>
-          Most visited users:{' '}
+          Most visited (fav'd) users:{' '}
           <Button
             onClick={() => {
               store.setShowMostVisitedUsers(!showMostVisitedUsers)
