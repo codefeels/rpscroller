@@ -17,6 +17,7 @@ interface AppState {
   lists: { val: string; name: string }[]
   page?: string
   showLists: boolean
+  isFullscreen: boolean
   showMostVisitedUsers: boolean
   showMostVisitedSubreddits: boolean
   showRecentlyVisited: boolean
@@ -30,6 +31,7 @@ interface AppState {
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  setIsFullscreen: (arg: boolean) => void
   setHeaderOnBottomOfScreen: (arg: boolean) => void
   forceRerender: () => void
   addList: (val: string, name: string) => void
@@ -138,6 +140,7 @@ export const useAppStore = create<AppState>()(
   persist(
     set => ({
       blocked: [],
+      isFullscreen: false,
       defaultPage: '/r/funny',
       noGifs: true,
       lists: [],
@@ -161,6 +164,9 @@ export const useAppStore = create<AppState>()(
       prev: undefined as string | undefined,
       val: `${val}`,
       favorites: [],
+      setIsFullscreen: arg => {
+        set(() => ({ isFullscreen: arg }))
+      },
       setHeaderOnBottomOfScreen: arg => {
         set(() => ({ headerOnBottomOfScreen: arg }))
       },

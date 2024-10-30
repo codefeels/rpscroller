@@ -1,5 +1,6 @@
 import { useDebounceValue, useIntersectionObserver } from 'usehooks-ts'
 import { redGifUrlToId, type Post } from './util'
+import { useAppStore } from './store'
 
 function RedGifsCardLoaded({ post }: { post: Post }) {
   const { title, url } = post
@@ -30,8 +31,9 @@ function RedGifsLoading() {
 }
 
 export default function RedGifsCard({ post }: { post: Post }) {
+  const { isFullscreen } = useAppStore()
   const { isIntersecting, ref } = useIntersectionObserver({
-    threshold: 0.4,
+    threshold: isFullscreen ? 1 : 0.4,
   })
   const [debouncedIsIntersecting] = useDebounceValue(isIntersecting, 1000)
 

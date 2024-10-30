@@ -27,6 +27,20 @@ export default function App() {
     }
   }, [store])
 
+  useEffect(() => {
+    function listener() {
+      if (document.fullscreenElement) {
+        store.setIsFullscreen(true)
+      } else {
+        store.setIsFullscreen(false)
+      }
+    }
+    document.addEventListener('fullscreenchange', listener)
+    return () => {
+      document.removeEventListener('fullscreenchange', listener)
+    }
+  }, [])
+
   // update URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
