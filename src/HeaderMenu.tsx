@@ -10,7 +10,7 @@ import {
 } from 'react-icons/fa'
 
 // store
-import { isUserSubreddit, normalizeForDisplay, useAppStore } from './store'
+import { useAppStore } from './store'
 
 // components
 import MenuItem from './MenuItem'
@@ -21,6 +21,7 @@ import Sorts from './Sorts'
 // utils
 import type { DialogTypes } from './HeaderHamburger'
 import HeaderMenuWrapper from './HeaderMenuWrapper'
+import { isUserSubreddit, normalizeForDisplay } from './util'
 
 export default function HeaderMenu({
   setOpen,

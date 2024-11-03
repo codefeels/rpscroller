@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { decode, type Post } from './util'
+
 // components
 import ImageCard from './ImageCard'
 import Button from './Button'
@@ -28,7 +29,7 @@ export default function GalleryCard({ post }: { post: Post }) {
         )}
       />
 
-      <div className={'flex justify-center'}>
+      <div className="flex justify-center">
         <Button
           disabled={frame <= 0}
           onClick={() => {
@@ -48,6 +49,6 @@ export default function GalleryCard({ post }: { post: Post }) {
       </div>
     </div>
   ) : (
-    <div>Unknown gallery format</div>
+    <div>Unknown gallery format (post may have been deleted)</div>
   )
 }

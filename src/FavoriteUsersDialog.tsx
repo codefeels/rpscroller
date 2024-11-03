@@ -1,5 +1,6 @@
-import { isUserSubreddit, useAppStore } from './store'
 import Favorites from './FavoritesDialog'
+import { useAppStore } from './store'
+import { isUserSubreddit } from './util'
 
 export default function FavoriteUsersDialog({
   open,

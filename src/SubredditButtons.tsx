@@ -1,10 +1,17 @@
+import { useState } from 'react'
+
+// locals
+import { dbPromise } from './savedPostsDb'
+import { useAppStore } from './store'
+import { hasFavorite, type Post } from './util'
+
+// icons
 import { MdFavorite } from 'react-icons/md'
 import { FaSave } from 'react-icons/fa'
-import { hasFavorite, useAppStore } from './store'
-import type { Post } from './util'
+
+// components
 import Button from './Button'
-import { dbPromise } from './savedPostsDb'
-import { useState } from 'react'
+import ErrorMessage from './ErrorMessage'
 
 async function savePost(post: Post) {
   const db = await dbPromise
@@ -26,9 +33,11 @@ export default function SubredditButtons({ post }: { post: Post }) {
   const hasFavSubOrig = hasFavorite(origsubreddit, store.favorites)
   const hasFavSubThis = hasFavorite(thissubreddit, store.favorites)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState<unknown>()
 
   return (
     <div>
+      {error ? <ErrorMessage error={error} /> : null}
       {origsubreddit ? (
         <>
           <Button
@@ -71,9 +80,11 @@ export default function SubredditButtons({ post }: { post: Post }) {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             ;(async () => {
               try {
+                setError(undefined)
                 await removeSavedPost(post)
                 store.forceRerender()
               } catch (error) {
+                setError(error)
                 console.error(error)
               }
             })()
@@ -87,8 +98,10 @@ export default function SubredditButtons({ post }: { post: Post }) {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             ;(async () => {
               try {
+                setError(undefined)
                 await savePost(post)
               } catch (error) {
+                setError(error)
                 console.error(error)
               }
             })()

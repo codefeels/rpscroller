@@ -39,7 +39,7 @@ export default function App() {
     return () => {
       document.removeEventListener('fullscreenchange', listener)
     }
-  }, [])
+  }, [store])
 
   // update URL
   useEffect(() => {

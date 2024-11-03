@@ -107,3 +107,41 @@ export interface Data {
     data: Post
   }[]
 }
+
+export interface Favorite {
+  visitedCount: number
+  name: string
+  dateAdded: Date
+}
+
+export interface List {
+  val: string
+  name: string
+}
+
+export function isUserSubreddit(f: string) {
+  const s = normalizeForComparison(f)
+  return s.startsWith('user/') || s.startsWith('u_')
+}
+
+export function normalizeForComparison(val: string) {
+  return normalizeSubreddit(val).toLowerCase()
+}
+
+export function normalizeForDisplay(val: string) {
+  return normalizeSubreddit(val).replace('user/', 'u/')
+}
+
+export function normalizeSubreddit(val: string) {
+  return val.replace(/^\//, '').replace('u/', 'user/')
+}
+
+export function maybeNormalizeSubreddit(val?: string) {
+  return val === undefined ? undefined : normalizeSubreddit(val)
+}
+
+export function hasFavorite(val: string, favorites: Favorite[]) {
+  return favorites
+    .map(s => normalizeForComparison(s.name))
+    .includes(normalizeForComparison(val))
+}

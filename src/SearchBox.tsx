@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
-import { hasFavorite, useAppStore } from './store'
+// locals
+import { useAppStore } from './store'
+import { hasFavorite } from './util'
+// icons
 import { MdFavorite } from 'react-icons/md'
+// components
 import Button from './Button'
 
 export default function SearchBox() {

@@ -1,11 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-export interface Favorite {
-  visitedCount: number
-  name: string
-  dateAdded: Date
-}
+import {
+  hasFavorite,
+  maybeNormalizeSubreddit,
+  normalizeForComparison,
+  normalizeSubreddit,
+  type List,
+  type Favorite,
+} from './util'
 
 interface AppState {
   rerenderCount: number
@@ -14,15 +16,13 @@ interface AppState {
   blocked: string[]
   fullscreen: boolean
   defaultPage: string
-  lists: { val: string; name: string }[]
-  page?: string
+  lists: List[]
   showLists: boolean
   isFullscreen: boolean
   showMostVisitedUsers: boolean
   showMostVisitedSubreddits: boolean
   showRecentlyVisited: boolean
   headerOnBottomOfScreen: boolean
-  prev?: string
   recentlyVisited: string[]
   mode: string
   favorites: Favorite[]
@@ -31,14 +31,23 @@ interface AppState {
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+
+  // detect if something has put the app into fullscreen e.g. redgifs
   setIsFullscreen: (arg: boolean) => void
-  setHeaderOnBottomOfScreen: (arg: boolean) => void
-  forceRerender: () => void
+
+  // lists
   addList: (val: string, name: string) => void
   removeList: (name: string) => void
+
+  // blocks
   setBlocked: (arg: string) => void
   removeBlocked: (arg: string) => void
+
+  // recently visited
   clearRecentlyVisited: () => void
+
+  forceRerender: () => void
+  setHeaderOnBottomOfScreen: (arg: boolean) => void
   setDefaultPage: (arg: string) => void
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
@@ -51,18 +60,20 @@ interface AppState {
   setSkipPinned: (arg: boolean) => void
   setFullscreen: (arg: boolean) => void
   setRedGifsOnly: (arg: boolean) => void
-  setPage: (arg?: string) => void
   setMode: (arg?: string) => void
   setVal: (arg?: string) => void
+
+  // favorites
   addFavorite: (arg: string) => void
   removeFavorite: (arg: string) => void
 }
 
 const params = new URLSearchParams(window.location.search)
-const mode = params.get('mode')
-const val = params.get('val')
 
-const filterSet = new Set(['page', 'prev', 'val'])
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+const mode = params.get('mode') || 'hot'
+const val = params.get('val')
+const filterSet = new Set(['val'])
 
 export const settingsMap = {
   noGifs: [
@@ -109,33 +120,6 @@ export const settingsMap = {
   ],
 } as const
 
-export function isUserSubreddit(f: string) {
-  const s = normalizeForComparison(f)
-  return s.startsWith('user/') || s.startsWith('u_')
-}
-
-export function normalizeForComparison(val: string) {
-  return normalizeSubreddit(val).toLowerCase()
-}
-
-export function normalizeForDisplay(val: string) {
-  return normalizeSubreddit(val).replace('user/', 'u/')
-}
-
-export function normalizeSubreddit(val: string) {
-  return val.replace(/^\//, '').replace('u/', 'user/')
-}
-
-export function maybeNormalizeSubreddit(val?: string) {
-  return val === undefined ? undefined : normalizeSubreddit(val)
-}
-
-export function hasFavorite(val: string, favorites: Favorite[]) {
-  return favorites
-    .map(s => normalizeForComparison(s.name))
-    .includes(normalizeForComparison(val))
-}
-
 export const useAppStore = create<AppState>()(
   persist(
     set => ({
@@ -158,10 +142,7 @@ export const useAppStore = create<AppState>()(
       skipPinned: false,
       dedupe: false,
       confirmed: false,
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      mode: mode || 'hot',
-      page: undefined as string | undefined,
-      prev: undefined as string | undefined,
+      mode,
       val: `${val}`,
       favorites: [],
       setIsFullscreen: arg => {
@@ -246,17 +227,9 @@ export const useAppStore = create<AppState>()(
           redGifsOnly: flag,
         }))
       },
-      setPage: page => {
-        set(store => ({
-          page,
-          prev: store.page,
-        }))
-      },
       setMode: mode => {
         set(() => ({
           mode,
-          page: undefined,
-          prev: undefined,
         }))
       },
       setDefaultPage: defaultPage => {
@@ -268,8 +241,6 @@ export const useAppStore = create<AppState>()(
         const s = maybeNormalizeSubreddit(val)
         set(state => ({
           val: s,
-          page: undefined,
-          prev: undefined,
           mode: 'hot',
           favorites: state.favorites.map(favorite => ({
             ...favorite,

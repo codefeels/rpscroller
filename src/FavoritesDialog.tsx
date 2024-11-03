@@ -5,7 +5,8 @@ import { IoMdHome } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa6'
 // other
-import { type Favorite, normalizeForDisplay, useAppStore } from './store'
+import { type Favorite, normalizeForDisplay } from './util'
+import { useAppStore } from './store'
 import Button from './Button'
 import BaseDialog from './BaseDialog'
 

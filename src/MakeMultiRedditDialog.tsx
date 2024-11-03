@@ -1,14 +1,17 @@
 import { useState } from 'react'
+import { formatDistanceToNowStrict } from 'date-fns'
+
+// locals
 import {
   isUserSubreddit,
   normalizeForDisplay,
   normalizeSubreddit,
-  useAppStore,
-} from './store'
+} from './util'
+import { useAppStore } from './store'
 
-import { formatDistanceToNowStrict } from 'date-fns'
 // icons
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6'
+
 // components
 import Button from './Button'
 import BaseDialog from './BaseDialog'

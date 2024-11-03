@@ -1,7 +1,10 @@
+// icons
 import { MdFavorite } from 'react-icons/md'
 import { MdBlock } from 'react-icons/md'
-import { hasFavorite, useAppStore } from './store'
-import type { Post } from './util'
+// locals
+import { useAppStore } from './store'
+import { hasFavorite, type Post } from './util'
+// components
 import Button from './Button'
 
 export default function UserButtons({ post }: { post: Post }) {
