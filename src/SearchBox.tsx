@@ -22,28 +22,27 @@ export default function SearchBox() {
         store.setVal(text)
       }}
     >
-      <div className="max-w-full flex">
-        <input
-          id="box"
-          type="text"
-          tabIndex={0}
-          className="m-1 rounded"
-          value={text}
-          onChange={event => {
-            setText(event.target.value)
+      <label htmlFor="box">Search: </label>
+      <input
+        id="box"
+        type="text"
+        tabIndex={0}
+        className="rounded"
+        value={text}
+        onChange={event => {
+          setText(event.target.value)
+        }}
+      />
+      <Button type="submit">Submit</Button>
+      {hasFavorite(text, store.favorites) ? null : (
+        <Button
+          onClick={() => {
+            store.addFavorite(text)
           }}
-        />
-        <Button type="submit">Submit</Button>
-        {hasFavorite(text, store.favorites) ? null : (
-          <Button
-            onClick={() => {
-              store.addFavorite(text)
-            }}
-          >
-            <MdFavorite className="inline" />
-          </Button>
-        )}
-      </div>
+        >
+          <MdFavorite className="inline" />
+        </Button>
+      )}
     </form>
   )
 }

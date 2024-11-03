@@ -6,7 +6,7 @@ export default function Button({
   id,
   className,
 }: {
-  onClick?: () => void
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void
   id?: string
   className?: string
   type?: 'reset' | 'submit' | 'button' | undefined
@@ -17,7 +17,7 @@ export default function Button({
     <button
       id={id}
       className={[
-        'bg-gray-300 hover:bg-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100 p-1 m-1 rounded',
+        'bg-gray-300 hover:bg-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100 p-0.5 m-0.5 rounded',
         className,
       ]
         .filter(f => !!f)

@@ -9,10 +9,13 @@ import {
   type Favorite,
 } from './util'
 
+const MAX_RECENTLY_VISITED = 20
+
 interface AppState {
   rerenderCount: number
   noGifs: boolean
   redGifsOnly: boolean
+  sidebarOpen: boolean
   blocked: string[]
   fullscreen: boolean
   defaultPage: string
@@ -31,6 +34,11 @@ interface AppState {
   dedupe: boolean
   hideButtons: boolean
   confirmed: boolean
+  currentlyOpenDialog: string | undefined
+
+  setCurrentlyOpenDialog: (arg: string | undefined) => void
+  setSidebarOpen: (arg: boolean) => void
+  toggleSidebarOpen: () => void
 
   // detect if something has put the app into fullscreen e.g. redgifs
   setIsFullscreen: (arg: boolean) => void
@@ -45,6 +53,7 @@ interface AppState {
 
   // recently visited
   clearRecentlyVisited: () => void
+  removeFromRecentlyVisited: (arg: string) => void
 
   forceRerender: () => void
   setHeaderOnBottomOfScreen: (arg: boolean) => void
@@ -76,54 +85,63 @@ const val = params.get('val')
 const filterSet = new Set(['val'])
 
 export const settingsMap = {
-  noGifs: [
-    'No gifs (the slow, old file format)',
-    (f: boolean, store: AppState) => {
+  noGifs: {
+    smallScreensOnly: false,
+    title: 'No gifs (the slow, old file format)',
+    callback: (f: boolean, store: AppState) => {
       store.setNoGifs(f)
     },
-  ],
-  redGifsOnly: [
-    'RedGifs only',
-    (f: boolean, store: AppState) => {
+  },
+  redGifsOnly: {
+    smallScreensOnly: false,
+    title: 'RedGifs only',
+    callback: (f: boolean, store: AppState) => {
       store.setRedGifsOnly(f)
     },
-  ],
-  hideButtons: [
-    'Hide card Buttons',
-    (f: boolean, store: AppState) => {
+  },
+  hideButtons: {
+    smallScreensOnly: false,
+    title: 'Hide card Buttons',
+    callback: (f: boolean, store: AppState) => {
       store.setHideButtons(f)
     },
-  ],
-  dedupe: [
-    'De-duplicate posts',
-    (f: boolean, store: AppState) => {
+  },
+  dedupe: {
+    smallScreensOnly: false,
+    title: 'De-duplicate posts',
+    callback: (f: boolean, store: AppState) => {
       store.setDedupe(f)
     },
-  ],
-  skipPinned: [
-    'Skip pinned posts',
-    (f: boolean, store: AppState) => {
+  },
+  skipPinned: {
+    smallScreensOnly: false,
+    title: 'Skip pinned posts',
+    callback: (f: boolean, store: AppState) => {
       store.setSkipPinned(f)
     },
-  ],
-  fullscreen: [
-    'Fullscreen',
-    (f: boolean, store: AppState) => {
+  },
+  fullscreen: {
+    smallScreensOnly: false,
+    title: 'Fullscreen',
+    callback: (f: boolean, store: AppState) => {
       store.setFullscreen(f)
     },
-  ],
-  headerOnBottomOfScreen: [
-    'Put header on bottom of screen (better for mobile hand position maybe)',
-    (f: boolean, store: AppState) => {
+  },
+  headerOnBottomOfScreen: {
+    smallScreensOnly: true,
+    title: 'Put header on bottom of screen (mobile only)',
+    callback: (f: boolean, store: AppState) => {
       store.setHeaderOnBottomOfScreen(f)
     },
-  ],
+  },
 } as const
 
 export const useAppStore = create<AppState>()(
   persist(
     set => ({
       blocked: [],
+      currentlyOpenDialog: undefined,
+      sidebarOpen: false,
       isFullscreen: false,
       defaultPage: '/r/funny',
       noGifs: true,
@@ -145,6 +163,15 @@ export const useAppStore = create<AppState>()(
       mode,
       val: `${val}`,
       favorites: [],
+      setCurrentlyOpenDialog: arg => {
+        set(() => ({ currentlyOpenDialog: arg }))
+      },
+      setSidebarOpen: arg => {
+        set(() => ({ sidebarOpen: arg }))
+      },
+      toggleSidebarOpen: () => {
+        set(state => ({ sidebarOpen: !state.sidebarOpen }))
+      },
       setIsFullscreen: arg => {
         set(() => ({ isFullscreen: arg }))
       },
@@ -170,6 +197,11 @@ export const useAppStore = create<AppState>()(
       addList: (val: string, name: string) => {
         set(state => ({
           lists: [...state.lists, { val, name }],
+        }))
+      },
+      removeFromRecentlyVisited: (name: string) => {
+        set(state => ({
+          recentlyVisited: state.recentlyVisited.filter(f => f !== name),
         }))
       },
       removeList: (name: string) => {
@@ -253,9 +285,9 @@ export const useAppStore = create<AppState>()(
                 : favorite.visitedCount,
           })),
           recentlyVisited:
-            s === undefined
+            s === undefined || state.recentlyVisited.includes(s)
               ? state.recentlyVisited
-              : state.recentlyVisited.length > 5
+              : state.recentlyVisited.length > MAX_RECENTLY_VISITED
                 ? [...new Set([s, ...state.recentlyVisited.slice(1)])]
                 : [...new Set([s, ...state.recentlyVisited])],
         }))

@@ -1,10 +1,15 @@
 import { lazy, Suspense, useEffect } from 'react'
 
-// components
-import Header from './Header'
-
 // data
 import { useAppStore } from './store'
+
+// components
+import Sidebar from './Sidebar'
+import DialogHelper from './DialogHelper'
+import HeaderBar from './HeaderBar'
+
+// icons
+import { useSmallScreen } from './useSmallScreen'
 
 // lazies
 const RedditPostFeed = lazy(() => import('./RedditPostFeed'))
@@ -12,7 +17,7 @@ const SavedPostFeed = lazy(() => import('./SavedPostFeed'))
 
 export default function App() {
   const store = useAppStore()
-  const { val } = store
+  const { val, sidebarOpen } = store
 
   // Handle forward/back buttons
   useEffect(() => {
@@ -47,13 +52,32 @@ export default function App() {
     params.set('val', val)
     window.history.pushState({ val }, '', `?${params.toString()}`)
   }, [val])
-
+  const small = useSmallScreen()
   return (
-    <div className="lg:m-5 relative">
-      <Header />
-      <Suspense fallback={null}>
-        {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
-      </Suspense>
+    <div>
+      <HeaderBar />
+      {small ? (
+        <div>
+          {sidebarOpen ? <Sidebar /> : null}
+          <Suspense fallback={null}>
+            {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
+          </Suspense>
+        </div>
+      ) : (
+        <div className="relative">
+          <div className="grid grid-cols-12">
+            <div className="col-span-2 sticky top-20 overflow-auto max-h-screen">
+              {sidebarOpen ? <Sidebar /> : null}
+            </div>
+            <div className="col-span-10">
+              <Suspense fallback={null}>
+                {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
+              </Suspense>
+            </div>
+          </div>
+        </div>
+      )}
+      <DialogHelper />
     </div>
   )
 }
