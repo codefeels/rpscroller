@@ -1,2 +1,0 @@
-import{u as i,j as m,i as n}from"./index-OviC5k9U.js";import{F as u}from"./FavoritesDialog-BVQ_ugIb.js";import"./en-US-Ckk-QizZ.js";function l({open:t,onClose:o}){const r=i(),{favorites:s}=r;return m.jsx(u,{title:"Favorite subreddits",open:t,onClose:o,favorites:[...s.filter(e=>!n(e.name)).sort((e,a)=>e.name.toLowerCase().localeCompare(a.name.toLowerCase()))]})}export{l as default};
-//# sourceMappingURL=FavoriteSubredditsDialog-CGSNttdK.js.map
