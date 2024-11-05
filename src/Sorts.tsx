@@ -1,17 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAppStore } from './store'
-import Button from './Button'
-import { GoChevronDown } from 'react-icons/go'
-import MenuItem from './MenuItem'
+import { modeMap } from './util'
 
-const map = {
-  hot: 'Hot',
-  new: 'New',
-  topday: 'Top (day)',
-  topmonth: 'Top (month)',
-  topyear: 'Top (year)',
-  topall: 'Top (all time)',
-}
+// icons
+import { GoChevronDown } from 'react-icons/go'
+
+// components
+import Button from './Button'
+import MenuItem from './MenuItem'
 
 export default function Sorts() {
   const store = useAppStore()
@@ -33,14 +29,14 @@ export default function Sorts() {
   return (
     <div ref={ref} className="relative">
       <Button
-        onClick={() => {
-          setShowMenu(showMenu => !showMenu)
-        }}
         id="menu-button"
         aria-expanded="true"
         aria-haspopup="true"
+        onClick={() => {
+          setShowMenu(showMenu => !showMenu)
+        }}
       >
-        {map[mode as keyof typeof map]}
+        {modeMap[mode as keyof typeof modeMap].title}
         <GoChevronDown className="inline" />
       </Button>
       {showMenu ? (
@@ -50,27 +46,25 @@ export default function Sorts() {
           aria-orientation="vertical"
           aria-labelledby="menu-button"
         >
-          {Object.entries(map).map(([key, val]) => {
-            return (
-              <MenuItem
-                key={key}
-                onClick={() => {
-                  store.setMode(key)
+          {Object.entries(modeMap).map(([key, val]) => (
+            <MenuItem
+              key={key}
+              onClick={() => {
+                store.setMode(key)
+              }}
+            >
+              <label htmlFor={key}>{val.title}</label>
+              <input
+                id={key}
+                value={key}
+                type="radio"
+                checked={mode === key}
+                onChange={event => {
+                  store.setMode(event.target.value)
                 }}
-              >
-                <label htmlFor={key}>{val}</label>
-                <input
-                  id={key}
-                  value={key}
-                  type="radio"
-                  checked={mode === key}
-                  onChange={event => {
-                    store.setMode(event.target.value)
-                  }}
-                />
-              </MenuItem>
-            )
-          })}
+              />
+            </MenuItem>
+          ))}
         </div>
       ) : null}
     </div>

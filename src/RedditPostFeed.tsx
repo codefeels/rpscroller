@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { useIntersectionObserver } from 'usehooks-ts'
+import useSWRInfinite from 'swr/infinite'
 
 // components
 import LoadingSpinner from './LoadingSpinner'
 import ErrorMessage from './ErrorMessage'
 import CardList from './CardList'
 
-// data
-import type { RedditResponse } from './util'
+// utils
+import { modeMap, type RedditResponse } from './util'
 import { useAppStore } from './store'
-import useSWRInfinite from 'swr/infinite'
 
 const getKey = (url: string) => {
   return (
@@ -53,17 +53,10 @@ export default function RedditPostFeed() {
     }
   }, [store])
 
-  const modeString = {
-    topall: '/top.json?t=all',
-    topmonth: '/top.json?t=month',
-    topday: '/top.json?t=day',
-    topyear: '/top.json?t=year',
-    hot: '.json',
-    new: '/new.json',
-  } as Record<string, string>
   const isRecharging = useRef(false)
-
-  const url = `https://www.reddit.com/${val.startsWith('/') ? val.slice(1) : val}${modeString[mode] ?? ''}`
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+  const endpoint = modeMap[mode as keyof typeof modeMap].url
+  const url = `https://www.reddit.com/${val.startsWith('/') ? val.slice(1) : val}${endpoint ?? ''}`
 
   const {
     data: data2,

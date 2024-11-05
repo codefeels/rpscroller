@@ -66,8 +66,10 @@ export default function App() {
       ) : (
         <div className="relative">
           <div className="grid grid-cols-12">
-            <div className="col-span-2 sticky top-20 overflow-auto max-h-screen">
-              {sidebarOpen ? <Sidebar /> : null}
+            <div className="col-span-2 border-r-2 border-slate-500">
+              <div className="sticky overflow-auto max-h-screen top-12">
+                {sidebarOpen ? <Sidebar /> : null}
+              </div>
             </div>
             <div className="col-span-10">
               <Suspense fallback={null}>
