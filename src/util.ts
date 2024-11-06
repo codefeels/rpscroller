@@ -81,6 +81,7 @@ export interface Post {
   created: number
   id: string
   subreddit_name_prefixed: string
+  subreddit: string
   title: string
   pinned: boolean
   url: string
@@ -115,8 +116,8 @@ export interface Favorite {
 }
 
 export interface List {
-  val: string
   name: string
+  subreddits: string[]
 }
 
 export function isUserSubreddit(f: string) {

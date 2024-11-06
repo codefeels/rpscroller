@@ -9,10 +9,12 @@ import { normalizeForDisplay } from './util'
 // components
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
+import { useState } from 'react'
 
 export default function RecentlyVisited() {
   const store = useAppStore()
   const { recentlyVisited, showRecentlyVisited } = store
+  const [showMore, setShowMore] = useState(false)
 
   return (
     <div>
@@ -31,6 +33,7 @@ export default function RecentlyVisited() {
       {showRecentlyVisited ? (
         <div>
           {recentlyVisited
+            .slice(0, showMore ? 20 : 5)
             .filter(f => f !== 'savedposts')
             .map(l => (
               <div key={l}>
@@ -56,6 +59,13 @@ export default function RecentlyVisited() {
             }}
           >
             Clear
+          </Button>
+          <Button
+            onClick={() => {
+              setShowMore(!showMore)
+            }}
+          >
+            {showMore ? 'Show less' : 'Show more'}
           </Button>
         </div>
       ) : null}

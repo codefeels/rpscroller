@@ -44,7 +44,8 @@ interface AppState {
   setIsFullscreen: (arg: boolean) => void
 
   // lists
-  addList: (val: string, name: string) => void
+  createList: (arg: { subreddits: string[]; listName: string }) => void
+  addToList: (arg: { subreddit: string; listName: string }) => void
   removeList: (name: string) => void
 
   // blocks
@@ -194,9 +195,31 @@ export const useAppStore = create<AppState>()(
         set(() => ({ showRecentlyVisited: arg }))
       },
 
-      addList: (val: string, name: string) => {
+      createList: ({
+        subreddits,
+        listName,
+      }: {
+        subreddits: string[]
+        listName: string
+      }) => {
         set(state => ({
-          lists: [...state.lists, { val, name }],
+          lists: [...state.lists, { name: listName, subreddits }],
+        }))
+      },
+
+      addToList: ({
+        subreddit,
+        listName,
+      }: {
+        subreddit: string
+        listName: string
+      }) => {
+        set(state => ({
+          lists: state.lists.map(list => {
+            return list.name === listName
+              ? { ...list, subreddits: [...list.subreddits, subreddit] }
+              : list
+          }),
         }))
       },
       removeFromRecentlyVisited: (name: string) => {

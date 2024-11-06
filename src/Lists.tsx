@@ -34,7 +34,7 @@ export default function Lists() {
                 <MenuItem
                   key={l.name}
                   onClick={() => {
-                    store.setVal(l.val)
+                    store.setVal(`/r/${l.subreddits.join('+')}`)
                   }}
                 >
                   - {l.name}{' '}

@@ -1,6 +1,6 @@
 // icons
 import { IoIosSettings } from 'react-icons/io'
-import { MdBlock, MdFavorite } from 'react-icons/md'
+import { MdBlock } from 'react-icons/md'
 import { FaSave, FaShoppingCart } from 'react-icons/fa'
 
 // store

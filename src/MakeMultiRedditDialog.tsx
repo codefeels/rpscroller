@@ -30,7 +30,6 @@ export default function MakeMultiRedditDialog({
   const [sortDateAdded, setSortDateAdded] = useState(0)
   const [listName, setListName] = useState('')
   const [creatingList, setCreatingList] = useState(true)
-  const multiVal = `/r/${multi.map(s => s.replace('user/', 'u_').replace('r/', '')).join('+')}`
   const favs = [
     ...favorites
       .filter(f => !isUserSubreddit(f.name))
@@ -150,7 +149,7 @@ export default function MakeMultiRedditDialog({
             onSubmit={event => {
               event.preventDefault()
               if (listName) {
-                store.addList(multiVal, listName)
+                store.createList(multi, listName)
                 onClose()
               }
             }}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 
 // locals
 import { dbPromise } from './savedPostsDb'
@@ -8,11 +8,14 @@ import { hasFavorite, type Post } from './util'
 // icons
 import { MdFavorite } from 'react-icons/md'
 import { FaSave } from 'react-icons/fa'
+import { FaPlus } from 'react-icons/fa6'
 
 // components
 import Button from './Button'
 import ErrorMessage from './ErrorMessage'
-import { FaPlus } from 'react-icons/fa6'
+
+// lazies
+const AddToListDialog = lazy(() => import('./AddToListDialog'))
 
 async function savePost(post: Post) {
   const db = await dbPromise
@@ -26,16 +29,19 @@ async function removeSavedPost(post: Post) {
 
 export default function SubredditButtons({ post }: { post: Post }) {
   const store = useAppStore()
-  const { subreddit_name_prefixed, crosspost_parent_list } = post
+  const { author, subreddit, subreddit_name_prefixed, crosspost_parent_list } =
+    post
   const { val } = store
   const origsubreddit =
     crosspost_parent_list?.[0]?.subreddit_name_prefixed ?? ''
   const thissubreddit = subreddit_name_prefixed
-  const hasFavSubOrig = hasFavorite(origsubreddit, store.favorites)
-  const hasFavSubThis = hasFavorite(thissubreddit, store.favorites)
+  const hasFavSubOrig = hasFavorite(subreddit_name_prefixed, store.favorites)
+  const hasFavSubThis = hasFavorite(subreddit_name_prefixed, store.favorites)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<unknown>()
+  const [addToListDialogOpen, setAddToListDialogOpen] = useState(false)
 
+  const userreddit = `/u/${author}`
   return (
     <div>
       {error ? <ErrorMessage error={error} /> : null}
@@ -59,21 +65,25 @@ export default function SubredditButtons({ post }: { post: Post }) {
           )}
         </>
       ) : null}
-      <Button
-        onClick={() => {
-          store.setVal(thissubreddit)
-        }}
-      >
-        Browse {thissubreddit}
-      </Button>
-      {hasFavSubThis ? null : (
-        <Button
-          onClick={() => {
-            store.addFavorite(thissubreddit)
-          }}
-        >
-          <MdFavorite className="inline" /> {thissubreddit}
-        </Button>
+      {thissubreddit === userreddit ? null : (
+        <>
+          <Button
+            onClick={() => {
+              store.setVal(thissubreddit)
+            }}
+          >
+            Browse {thissubreddit}
+          </Button>
+          {hasFavSubThis ? null : (
+            <Button
+              onClick={() => {
+                store.addFavorite(thissubreddit)
+              }}
+            >
+              <MdFavorite className="inline" /> {thissubreddit}
+            </Button>
+          )}
+        </>
       )}
       {val === 'savedposts' ? (
         <Button
@@ -115,9 +125,23 @@ export default function SubredditButtons({ post }: { post: Post }) {
           <FaSave className="inline" /> {saved ? 'Saved!' : 'Save post'}
         </Button>
       )}
-      <Button onClick={() => {}}>
-        <FaPlus className="inline" /> Add {thissubreddit} to list
+      <Button
+        onClick={() => {
+          setAddToListDialogOpen(true)
+        }}
+      >
+        <FaPlus className="inline" /> Add {subreddit_name_prefixed} to list
       </Button>
+      {addToListDialogOpen ? (
+        <Suspense fallback={null}>
+          <AddToListDialog
+            subreddit={subreddit}
+            onClose={() => {
+              setAddToListDialogOpen(false)
+            }}
+          />
+        </Suspense>
+      ) : null}
     </div>
   )
 }
