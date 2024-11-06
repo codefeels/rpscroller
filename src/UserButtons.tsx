@@ -10,13 +10,13 @@ import { lazy, Suspense, useState } from 'react'
 import { FaPlus } from 'react-icons/fa6'
 
 // lazies
-const AddToListDialog = lazy(() => import('./AddToListDialog'))
+const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
 
 export default function UserButtons({ post }: { post: Post }) {
   const store = useAppStore()
   const { author } = post
   const { favorites, blocked } = store
-  const [addToListDialogOpen, setAddToListDialogOpen] = useState(false)
+  const [addToFeedDialogOpen, setAddToFeedDialogOpen] = useState(false)
   const hasFavUser = hasFavorite(`/user/${author}`, favorites)
   const userreddit = `/u/${author}`
   return (
@@ -48,17 +48,17 @@ export default function UserButtons({ post }: { post: Post }) {
       )}
       <Button
         onClick={() => {
-          setAddToListDialogOpen(true)
+          setAddToFeedDialogOpen(true)
         }}
       >
-        <FaPlus className="inline" /> Add {userreddit} to list
+        <FaPlus className="inline" /> Add {userreddit} to feed
       </Button>
-      {addToListDialogOpen ? (
+      {addToFeedDialogOpen ? (
         <Suspense fallback={null}>
-          <AddToListDialog
-            subreddit={author}
+          <AddToFeedDialog
+            subreddit={`u_${author}`}
             onClose={() => {
-              setAddToListDialogOpen(false)
+              setAddToFeedDialogOpen(false)
             }}
           />
         </Suspense>

@@ -108,14 +108,21 @@ export interface Data {
     data: Post
   }[]
 }
+export interface RecentlyVisited {
+  visitedCount: number
+  name: string
+  dateAdded: Date
+  lastVisited: Date
+}
 
 export interface Favorite {
   visitedCount: number
   name: string
   dateAdded: Date
+  lastVisited: Date
 }
 
-export interface List {
+export interface Feed {
   name: string
   subreddits: string[]
 }
@@ -147,15 +154,15 @@ export function hasFavorite(val: string, favorites: Favorite[]) {
     .includes(normalizeForComparison(val))
 }
 
-export const modeMap = {
-  hot: { title: 'Hot', url: '.json' },
-  best: { title: 'Best', url: '/best.json' },
-  new: { title: 'New', url: '/new.json' },
-  topday: { title: 'Top (day)', url: '/top.json?t=day' },
-  topmonth: { title: 'Top (month)', url: '/top.json?t=month' },
-  topyear: { title: 'Top (year)', url: '/top.json?t=year' },
-  topall: { title: 'Top (all time)', url: '/top.json?t=all' },
-  rising: { title: 'Rising', url: 'rising.json' },
-  random: { title: 'Random', url: 'random.json' },
-  controversial: { title: 'Controversial', url: 'controversial.json' },
-}
+export const modeMap = new Map([
+  ['hot', { title: 'Hot', url: '.json' }],
+  ['best', { title: 'Best', url: '/best.json' }],
+  ['new', { title: 'New', url: '/new.json' }],
+  ['topday', { title: 'Top (day)', url: '/top.json?t=day' }],
+  ['topmonth', { title: 'Top (month)', url: '/top.json?t=month' }],
+  ['topyear', { title: 'Top (year)', url: '/top.json?t=year' }],
+  ['topall', { title: 'Top (all time)', url: '/top.json?t=all' }],
+  ['rising', { title: 'Rising', url: 'rising.json' }],
+  ['random', { title: 'Random', url: 'random.json' }],
+  ['controversial', { title: 'Controversial', url: 'controversial.json' }],
+])

@@ -54,8 +54,8 @@ export default function RedditPostFeed() {
   }, [store])
 
   const isRecharging = useRef(false)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-  const endpoint = modeMap[mode as keyof typeof modeMap].url
+
+  const endpoint = modeMap.get(mode)?.url
   const url = `https://www.reddit.com/${val.startsWith('/') ? val.slice(1) : val}${endpoint ?? ''}`
 
   const {

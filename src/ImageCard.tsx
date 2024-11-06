@@ -15,7 +15,7 @@ export default function ImageCard({
       onClick={() => {
         setFullSize(!fullSize)
       }}
-      className={fullSize ? undefined : 'w-full max-h-[80vh] object-contain'}
+      className={fullSize ? 'm-auto' : 'w-full max-h-[80vh] object-contain'}
       src={url}
     />
   )

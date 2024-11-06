@@ -5,9 +5,14 @@ import {
   maybeNormalizeSubreddit,
   normalizeForComparison,
   normalizeSubreddit,
-  type List,
+  type Feed,
   type Favorite,
+  type RecentlyVisited,
 } from './util'
+
+function cmp(r1: string, r2: string) {
+  return normalizeForComparison(r1) === normalizeForComparison(r2)
+}
 
 const MAX_RECENTLY_VISITED = 20
 
@@ -18,15 +23,16 @@ interface AppState {
   sidebarOpen: boolean
   blocked: string[]
   fullscreen: boolean
+  showMoreRecentlyVisited: boolean
   defaultPage: string
-  lists: List[]
-  showLists: boolean
+  feeds: Feed[]
+  showFeeds: boolean
   isFullscreen: boolean
   showMostVisitedUsers: boolean
   showMostVisitedSubreddits: boolean
   showRecentlyVisited: boolean
   headerOnBottomOfScreen: boolean
-  recentlyVisited: string[]
+  recentlyVisited: RecentlyVisited[]
   mode: string
   favorites: Favorite[]
   val: string
@@ -36,6 +42,7 @@ interface AppState {
   confirmed: boolean
   currentlyOpenDialog: string | undefined
 
+  setShowMoreRecentlyVisited: (arg: boolean) => void
   setCurrentlyOpenDialog: (arg: string | undefined) => void
   setSidebarOpen: (arg: boolean) => void
   toggleSidebarOpen: () => void
@@ -43,10 +50,11 @@ interface AppState {
   // detect if something has put the app into fullscreen e.g. redgifs
   setIsFullscreen: (arg: boolean) => void
 
-  // lists
-  createList: (arg: { subreddits: string[]; listName: string }) => void
-  addToList: (arg: { subreddit: string; listName: string }) => void
-  removeList: (name: string) => void
+  // feeds
+  createFeed: (arg: { subreddits: string[]; feedName: string }) => void
+  updateFeed: (arg: { newFeed: Feed; feedName: string }) => void
+  addToFeed: (arg: { subreddit: string; feedName: string }) => void
+  removeFeed: (name: string) => void
 
   // blocks
   setBlocked: (arg: string) => void
@@ -65,7 +73,7 @@ interface AppState {
   setShowMostVisitedUsers: (arg: boolean) => void
   setShowMostVisitedSubreddits: (arg: boolean) => void
   setShowRecentlyVisited: (arg: boolean) => void
-  setShowLists: (arg: boolean) => void
+  setShowFeeds: (arg: boolean) => void
   setNoGifs: (arg: boolean) => void
   setSkipPinned: (arg: boolean) => void
   setFullscreen: (arg: boolean) => void
@@ -142,17 +150,18 @@ export const useAppStore = create<AppState>()(
     set => ({
       blocked: [],
       currentlyOpenDialog: undefined,
+      showMoreRecentlyVisited: false,
       sidebarOpen: false,
       isFullscreen: false,
       defaultPage: '/r/funny',
       noGifs: true,
-      lists: [],
+      feeds: [],
       headerOnBottomOfScreen: false,
       recentlyVisited: [],
       bottomOfScreen: false,
       fullscreen: false,
       rerenderCount: 0,
-      showLists: false,
+      showFeeds: true,
       showMostVisitedUsers: false,
       showMostVisitedSubreddits: false,
       showRecentlyVisited: false,
@@ -188,48 +197,65 @@ export const useAppStore = create<AppState>()(
       setShowMostVisitedSubreddits: arg => {
         set(() => ({ showMostVisitedSubreddits: arg }))
       },
-      setShowLists: arg => {
-        set(() => ({ showLists: arg }))
+      setShowFeeds: arg => {
+        set(() => ({ showFeeds: arg }))
       },
       setShowRecentlyVisited: arg => {
         set(() => ({ showRecentlyVisited: arg }))
       },
+      setShowMoreRecentlyVisited: arg => {
+        set(() => ({ showMoreRecentlyVisited: arg }))
+      },
 
-      createList: ({
+      createFeed: ({
         subreddits,
-        listName,
+        feedName,
       }: {
         subreddits: string[]
-        listName: string
+        feedName: string
       }) => {
         set(state => ({
-          lists: [...state.lists, { name: listName, subreddits }],
+          feeds: [...state.feeds, { name: feedName, subreddits }],
         }))
       },
 
-      addToList: ({
-        subreddit,
-        listName,
+      updateFeed: ({
+        feedName,
+        newFeed,
       }: {
-        subreddit: string
-        listName: string
+        feedName: string
+        newFeed: Feed
       }) => {
         set(state => ({
-          lists: state.lists.map(list => {
-            return list.name === listName
-              ? { ...list, subreddits: [...list.subreddits, subreddit] }
-              : list
-          }),
+          feeds: state.feeds.map(feed =>
+            feed.name === feedName ? newFeed : feed,
+          ),
+        }))
+      },
+
+      addToFeed: ({
+        subreddit,
+        feedName,
+      }: {
+        subreddit: string
+        feedName: string
+      }) => {
+        set(state => ({
+          feeds: state.feeds.map(feed =>
+            feed.name === feedName
+              ? { ...feed, subreddits: [...feed.subreddits, subreddit] }
+              : feed,
+          ),
         }))
       },
       removeFromRecentlyVisited: (name: string) => {
         set(state => ({
-          recentlyVisited: state.recentlyVisited.filter(f => f !== name),
+          recentlyVisited: state.recentlyVisited.filter(f => f.name !== name),
         }))
       },
-      removeList: (name: string) => {
+      removeFeed: (name: string) => {
         set(state => ({
-          lists: state.lists.filter(f => f.name !== name),
+          feeds: state.feeds.filter(f => f.name !== name),
         }))
       },
       clearRecentlyVisited: () => {
@@ -292,47 +318,70 @@ export const useAppStore = create<AppState>()(
           defaultPage,
         }))
       },
-      setVal: val => {
-        const s = maybeNormalizeSubreddit(val)
-        set(state => ({
-          val: s,
-          mode: 'hot',
-          favorites: state.favorites.map(favorite => ({
-            ...favorite,
-            visitedCount:
-              s &&
-              normalizeForComparison(s) ===
-                normalizeForComparison(favorite.name) &&
-              normalizeForComparison(s) !== normalizeForComparison(state.val)
-                ? favorite.visitedCount + 1
-                : favorite.visitedCount,
-          })),
-          recentlyVisited:
-            s === undefined || state.recentlyVisited.includes(s)
-              ? state.recentlyVisited
-              : state.recentlyVisited.length > MAX_RECENTLY_VISITED
-                ? [...new Set([s, ...state.recentlyVisited.slice(1)])]
-                : [...new Set([s, ...state.recentlyVisited])],
-        }))
+      setVal: newVal => {
+        const newValNormalized = maybeNormalizeSubreddit(newVal)
+        set(state => {
+          const { val, feeds, favorites, recentlyVisited } = state
+          const set = new Set(feeds.map(f => `r/${f.subreddits.join('+')}`))
+
+          if (newValNormalized) {
+            const isChanging = !cmp(newValNormalized, val)
+            const old = recentlyVisited.find(f => cmp(f.name, newValNormalized))
+            return {
+              val: newValNormalized,
+              mode: 'hot',
+              favorites: favorites.map(favorite => ({
+                ...favorite,
+                visitedCount:
+                  cmp(newValNormalized, favorite.name) && isChanging
+                    ? favorite.visitedCount + 1
+                    : favorite.visitedCount,
+                lastVisited: new Date(),
+              })),
+              recentlyVisited:
+                set.has(newValNormalized) || !isChanging
+                  ? recentlyVisited
+                  : [
+                      {
+                        ...old,
+                        name: newValNormalized,
+                        lastVisited: new Date(),
+                        dateAdded: old?.dateAdded ?? new Date(),
+                        visitedCount: (old?.visitedCount ?? 0) + 1,
+                      },
+                      ...recentlyVisited
+                        .slice(
+                          recentlyVisited.length > MAX_RECENTLY_VISITED ? 1 : 0,
+                        )
+                        .filter(f => f.name !== newValNormalized),
+                    ],
+            }
+          } else {
+            return {
+              val: undefined,
+            }
+          }
+        })
       },
-      addFavorite: val => {
-        const s = normalizeSubreddit(val)
+      addFavorite: newFav => {
+        const newFavNormalized = normalizeSubreddit(newFav)
         set(state => ({
-          favorites: hasFavorite(s, state.favorites)
+          favorites: hasFavorite(newFavNormalized, state.favorites)
             ? state.favorites
             : [
                 ...state.favorites,
                 {
-                  name: s,
+                  name: newFavNormalized,
                   visitedCount: 0,
                   dateAdded: new Date(),
+                  lastVisited: new Date(),
                 },
               ],
         }))
       },
       removeFavorite: val => {
-        set(s => ({
-          favorites: s.favorites.filter(f => f.name !== val),
+        set(state => ({
+          favorites: state.favorites.filter(f => f.name !== val),
         }))
       },
     }),
@@ -348,6 +397,16 @@ export const useAppStore = create<AppState>()(
           if (state) {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             state.val = val || state.defaultPage || ''
+            // @ts-expect-error old mapover
+            state.recentlyVisited =
+              typeof state.recentlyVisited[0] === 'string'
+                ? state.recentlyVisited.map(s => ({
+                    name: s,
+                    visitedCount: 1,
+                    lastVisited: new Date(),
+                    dateAdded: new Date(),
+                  }))
+                : state.recentlyVisited
           }
         }
       },

@@ -3,7 +3,7 @@ import BaseDialog from './BaseDialog'
 import Button from './Button'
 import { useAppStore } from './store'
 
-export default function AddToListDialog({
+export default function AddToFeedDialog({
   subreddit,
   onClose,
 }: {
@@ -11,26 +11,29 @@ export default function AddToListDialog({
   onClose: () => void
 }) {
   const store = useAppStore()
-  const [listName, setListName] = useState('')
+  const [feedName, setFeedName] = useState('')
   return (
     <BaseDialog open onClose={onClose}>
       <div style={{ minWidth: 500, minHeight: 200 }}>
-        Add {subreddit} to list
-        {store.lists.length > 0 ? (
+        Add {subreddit} to feed
+        {store.feeds.length > 0 ? (
           <div>
-            <h1>Existing lists:</h1>
+            <h1>Existing feeds:</h1>
             <ul>
-              {store.lists.map(list => (
-                <li key={list.name}>
+              {store.feeds.map(feed => (
+                <li key={feed.name}>
                   <Button
                     onClick={() => {
-                      store.addToList({
-                        listName: list.name,
+                      store.addToFeed({
+                        feedName: feed.name,
                         subreddit,
                       })
                     }}
                   >
-                    {list.name}
+                    {feed.name}{' '}
+                    {feed.subreddits.includes(subreddit)
+                      ? '(already in feed)'
+                      : ''}
                   </Button>
                 </li>
               ))}
@@ -38,27 +41,27 @@ export default function AddToListDialog({
           </div>
         ) : null}
         <div>
-          Create new list
+          Create new feed
           <form
             onSubmit={event => {
               event.preventDefault()
-              if (listName) {
-                store.createList({
+              if (feedName) {
+                store.createFeed({
                   subreddits: [subreddit],
-                  listName,
+                  feedName,
                 })
                 onClose()
               }
             }}
           >
             <div>
-              <label htmlFor="listname">List name:</label>
+              <label htmlFor="feedname">Feed name:</label>
               <input
-                id="listname"
+                id="feedname"
                 type="text"
-                value={listName}
+                value={feedName}
                 onChange={event => {
-                  setListName(event.target.value)
+                  setFeedName(event.target.value)
                 }}
               />
               <Button type="submit">Submit</Button>

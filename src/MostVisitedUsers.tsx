@@ -7,16 +7,16 @@ import { useAppStore } from './store'
 import { isUserSubreddit, normalizeForDisplay } from './util'
 
 // components
-import MenuItem from './MenuItem'
+import SpanMenuItem from './SpanMenuItem'
 import Button from './Button'
 
 export default function MostVisitedUsers() {
   const store = useAppStore()
-  const { favorites, showMostVisitedUsers } = store
+  const { recentlyVisited, showMostVisitedUsers } = store
   return (
     <>
       <div>
-        Most visited (fav&apos;d) users{' '}
+        Most visited users{' '}
         <Button
           onClick={() => {
             store.setCurrentlyOpenDialog('favoriteUsers')
@@ -38,19 +38,20 @@ export default function MostVisitedUsers() {
         </Button>
       </div>
       {showMostVisitedUsers
-        ? favorites
+        ? recentlyVisited
             .filter(f => isUserSubreddit(f.name))
             .sort((a, b) => b.visitedCount - a.visitedCount)
             .slice(0, 5)
             .map(l => (
-              <MenuItem
-                key={l.name}
-                onClick={() => {
-                  store.setVal(l.name)
-                }}
-              >
-                - {normalizeForDisplay(l.name)} ({l.visitedCount})
-              </MenuItem>
+              <div key={l.name}>
+                <SpanMenuItem
+                  onClick={() => {
+                    store.setVal(l.name)
+                  }}
+                >
+                  - {normalizeForDisplay(l.name)} ({l.visitedCount})
+                </SpanMenuItem>
+              </div>
             ))
         : null}
     </>

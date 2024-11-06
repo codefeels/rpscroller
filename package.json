@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
+    "tsc": "tsc -b",
     "postdeploy": "git push"
   },
   "dependencies": {

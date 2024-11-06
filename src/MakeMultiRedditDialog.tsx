@@ -28,8 +28,9 @@ export default function MakeMultiRedditDialog({
   const [multi, setMulti] = useState<string[]>([])
   const [sortVisits, setSortVisits] = useState(-1)
   const [sortDateAdded, setSortDateAdded] = useState(0)
-  const [listName, setListName] = useState('')
-  const [creatingList, setCreatingList] = useState(true)
+  const [feedName, setFeedName] = useState('')
+  const [creatingFeed, setCreatingFeed] = useState(true)
+
   const favs = [
     ...favorites
       .filter(f => !isUserSubreddit(f.name))
@@ -43,19 +44,18 @@ export default function MakeMultiRedditDialog({
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
     <BaseDialog open={open} onClose={onClose}>
-      {creatingList ? (
+      {creatingFeed ? (
         <div>
           <h4>
             Make multi-reddit
             <div>
               <div>
-                <input id="multireddit" readOnly type="text" value={multiVal} />
                 <Button
                   onClick={() => {
-                    setCreatingList(false)
+                    setCreatingFeed(false)
                   }}
                 >
-                  Create list
+                  Create feed
                 </Button>
                 <Button
                   onClick={() => {
@@ -148,20 +148,20 @@ export default function MakeMultiRedditDialog({
           <form
             onSubmit={event => {
               event.preventDefault()
-              if (listName) {
-                store.createList(multi, listName)
+              if (feedName) {
+                store.createFeed({ subreddits: multi, feedName })
                 onClose()
               }
             }}
           >
             <div>
-              <label htmlFor="listname">List name:</label>
+              <label htmlFor="feedname">Feed name:</label>
               <input
-                id="listname"
+                id="feedname"
                 type="text"
-                value={listName}
+                value={feedName}
                 onChange={event => {
-                  setListName(event.target.value)
+                  setFeedName(event.target.value)
                 }}
               />
               <Button type="submit">Submit</Button>

@@ -36,7 +36,7 @@ export default function Sorts() {
           setShowMenu(showMenu => !showMenu)
         }}
       >
-        {modeMap[mode as keyof typeof modeMap].title}
+        {modeMap.get(mode)?.title}
         <GoChevronDown className="inline" />
       </Button>
       {showMenu ? (
@@ -46,7 +46,7 @@ export default function Sorts() {
           aria-orientation="vertical"
           aria-labelledby="menu-button"
         >
-          {Object.entries(modeMap).map(([key, val]) => (
+          {[...modeMap.entries()].map(([key, val]) => (
             <MenuItem
               key={key}
               onClick={() => {

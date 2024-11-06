@@ -1,6 +1,6 @@
 // icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
-import { FaTrash } from 'react-icons/fa6'
+import { FaClock, FaTrash } from 'react-icons/fa6'
 
 // store
 import { useAppStore } from './store'
@@ -9,16 +9,16 @@ import { normalizeForDisplay } from './util'
 // components
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
-import { useState } from 'react'
 
 export default function RecentlyVisited() {
   const store = useAppStore()
-  const { recentlyVisited, showRecentlyVisited } = store
-  const [showMore, setShowMore] = useState(false)
+  const { showMoreRecentlyVisited, recentlyVisited, showRecentlyVisited } =
+    store
+  const s = new Set(store.feeds.map(f => `r/${f.subreddits.join('+')}`))
 
   return (
     <div>
-      Recently visited:
+      Recently visited <FaClock className="inline" />:
       <Button
         onClick={() => {
           store.setShowRecentlyVisited(!showRecentlyVisited)
@@ -33,20 +33,21 @@ export default function RecentlyVisited() {
       {showRecentlyVisited ? (
         <div>
           {recentlyVisited
-            .slice(0, showMore ? 20 : 5)
-            .filter(f => f !== 'savedposts')
-            .map(l => (
-              <div key={l}>
+            .slice(0, showMoreRecentlyVisited ? 20 : 5)
+            .filter(recentVisit => !s.has(recentVisit.name))
+            .map(recentVisit => (
+              <div key={recentVisit.name}>
                 <SpanMenuItem
                   onClick={() => {
-                    store.setVal(l)
+                    store.setVal(recentVisit.name)
                   }}
                 >
-                  - {normalizeForDisplay(l)}
+                  - {normalizeForDisplay(recentVisit.name)} (
+                  {recentVisit.visitedCount})
                 </SpanMenuItem>
                 <Button
                   onClick={() => {
-                    store.removeFromRecentlyVisited(l)
+                    store.removeFromRecentlyVisited(recentVisit.name)
                   }}
                 >
                   <FaTrash />
@@ -62,10 +63,10 @@ export default function RecentlyVisited() {
           </Button>
           <Button
             onClick={() => {
-              setShowMore(!showMore)
+              store.setShowMoreRecentlyVisited(!showMoreRecentlyVisited)
             }}
           >
-            {showMore ? 'Show less' : 'Show more'}
+            {showMoreRecentlyVisited ? 'Show less' : 'Show more'}
           </Button>
         </div>
       ) : null}

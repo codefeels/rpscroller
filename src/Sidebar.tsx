@@ -14,7 +14,7 @@ import RecentlyVisited from './RecentlyVisited'
 import MostVisitedUsers from './MostVisitedUsers'
 import MostVisitedSubreddits from './MostVisitedSubreddits'
 import SearchBox from './SearchBox'
-import Lists from './Lists'
+import Lists from './Feeds'
 
 export default function Sidebar() {
   const store = useAppStore()

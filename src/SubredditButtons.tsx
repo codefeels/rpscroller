@@ -15,7 +15,7 @@ import Button from './Button'
 import ErrorMessage from './ErrorMessage'
 
 // lazies
-const AddToListDialog = lazy(() => import('./AddToListDialog'))
+const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
 
 async function savePost(post: Post) {
   const db = await dbPromise
@@ -39,7 +39,7 @@ export default function SubredditButtons({ post }: { post: Post }) {
   const hasFavSubThis = hasFavorite(subreddit_name_prefixed, store.favorites)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<unknown>()
-  const [addToListDialogOpen, setAddToListDialogOpen] = useState(false)
+  const [addToFeedDialogOpen, setAddToFeedDialogOpen] = useState(false)
 
   const userreddit = `/u/${author}`
   return (
@@ -127,17 +127,17 @@ export default function SubredditButtons({ post }: { post: Post }) {
       )}
       <Button
         onClick={() => {
-          setAddToListDialogOpen(true)
+          setAddToFeedDialogOpen(true)
         }}
       >
-        <FaPlus className="inline" /> Add {subreddit_name_prefixed} to list
+        <FaPlus className="inline" /> Add {subreddit_name_prefixed} to feed
       </Button>
-      {addToListDialogOpen ? (
+      {addToFeedDialogOpen ? (
         <Suspense fallback={null}>
-          <AddToListDialog
+          <AddToFeedDialog
             subreddit={subreddit}
             onClose={() => {
-              setAddToListDialogOpen(false)
+              setAddToFeedDialogOpen(false)
             }}
           />
         </Suspense>
