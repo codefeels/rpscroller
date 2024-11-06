@@ -12,6 +12,7 @@ import { FaSave } from 'react-icons/fa'
 // components
 import Button from './Button'
 import ErrorMessage from './ErrorMessage'
+import { FaPlus } from 'react-icons/fa6'
 
 async function savePost(post: Post) {
   const db = await dbPromise
@@ -114,6 +115,9 @@ export default function SubredditButtons({ post }: { post: Post }) {
           <FaSave className="inline" /> {saved ? 'Saved!' : 'Save post'}
         </Button>
       )}
+      <Button onClick={() => {}}>
+        <FaPlus className="inline" /> Add {thissubreddit} to list
+      </Button>
     </div>
   )
 }

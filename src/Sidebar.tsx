@@ -45,13 +45,6 @@ export default function Sidebar() {
       </MenuItem>
       <MenuItem
         onClick={() => {
-          store.setCurrentlyOpenDialog('favoriteSubreddits')
-        }}
-      >
-        <MdFavorite className="inline" /> Fav subs
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
           store.setVal('savedposts')
         }}
       >
