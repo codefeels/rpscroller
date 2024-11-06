@@ -21,7 +21,7 @@ function RedGifsCardLoaded({ post }: { post: Post }) {
 
 function RedGifsLoading() {
   return (
-    <div className="flex flex-col animate-pulse space-y-4 m-20 w-full h-[80vh]">
+    <div className="animate-pulse space-y-4 w-full h-[80vh]">
       <div className="rounded-full bg-slate-700 h-10 w-10" />
       <div className="rounded-full bg-slate-700 h-10 w-10" />
       <div className="rounded-full bg-slate-700 h-10 w-10" />

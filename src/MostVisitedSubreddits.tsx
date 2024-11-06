@@ -1,5 +1,6 @@
 // icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
+import { MdFavorite } from 'react-icons/md'
 
 // store
 import { useAppStore } from './store'
@@ -15,7 +16,15 @@ export default function MostVisitedSubreddits() {
   return (
     <>
       <div>
-        Most visited (fav&apos;d) subreddits:{' '}
+        Most visited (fav&apos;d) subreddits{' '}
+        <Button
+          onClick={() => {
+            store.setCurrentlyOpenDialog('favoriteSubreddits')
+          }}
+        >
+          <MdFavorite />
+        </Button>
+        :{' '}
         <Button
           onClick={() => {
             store.setShowMostVisitedSubreddits(!showMostVisitedSubreddits)

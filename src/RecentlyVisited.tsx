@@ -1,5 +1,6 @@
 // icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
+import { FaTrash } from 'react-icons/fa6'
 
 // store
 import { useAppStore } from './store'
@@ -7,7 +8,7 @@ import { normalizeForDisplay } from './util'
 
 // components
 import Button from './Button'
-import MenuItem from './MenuItem'
+import SpanMenuItem from './SpanMenuItem'
 
 export default function RecentlyVisited() {
   const store = useAppStore()
@@ -32,14 +33,22 @@ export default function RecentlyVisited() {
           {recentlyVisited
             .filter(f => f !== 'savedposts')
             .map(l => (
-              <MenuItem
-                key={l}
-                onClick={() => {
-                  store.setVal(l)
-                }}
-              >
-                - {normalizeForDisplay(l)}
-              </MenuItem>
+              <div key={l}>
+                <SpanMenuItem
+                  onClick={() => {
+                    store.setVal(l)
+                  }}
+                >
+                  - {normalizeForDisplay(l)}
+                </SpanMenuItem>
+                <Button
+                  onClick={() => {
+                    store.removeFromRecentlyVisited(l)
+                  }}
+                >
+                  <FaTrash />
+                </Button>
+              </div>
             ))}
           <Button
             onClick={() => {

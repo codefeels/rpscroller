@@ -1,5 +1,6 @@
 // icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
+import { MdFavorite } from 'react-icons/md'
 
 // store
 import { useAppStore } from './store'
@@ -15,7 +16,15 @@ export default function MostVisitedUsers() {
   return (
     <>
       <div>
-        Most visited (fav&apos;d) users:{' '}
+        Most visited (fav&apos;d) users{' '}
+        <Button
+          onClick={() => {
+            store.setCurrentlyOpenDialog('favoriteUsers')
+          }}
+        >
+          <MdFavorite />
+        </Button>
+        :{' '}
         <Button
           onClick={() => {
             store.setShowMostVisitedUsers(!showMostVisitedUsers)

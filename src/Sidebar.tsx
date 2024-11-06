@@ -52,13 +52,6 @@ export default function Sidebar() {
       </MenuItem>
       <MenuItem
         onClick={() => {
-          store.setCurrentlyOpenDialog('favoriteUsers')
-        }}
-      >
-        <MdFavorite className="inline" /> Fav users
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
           store.setVal('savedposts')
         }}
       >
