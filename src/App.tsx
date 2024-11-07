@@ -17,7 +17,7 @@ const SavedPostFeed = lazy(() => import('./SavedPostFeed'))
 
 export default function App() {
   const store = useAppStore()
-  const { val, sidebarOpen } = store
+  const { val } = store
 
   // Handle forward/back buttons
   useEffect(() => {
@@ -56,32 +56,54 @@ export default function App() {
   return (
     <div>
       <HeaderBar />
-      {small ? (
-        <div>
-          {sidebarOpen ? <Sidebar /> : null}
-          <Suspense fallback={null}>
-            {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
-          </Suspense>
-        </div>
-      ) : (
-        <div className="relative">
-          <div className="grid grid-cols-12">
-            <div
-              className={`col-span-2 ${sidebarOpen ? 'border-r-2 border-slate-500' : ''}`}
-            >
-              <div className="sticky overflow-auto max-h-screen top-12">
-                {sidebarOpen ? <Sidebar /> : null}
-              </div>
-            </div>
-            <div className="col-span-10">
-              <Suspense fallback={null}>
-                {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
-              </Suspense>
-            </div>
-          </div>
-        </div>
-      )}
+      {small ? <MobileApp /> : <DesktopApp />}
       <DialogHelper />
     </div>
+  )
+}
+
+function MobileApp() {
+  const store = useAppStore()
+  const { sidebarOpen } = store
+
+  return (
+    <div>
+      {sidebarOpen ? <Sidebar /> : null}
+      <Feed />
+    </div>
+  )
+}
+
+function DesktopApp() {
+  const store = useAppStore()
+  const { sidebarOpen } = store
+
+  return (
+    <div className="relative">
+      {sidebarOpen ? (
+        <div className="grid grid-cols-12">
+          <div className="col-span-2 border-r-2 border-slate-500">
+            <div className="sticky overflow-auto max-h-screen top-12">
+              <Sidebar />
+            </div>
+          </div>
+          <div className="col-span-10">
+            <Feed />
+          </div>
+        </div>
+      ) : (
+        <Feed />
+      )}
+    </div>
+  )
+}
+
+function Feed() {
+  const store = useAppStore()
+  const { val } = store
+  return (
+    <Suspense fallback={null}>
+      {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
+    </Suspense>
   )
 }
