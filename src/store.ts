@@ -18,6 +18,7 @@ const MAX_RECENTLY_VISITED = 20
 
 interface AppState {
   rerenderCount: number
+  smallScreen: boolean
   noGifs: boolean
   redGifsOnly: boolean
   sidebarOpen: boolean
@@ -42,6 +43,7 @@ interface AppState {
   confirmed: boolean
   currentlyOpenDialog: string | undefined
 
+  setSmallScreen: (arg: boolean) => void
   setShowMoreRecentlyVisited: (arg: boolean) => void
   setCurrentlyOpenDialog: (arg: string | undefined) => void
   setSidebarOpen: (arg: boolean) => void
@@ -148,6 +150,7 @@ export const settingsMap = {
 export const useAppStore = create<AppState>()(
   persist(
     set => ({
+      smallScreen: false,
       blocked: [],
       currentlyOpenDialog: undefined,
       showMoreRecentlyVisited: false,
@@ -173,6 +176,9 @@ export const useAppStore = create<AppState>()(
       mode,
       val: `${val}`,
       favorites: [],
+      setSmallScreen: arg => {
+        set(() => ({ smallScreen: arg }))
+      },
       setCurrentlyOpenDialog: arg => {
         set(() => ({ currentlyOpenDialog: arg }))
       },
@@ -330,6 +336,7 @@ export const useAppStore = create<AppState>()(
             return {
               val: newValNormalized,
               mode: 'hot',
+              sidebarOpen: state.smallScreen ? false : state.sidebarOpen,
               favorites: favorites.map(favorite => ({
                 ...favorite,
                 visitedCount:
@@ -359,6 +366,7 @@ export const useAppStore = create<AppState>()(
           } else {
             return {
               val: undefined,
+              sidebarOpen: state.smallScreen ? false : state.sidebarOpen,
             }
           }
         })

@@ -18,6 +18,7 @@ const SavedPostFeed = lazy(() => import('./SavedPostFeed'))
 export default function App() {
   const store = useAppStore()
   const { val } = store
+  const small = useSmallScreen()
 
   // Handle forward/back buttons
   useEffect(() => {
@@ -31,6 +32,12 @@ export default function App() {
       window.removeEventListener('popstate', onPopState)
     }
   }, [store])
+
+  useEffect(() => {
+    if (store.smallScreen !== small) {
+      store.setSmallScreen(small)
+    }
+  }, [small, store])
 
   useEffect(() => {
     function listener() {
@@ -52,7 +59,7 @@ export default function App() {
     params.set('val', val)
     window.history.pushState({ val }, '', `?${params.toString()}`)
   }, [val])
-  const small = useSmallScreen()
+
   return (
     <div>
       <HeaderBar />
