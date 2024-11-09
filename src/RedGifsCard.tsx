@@ -4,19 +4,18 @@ import { useDebounceValue, useIntersectionObserver } from 'usehooks-ts'
 import { redGifUrlToId, type Post } from './util'
 import { useAppStore } from './store'
 import Button from './Button'
+import { useSmallScreen } from './useSmallScreen'
 
-function RedGifsCardLoaded({ post }: { post: Post }) {
+function RedGifsCardLoaded({
+  post,
+  superTall,
+}: {
+  superTall: boolean
+  post: Post
+}) {
   const { title, url } = post
-  const [superTall, setSuperTall] = useState(false)
   return (
     <>
-      <Button
-        onClick={() => {
-          setSuperTall(!superTall)
-        }}
-      >
-        {superTall ? 'Normal' : 'Supertall'}
-      </Button>
       <iframe
         title={title}
         src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
@@ -30,9 +29,11 @@ function RedGifsCardLoaded({ post }: { post: Post }) {
   )
 }
 
-function RedGifsLoading() {
+function RedGifsLoading({ superTall }: { superTall: boolean }) {
   return (
-    <div className="animate-pulse space-y-4 w-full h-[80vh]">
+    <div
+      className={`animate-pulse space-y-4 w-full ${superTall ? 'h-[200vh] w-full' : 'h-[80vh] w-full'}`}
+    >
       <div className="rounded-full bg-slate-700 h-10 w-10" />
       <div className="rounded-full bg-slate-700 h-10 w-10" />
       <div className="rounded-full bg-slate-700 h-10 w-10" />
@@ -43,17 +44,29 @@ function RedGifsLoading() {
 
 export default function RedGifsCard({ post }: { post: Post }) {
   const { isFullscreen } = useAppStore()
+
+  const [superTall, setSuperTall] = useState(false)
   const { isIntersecting, ref } = useIntersectionObserver({
-    threshold: isFullscreen ? 1 : 0.4,
+    threshold: isFullscreen ? 1 : superTall ? 0.2 : 0.4,
   })
   const [debouncedIsIntersecting] = useDebounceValue(isIntersecting, 1000)
+  const small = useSmallScreen()
 
   return (
     <div ref={ref}>
+      {small ? null : (
+        <Button
+          onClick={() => {
+            setSuperTall(!superTall)
+          }}
+        >
+          {superTall ? 'Normal' : 'Supertall'}
+        </Button>
+      )}
       {debouncedIsIntersecting ? (
-        <RedGifsCardLoaded post={post} />
+        <RedGifsCardLoaded superTall={superTall} post={post} />
       ) : (
-        <RedGifsLoading />
+        <RedGifsLoading superTall={superTall} />
       )}
     </div>
   )
