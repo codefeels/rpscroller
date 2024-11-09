@@ -40,6 +40,10 @@ export default function App() {
   }, [small, store])
 
   useEffect(() => {
+    document.title = `rpscroller - ${val.slice(0, 20)}`
+  }, [val, store])
+
+  useEffect(() => {
     function listener() {
       if (document.fullscreenElement) {
         store.setIsFullscreen(true)
