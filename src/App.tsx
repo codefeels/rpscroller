@@ -40,7 +40,7 @@ export default function App() {
   }, [small, store])
 
   useEffect(() => {
-    document.title = `rpscroller - ${val.slice(0, 20)}`
+    document.title = val.slice(0, 20)
   }, [val, store])
 
   useEffect(() => {
