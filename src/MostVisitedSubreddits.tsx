@@ -1,6 +1,7 @@
 // icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { MdFavorite } from 'react-icons/md'
+import { FaTrash } from 'react-icons/fa6'
 
 // store
 import { useAppStore } from './store'
@@ -12,7 +13,11 @@ import Button from './Button'
 
 export default function MostVisitedSubreddits() {
   const store = useAppStore()
-  const { recentlyVisited, showMostVisitedSubreddits } = store
+  const {
+    showMoreMostVisitedSubreddits,
+    recentlyVisited,
+    showMostVisitedSubreddits,
+  } = store
   return (
     <>
       <div>
@@ -37,11 +42,12 @@ export default function MostVisitedSubreddits() {
           )}
         </Button>
       </div>
-      {showMostVisitedSubreddits
-        ? recentlyVisited
+      {showMostVisitedSubreddits ? (
+        <>
+          {recentlyVisited
             .filter(f => !isUserSubreddit(f.name))
             .sort((a, b) => b.visitedCount - a.visitedCount)
-            .slice(0, 5)
+            .slice(0, showMoreMostVisitedSubreddits ? 20 : 5)
             .map(l => (
               <div key={l.name}>
                 <SpanMenuItem
@@ -52,9 +58,26 @@ export default function MostVisitedSubreddits() {
                 >
                   - {normalizeForDisplay(l.name)} ({l.visitedCount})
                 </SpanMenuItem>
+                <Button
+                  onClick={() => {
+                    store.removeFromRecentlyVisited(l.name)
+                  }}
+                >
+                  <FaTrash />
+                </Button>
               </div>
-            ))
-        : null}
+            ))}
+          <Button
+            onClick={() => {
+              store.setShowMoreMostVisitedSubreddits(
+                !showMoreMostVisitedSubreddits,
+              )
+            }}
+          >
+            {showMoreMostVisitedSubreddits ? 'Show less' : 'Show more'}
+          </Button>
+        </>
+      ) : null}
     </>
   )
 }

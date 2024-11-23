@@ -1,6 +1,7 @@
 // icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { MdFavorite } from 'react-icons/md'
+import { FaTrash } from 'react-icons/fa6'
 
 // store
 import { useAppStore } from './store'
@@ -12,7 +13,15 @@ import Button from './Button'
 
 export default function MostVisitedUsers() {
   const store = useAppStore()
-  const { recentlyVisited, showMostVisitedUsers } = store
+  const { showMoreMostVisitedUsers, recentlyVisited, showMostVisitedUsers } =
+    store
+  console.log(
+    recentlyVisited.filter(f => isUserSubreddit(f.name)),
+    recentlyVisited
+      .filter(f => isUserSubreddit(f.name))
+      .sort((a, b) => b.visitedCount - a.visitedCount)
+      .slice(0, showMoreMostVisitedUsers ? 20 : 5),
+  )
   return (
     <>
       <div>
@@ -37,11 +46,12 @@ export default function MostVisitedUsers() {
           )}
         </Button>
       </div>
-      {showMostVisitedUsers
-        ? recentlyVisited
+      {showMostVisitedUsers ? (
+        <>
+          {recentlyVisited
             .filter(f => isUserSubreddit(f.name))
             .sort((a, b) => b.visitedCount - a.visitedCount)
-            .slice(0, 5)
+            .slice(0, showMoreMostVisitedUsers ? 20 : 5)
             .map(l => (
               <div key={l.name}>
                 <SpanMenuItem
@@ -51,9 +61,24 @@ export default function MostVisitedUsers() {
                 >
                   - {normalizeForDisplay(l.name)} ({l.visitedCount})
                 </SpanMenuItem>
+                <Button
+                  onClick={() => {
+                    store.removeFromRecentlyVisited(l.name)
+                  }}
+                >
+                  <FaTrash />
+                </Button>
               </div>
-            ))
-        : null}
+            ))}
+          <Button
+            onClick={() => {
+              store.setShowMoreMostVisitedUsers(!showMoreMostVisitedUsers)
+            }}
+          >
+            {showMoreMostVisitedUsers ? 'Show less' : 'Show more'}
+          </Button>
+        </>
+      ) : null}
     </>
   )
 }

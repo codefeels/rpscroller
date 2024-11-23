@@ -25,6 +25,8 @@ interface AppState {
   blocked: string[]
   fullscreen: boolean
   showMoreRecentlyVisited: boolean
+  showMoreMostVisitedUsers: boolean
+  showMoreMostVisitedSubreddits: boolean
   defaultPage: string
   feeds: Feed[]
   showFeeds: boolean
@@ -45,6 +47,8 @@ interface AppState {
 
   setSmallScreen: (arg: boolean) => void
   setShowMoreRecentlyVisited: (arg: boolean) => void
+  setShowMoreMostVisitedSubreddits: (arg: boolean) => void
+  setShowMoreMostVisitedUsers: (arg: boolean) => void
   setCurrentlyOpenDialog: (arg: string | undefined) => void
   setSidebarOpen: (arg: boolean) => void
   toggleSidebarOpen: () => void
@@ -154,6 +158,8 @@ export const useAppStore = create<AppState>()(
       blocked: [],
       currentlyOpenDialog: undefined,
       showMoreRecentlyVisited: false,
+      showMoreMostVisitedSubreddits: false,
+      showMoreMostVisitedUsers: false,
       sidebarOpen: false,
       isFullscreen: false,
       defaultPage: '/r/funny',
@@ -212,7 +218,12 @@ export const useAppStore = create<AppState>()(
       setShowMoreRecentlyVisited: arg => {
         set(() => ({ showMoreRecentlyVisited: arg }))
       },
-
+      setShowMoreMostVisitedUsers: arg => {
+        set(() => ({ showMoreMostVisitedUsers: arg }))
+      },
+      setShowMoreMostVisitedSubreddits: arg => {
+        set(() => ({ showMoreMostVisitedSubreddits: arg }))
+      },
       createFeed: ({
         subreddits,
         feedName,
