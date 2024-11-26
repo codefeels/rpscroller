@@ -1,10 +1,12 @@
 import { useState } from 'react'
+
 import { useDebounceValue, useIntersectionObserver } from 'usehooks-ts'
+
 // locals
-import { redGifUrlToId, type Post } from './util'
-import { useAppStore } from './store'
 import Button from './Button'
+import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
+import { type Post, redGifUrlToId } from './util'
 
 function RedGifsCardLoaded({
   post,

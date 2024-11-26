@@ -2,10 +2,11 @@ import { useEffect, useRef } from 'react'
 
 // icons
 import { FaX } from 'react-icons/fa6'
+
 // utils
+import Button from './Button'
 import { useDialogShown } from './util'
 // components
-import Button from './Button'
 
 export default function BaseDialog({
   open,

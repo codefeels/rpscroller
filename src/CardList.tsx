@@ -1,6 +1,6 @@
 import Card from './Card'
 import { useAppStore } from './store'
-import { deduplicate, type Post } from './util'
+import { type Post, deduplicate } from './util'
 
 export default function CardList({ posts }: { posts: Post[] }) {
   const { noGifs, blocked, skipPinned, dedupe, fullscreen, redGifsOnly } =

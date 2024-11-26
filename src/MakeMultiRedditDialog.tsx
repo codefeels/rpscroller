@@ -1,20 +1,16 @@
 import { useState } from 'react'
-import { formatDistanceToNowStrict } from 'date-fns'
 
-// locals
+import { formatDistanceToNowStrict } from 'date-fns'
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa6'
+
+import BaseDialog from './BaseDialog'
+import Button from './Button'
+import { useAppStore } from './store'
 import {
   isUserSubreddit,
   normalizeForDisplay,
   normalizeSubreddit,
 } from './util'
-import { useAppStore } from './store'
-
-// icons
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa6'
-
-// components
-import Button from './Button'
-import BaseDialog from './BaseDialog'
 
 export default function MakeMultiRedditDialog({
   open,

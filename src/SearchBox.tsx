@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
+
 // locals
+import { MdFavorite } from 'react-icons/md'
+
+import Button from './Button'
 import { useAppStore } from './store'
 import { hasFavorite } from './util'
 // icons
-import { MdFavorite } from 'react-icons/md'
 // components
-import Button from './Button'
 
 export default function SearchBox() {
   const store = useAppStore()

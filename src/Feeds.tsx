@@ -1,14 +1,16 @@
-import { lazy, Suspense, useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
+
 // icons
 import { FaEdit, FaMinus, FaPlus, FaTrash } from 'react-icons/fa'
 import { FaBook } from 'react-icons/fa6'
 
 // store
-import { useAppStore } from './store'
 
 // components
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
+import { useAppStore } from './store'
+
 import type { Feed } from './util'
 
 const EditFeedDialog = lazy(() => import('./EditFeedDialog'))

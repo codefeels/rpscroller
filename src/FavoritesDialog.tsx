@@ -1,14 +1,16 @@
 import { useState } from 'react'
+
 import { formatDistanceToNow } from 'date-fns'
 // icons
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa6'
 import { IoMdHome } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
-import { FaChevronUp, FaChevronDown } from 'react-icons/fa6'
+
 // other
-import { type Favorite, normalizeForDisplay } from './util'
-import { useAppStore } from './store'
-import Button from './Button'
 import BaseDialog from './BaseDialog'
+import Button from './Button'
+import { useAppStore } from './store'
+import { type Favorite, normalizeForDisplay } from './util'
 
 export default function Favorites({
   open,

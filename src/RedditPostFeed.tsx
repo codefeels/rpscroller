@@ -1,15 +1,13 @@
 import { useEffect, useRef } from 'react'
-import { useIntersectionObserver } from 'usehooks-ts'
+
 import useSWRInfinite from 'swr/infinite'
+import { useIntersectionObserver } from 'usehooks-ts'
 
-// components
-import LoadingSpinner from './LoadingSpinner'
-import ErrorMessage from './ErrorMessage'
 import CardList from './CardList'
-
-// utils
-import { modeMap, type RedditResponse } from './util'
+import ErrorMessage from './ErrorMessage'
+import LoadingSpinner from './LoadingSpinner'
 import { useAppStore } from './store'
+import { type RedditResponse, modeMap } from './util'
 
 const getKey = (url: string) => {
   return (

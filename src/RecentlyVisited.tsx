@@ -3,12 +3,12 @@ import { FaMinus, FaPlus } from 'react-icons/fa'
 import { FaClock, FaTrash } from 'react-icons/fa6'
 
 // store
+import Button from './Button'
+import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'
 import { normalizeForDisplay } from './util'
 
 // components
-import Button from './Button'
-import SpanMenuItem from './SpanMenuItem'
 
 export default function RecentlyVisited() {
   const store = useAppStore()

@@ -1,13 +1,14 @@
 // icons
-import { MdFavorite } from 'react-icons/md'
-import { MdBlock } from 'react-icons/md'
-// locals
-import { useAppStore } from './store'
-import { hasFavorite, type Post } from './util'
-// components
-import Button from './Button'
-import { lazy, Suspense, useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
+
 import { FaPlus } from 'react-icons/fa6'
+import { MdBlock, MdFavorite } from 'react-icons/md'
+
+// locals
+import Button from './Button'
+import { useAppStore } from './store'
+import { type Post, hasFavorite } from './util'
+// components
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))

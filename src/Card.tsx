@@ -1,7 +1,9 @@
 import { lazy } from 'react'
+
 // components
-import ImageCard from './ImageCard'
 import CardHeader from './CardHeader'
+import ImageCard from './ImageCard'
+
 // type
 import type { Post } from './util'
 // lazies

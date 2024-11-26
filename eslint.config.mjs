@@ -1,4 +1,5 @@
 import eslint from '@eslint/js'
+import importPlugin from 'eslint-plugin-import'
 import eslintPluginReact from 'eslint-plugin-react'
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks'
 import eslintPluginReactRefresh from 'eslint-plugin-react-refresh'
@@ -11,7 +12,6 @@ export default tseslint.config(
       '**/dist',
       '**/vite.config.ts',
       'tailwind.config.js',
-      'postcss.config.js',
       'eslint.config.mjs',
     ],
   },
@@ -33,6 +33,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   ...tseslint.configs.stylisticTypeChecked,
   ...tseslint.configs.strictTypeChecked,
+  importPlugin.flatConfigs.recommended,
   eslintPluginReact.configs.flat.recommended,
   {
     plugins: {
@@ -58,6 +59,7 @@ export default tseslint.config(
       ],
       curly: 'error',
 
+      '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
 
@@ -67,6 +69,38 @@ export default tseslint.config(
       'unicorn/no-nested-ternary': 'off',
       'unicorn/filename-case': 'off',
       'react/react-in-jsx-scope': 'off',
+
+      'import/no-unresolved': 'off',
+      'import/order': [
+        'error',
+        {
+          named: true,
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+          },
+          groups: [
+            'builtin',
+            ['external', 'internal'],
+            ['parent', 'sibling', 'index', 'object'],
+            'type',
+          ],
+          pathGroups: [
+            {
+              group: 'builtin',
+              pattern: 'react',
+              position: 'before',
+            },
+            {
+              group: 'external',
+              pattern: '@mui/icons-material',
+              position: 'after',
+            },
+          ],
+
+          pathGroupsExcludedImportTypes: ['react'],
+        },
+      ],
 
       'react-refresh/only-export-components': [
         'warn',

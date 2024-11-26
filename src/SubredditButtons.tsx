@@ -1,18 +1,18 @@
-import { lazy, Suspense, useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 
 // locals
-import { dbPromise } from './savedPostsDb'
-import { useAppStore } from './store'
-import { hasFavorite, type Post } from './util'
 
 // icons
-import { MdFavorite } from 'react-icons/md'
 import { FaSave } from 'react-icons/fa'
 import { FaPlus } from 'react-icons/fa6'
+import { MdFavorite } from 'react-icons/md'
 
 // components
 import Button from './Button'
 import ErrorMessage from './ErrorMessage'
+import { dbPromise } from './savedPostsDb'
+import { useAppStore } from './store'
+import { type Post, hasFavorite } from './util'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))

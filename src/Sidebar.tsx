@@ -1,20 +1,20 @@
 // icons
+import { FaSave, FaShoppingCart } from 'react-icons/fa'
 import { IoIosSettings } from 'react-icons/io'
 import { MdBlock } from 'react-icons/md'
-import { FaSave, FaShoppingCart } from 'react-icons/fa'
 
 // store
+import Lists from './Feeds'
+import MenuItem from './MenuItem'
+import MostVisitedSubreddits from './MostVisitedSubreddits'
+import MostVisitedUsers from './MostVisitedUsers'
+import RecentlyVisited from './RecentlyVisited'
+import SearchBox from './SearchBox'
+import SidebarWrapper from './SidebarWrapper'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
 
 // components
-import MenuItem from './MenuItem'
-import SidebarWrapper from './SidebarWrapper'
-import RecentlyVisited from './RecentlyVisited'
-import MostVisitedUsers from './MostVisitedUsers'
-import MostVisitedSubreddits from './MostVisitedSubreddits'
-import SearchBox from './SearchBox'
-import Lists from './Feeds'
 
 export default function Sidebar() {
   const store = useAppStore()

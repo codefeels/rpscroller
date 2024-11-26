@@ -1,13 +1,14 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+
 import {
+  type Favorite,
+  type Feed,
+  type RecentlyVisited,
   hasFavorite,
   maybeNormalizeSubreddit,
   normalizeForComparison,
   normalizeSubreddit,
-  type Feed,
-  type Favorite,
-  type RecentlyVisited,
 } from './util'
 
 function cmp(r1: string, r2: string) {

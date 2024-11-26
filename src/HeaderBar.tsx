@@ -1,17 +1,9 @@
-// data
-import { useAppStore } from './store'
-
-// icon
-import flame from './favicon.svg'
-
-// components
-import SearchBox from './SearchBox'
-import Sorts from './Sorts'
-
-// icons
 import { GiHamburgerMenu } from 'react-icons/gi'
 
-// utils
+import SearchBox from './SearchBox'
+import Sorts from './Sorts'
+import flame from './favicon.svg'
+import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
 
 function Logo() {

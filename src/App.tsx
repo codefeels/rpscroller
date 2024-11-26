@@ -1,14 +1,9 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 
-// data
-import { useAppStore } from './store'
-
-// components
-import Sidebar from './Sidebar'
 import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
-
-// icons
+import Sidebar from './Sidebar'
+import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
 
 // lazies

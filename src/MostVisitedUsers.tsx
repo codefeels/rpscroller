@@ -1,27 +1,21 @@
 // icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
-import { MdFavorite } from 'react-icons/md'
 import { FaTrash } from 'react-icons/fa6'
+import { MdFavorite } from 'react-icons/md'
 
 // store
+import Button from './Button'
+import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'
 import { isUserSubreddit, normalizeForDisplay } from './util'
 
 // components
-import SpanMenuItem from './SpanMenuItem'
-import Button from './Button'
 
 export default function MostVisitedUsers() {
   const store = useAppStore()
   const { showMoreMostVisitedUsers, recentlyVisited, showMostVisitedUsers } =
     store
-  console.log(
-    recentlyVisited.filter(f => isUserSubreddit(f.name)),
-    recentlyVisited
-      .filter(f => isUserSubreddit(f.name))
-      .sort((a, b) => b.visitedCount - a.visitedCount)
-      .slice(0, showMoreMostVisitedUsers ? 20 : 5),
-  )
+
   return (
     <>
       <div>

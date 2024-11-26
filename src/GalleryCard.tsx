@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { decode, type Post } from './util'
+
+import Button from './Button'
+import ImageCard from './ImageCard'
+import { type Post, decode } from './util'
 
 // components
-import ImageCard from './ImageCard'
-import Button from './Button'
 
 export default function GalleryCard({ post }: { post: Post }) {
   const { gallery_data, crosspost_parent_list } = post

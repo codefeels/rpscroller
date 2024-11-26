@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { useAppStore } from './store'
-import { modeMap } from './util'
 
 // icons
 import { GoChevronDown } from 'react-icons/go'
@@ -8,6 +6,8 @@ import { GoChevronDown } from 'react-icons/go'
 // components
 import Button from './Button'
 import MenuItem from './MenuItem'
+import { useAppStore } from './store'
+import { modeMap } from './util'
 
 export default function Sorts() {
   const store = useAppStore()

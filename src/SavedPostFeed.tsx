@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 
-// components
-import LoadingSpinner from './LoadingSpinner'
-import ErrorMessage from './ErrorMessage'
 import CardList from './CardList'
-
-// data
-import type { Post } from './util'
+import ErrorMessage from './ErrorMessage'
+import LoadingSpinner from './LoadingSpinner'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
+
+import type { Post } from './util'
 
 export default function SavedPostFeed() {
   const store = useAppStore()

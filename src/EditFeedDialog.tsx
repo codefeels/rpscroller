@@ -1,12 +1,15 @@
 import { useState } from 'react'
-import { useAppStore } from './store'
+
 // utils
-import type { Feed } from './util'
 // icons
 import { FaTrash } from 'react-icons/fa6'
+
 // components
 import BaseDialog from './BaseDialog'
 import Button from './Button'
+import { useAppStore } from './store'
+
+import type { Feed } from './util'
 
 export default function EditFeedDialog({
   onClose,
