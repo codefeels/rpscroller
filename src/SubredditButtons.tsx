@@ -8,7 +8,6 @@ import { FaPlus } from 'react-icons/fa6'
 import { MdFavorite } from 'react-icons/md'
 
 // components
-import Button from './Button'
 import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
@@ -27,7 +26,7 @@ async function removeSavedPost(post: Post) {
   await db.delete('savedPosts', post.id)
 }
 
-export default function SubredditButtons({ post }: { post: Post }) {
+export default function Subredditlis({ post }: { post: Post }) {
   const store = useAppStore()
   const { author, subreddit, subreddit_name_prefixed, crosspost_parent_list } =
     post
@@ -47,46 +46,46 @@ export default function SubredditButtons({ post }: { post: Post }) {
       {error ? <ErrorMessage error={error} /> : null}
       {origsubreddit ? (
         <>
-          <Button
+          <li
             onClick={() => {
               store.setVal(origsubreddit)
             }}
           >
             Browse {origsubreddit}
-          </Button>
+          </li>
           {hasFavSubOrig ? null : (
-            <Button
+            <li
               onClick={() => {
                 store.addFavorite(origsubreddit)
               }}
             >
               <MdFavorite className="inline" /> {origsubreddit}
-            </Button>
+            </li>
           )}
         </>
       ) : null}
       {thissubreddit === userreddit ? null : (
         <>
-          <Button
+          <li
             onClick={() => {
               store.setVal(thissubreddit)
             }}
           >
             Browse {thissubreddit}
-          </Button>
+          </li>
           {hasFavSubThis ? null : (
-            <Button
+            <li
               onClick={() => {
                 store.addFavorite(thissubreddit)
               }}
             >
               <MdFavorite className="inline" /> {thissubreddit}
-            </Button>
+            </li>
           )}
         </>
       )}
       {val === 'savedposts' ? (
-        <Button
+        <li
           onClick={() => {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             ;(async () => {
@@ -102,9 +101,9 @@ export default function SubredditButtons({ post }: { post: Post }) {
           }}
         >
           <FaSave className="inline" /> Remove from saved
-        </Button>
+        </li>
       ) : (
-        <Button
+        <li
           onClick={() => {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             ;(async () => {
@@ -123,15 +122,15 @@ export default function SubredditButtons({ post }: { post: Post }) {
           }}
         >
           <FaSave className="inline" /> {saved ? 'Saved!' : 'Save post'}
-        </Button>
+        </li>
       )}
-      <Button
+      <li
         onClick={() => {
           setAddToFeedDialogOpen(true)
         }}
       >
         <FaPlus className="inline" /> Add {subreddit_name_prefixed} to feed
-      </Button>
+      </li>
       {addToFeedDialogOpen ? (
         <Suspense fallback={null}>
           <AddToFeedDialog
