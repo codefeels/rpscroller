@@ -156,7 +156,6 @@ export function hasFavorite(val: string, favorites: Favorite[]) {
 
 export const modeMap = new Map([
   ['hot', { title: 'Hot', url: '.json' }],
-  ['best', { title: 'Best', url: '/best.json' }],
   ['new', { title: 'New', url: '/new.json' }],
   ['topday', { title: 'Top (day)', url: '/top.json?t=day' }],
   ['topmonth', { title: 'Top (month)', url: '/top.json?t=month' }],

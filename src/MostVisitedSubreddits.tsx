@@ -1,15 +1,11 @@
-// icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { FaTrash } from 'react-icons/fa6'
 import { MdFavorite } from 'react-icons/md'
 
-// store
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'
 import { isUserSubreddit, normalizeForDisplay } from './util'
-
-// components
 
 export default function MostVisitedSubreddits() {
   const store = useAppStore()
@@ -29,7 +25,6 @@ export default function MostVisitedSubreddits() {
         >
           <MdFavorite />
         </Button>
-        :{' '}
         <Button
           onClick={() => {
             store.setShowMostVisitedSubreddits(!showMostVisitedSubreddits)

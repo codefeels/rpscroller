@@ -13,6 +13,7 @@ import SearchBox from './SearchBox'
 import SidebarWrapper from './SidebarWrapper'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
+import Button from './Button'
 
 // components
 
@@ -67,12 +68,14 @@ export default function Sidebar() {
 
       <hr />
 
-      <MenuItem
-        onClick={() => {
-          store.setCurrentlyOpenDialog('about')
-        }}
-      >
-        About
+      <MenuItem>
+        <Button
+          onClick={() => {
+            store.setCurrentlyOpenDialog('about')
+          }}
+        >
+          About
+        </Button>
       </MenuItem>
     </SidebarWrapper>
   )

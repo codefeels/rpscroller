@@ -20,10 +20,6 @@ export default function AboutDialog({
           If you have any bugs or suggestions send a issue to the repo
         </div>
         <div className="mt-5">
-          Don&apos;t scroll too hard, you only get about 100 requests per minute
-          and I&apos;m not using the authenticated API
-        </div>
-        <div className="mt-5">
           By using this app, you agree to{' '}
           <Link href="https://www.redditinc.com/policies">
             Reddit&apos;s user agreement

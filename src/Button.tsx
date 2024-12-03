@@ -16,7 +16,7 @@ export default function Button({
   return (
     <button
       id={id}
-      className={['btn btn-sm', className].filter(f => !!f).join(' ')}
+      className={['btn', className].filter(f => !!f).join(' ')}
       disabled={disabled}
       onClick={onClick}
       type={type}

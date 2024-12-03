@@ -32,16 +32,18 @@ export default function BaseDialog({
   }, [onClose])
 
   return (
-    <dialog ref={ref}>
-      <Button
-        className="float-right"
-        onClick={() => {
-          onClose()
-        }}
-      >
-        <FaX />
-      </Button>
-      <div ref={ref2}>{children}</div>
+    <dialog ref={ref} className="modal">
+      <div className="modal-box">
+        <Button
+          className="float-right"
+          onClick={() => {
+            onClose()
+          }}
+        >
+          <FaX />
+        </Button>
+        <div ref={ref2}>{children}</div>
+      </div>
     </dialog>
   )
 }

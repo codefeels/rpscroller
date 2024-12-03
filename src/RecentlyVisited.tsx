@@ -1,14 +1,10 @@
-// icons
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { FaClock, FaTrash } from 'react-icons/fa6'
 
-// store
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'
 import { normalizeForDisplay } from './util'
-
-// components
 
 export default function RecentlyVisited() {
   const store = useAppStore()
@@ -18,7 +14,7 @@ export default function RecentlyVisited() {
 
   return (
     <div>
-      Recently visited <FaClock className="inline" />:
+      Recently visited
       <Button
         onClick={() => {
           store.setShowRecentlyVisited(!showRecentlyVisited)

@@ -1,12 +1,7 @@
 import { Suspense, lazy, useState } from 'react'
 
-// icons
 import { FaEdit, FaMinus, FaPlus, FaTrash } from 'react-icons/fa'
-import { FaBook } from 'react-icons/fa6'
 
-// store
-
-// components
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'
@@ -63,7 +58,7 @@ export default function Feeds() {
       {feeds.length > 0 ? (
         <div>
           <div>
-            Feeds <FaBook className="inline" />:{' '}
+            Feeds
             <Button
               onClick={() => {
                 store.setShowFeeds(!showFeeds)

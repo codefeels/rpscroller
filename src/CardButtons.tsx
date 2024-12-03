@@ -1,12 +1,12 @@
-import { Suspense, lazy, useState } from 'react'
+import { lazy, useState } from 'react'
 
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { MdFavorite } from 'react-icons/md'
 
 import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
 import { type Post, hasFavorite } from './util'
+import Link from './Link'
 
 // icons
 
@@ -25,21 +25,60 @@ async function removeSavedPost(post: Post) {
   await db.delete('savedPosts', post.id)
 }
 
+function MenuItem({
+  onClick,
+  children,
+}: {
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <li>
+      <a>{children}</a>
+    </li>
+  )
+}
+
+function Items({ val }: { val: string }) {
+  const store = useAppStore()
+  const [addToFeedDialogOpen, setAddToFeedDialogOpen] = useState(false)
+  return (
+    <>
+      <MenuItem
+        onClick={() => {
+          store.setVal(val)
+        }}
+      >
+        Browse {val}
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          store.addFavorite(val)
+        }}
+      >
+        Fav {val}
+      </MenuItem>
+
+      <MenuItem
+        onClick={() => {
+          setAddToFeedDialogOpen(true)
+        }}
+      >
+        Add {val} to feed
+      </MenuItem>
+    </>
+  )
+}
+
 export default function CardButtons({ post }: { post: Post }) {
   const store = useAppStore()
-  const { author, subreddit, subreddit_name_prefixed, crosspost_parent_list } =
-    post
+  const { author, subreddit_name_prefixed, crosspost_parent_list } = post
   const userreddit = `u/${author}`
-
-  const { favorites, blocked } = store
-  const [addToFeedDialogOpen, setAddToFeedDialogOpen] = useState(false)
-  const hasFavUser = hasFavorite(`/user/${author}`, favorites)
 
   const { val } = store
   const origsubreddit =
     crosspost_parent_list?.[0]?.subreddit_name_prefixed ?? ''
   const thissubreddit = subreddit_name_prefixed
-  const hasFavSubOrig = hasFavorite(subreddit_name_prefixed, store.favorites)
 
   return (
     <>
@@ -47,66 +86,51 @@ export default function CardButtons({ post }: { post: Post }) {
         <summary className="btn">
           <GiHamburgerMenu />
         </summary>
-        <ul className="menu dropdown-content bg-base-100 w-auto z-[1] p-1 whitespace-nowrap">
-          {thissubreddit === userreddit ? null : (
-            <li
+        <ul className="menu dropdown-content bg-base-200 rounded-box w-auto z-[1] whitespace-nowrap">
+          {thissubreddit === userreddit ? null : <Items val={thissubreddit} />}
+
+          <hr />
+          <Items val={`/u/${author}`} />
+          {origsubreddit ? (
+            <>
+              <hr />
+              <Items val={origsubreddit} />
+            </>
+          ) : null}
+
+          <hr />
+          {val === 'savedposts' ? (
+            <MenuItem
               onClick={() => {
-                store.setVal(thissubreddit)
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                ;(async () => {
+                  try {
+                    await removeSavedPost(post)
+                    store.forceRerender()
+                  } catch (error) {
+                    console.error(error)
+                  }
+                })()
               }}
             >
-              Browse {thissubreddit}
-            </li>
-          )}
-
-          {thissubreddit === userreddit ? null : (
-            <li
+              Remove from saved
+            </MenuItem>
+          ) : (
+            <MenuItem
               onClick={() => {
-                store.addFavorite(thissubreddit)
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                ;(async () => {
+                  try {
+                    await savePost(post)
+                  } catch (error) {
+                    console.error(error)
+                  }
+                })()
               }}
             >
-              Fav {thissubreddit}
-            </li>
+              Save post
+            </MenuItem>
           )}
-
-          <li
-            onClick={() => {
-              setAddToFeedDialogOpen(true)
-            }}
-          >
-            Add {subreddit_name_prefixed} to feed
-          </li>
-        </ul>
-      </details>
-      <details className="dropdown">
-        <summary className="btn">
-          <GiHamburgerMenu />
-        </summary>
-        <ul className="menu dropdown-content bg-base-100 w-auto z-[1] p-1 whitespace-nowrap">
-          <li
-            onClick={() => {
-              store.setVal(`/user/${author}`)
-            }}
-          >
-            Browse {`/u/${author}`}
-          </li>
-
-          {hasFavUser ? null : (
-            <li
-              onClick={() => {
-                store.addFavorite(`/user/${author}`)
-              }}
-            >
-              Fav {userreddit}
-            </li>
-          )}
-
-          <li
-            onClick={() => {
-              setAddToFeedDialogOpen(true)
-            }}
-          >
-            Add {userreddit} to feed
-          </li>
         </ul>
       </details>
     </>
