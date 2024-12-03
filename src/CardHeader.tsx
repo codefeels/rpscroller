@@ -1,13 +1,11 @@
 import { formatDistanceToNowStrict } from 'date-fns'
 import { BiSolidUpvote } from 'react-icons/bi'
 
-import CardButtons from './CardButtons'
+import CardDropdown from './CardDropdown'
 import Link from './Link'
-import { useAppStore } from './store'
 import { type Post, decode } from './util'
 
 export default function CardHeader({ post }: { post: Post }) {
-  const { hideButtons } = useAppStore()
   const {
     author,
     subreddit_name_prefixed: subreddit,
@@ -52,7 +50,7 @@ export default function CardHeader({ post }: { post: Post }) {
       >
         comments
       </Link>
-      ){hideButtons ? null : <CardButtons post={post} />}
+      ) <CardDropdown post={post} />
     </div>
   )
 }

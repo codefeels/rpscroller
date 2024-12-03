@@ -32,6 +32,7 @@ interface AppState {
   feeds: Feed[]
   showFeeds: boolean
   isFullscreen: boolean
+  bottomOfScreen: boolean
   showMostVisitedUsers: boolean
   showMostVisitedSubreddits: boolean
   showRecentlyVisited: boolean
@@ -42,7 +43,6 @@ interface AppState {
   val: string
   skipPinned: boolean
   dedupe: boolean
-  hideButtons: boolean
   confirmed: boolean
   currentlyOpenDialog: string | undefined
 
@@ -74,7 +74,6 @@ interface AppState {
   forceRerender: () => void
   setHeaderOnBottomOfScreen: (arg: boolean) => void
   setDefaultPage: (arg: string) => void
-  setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
   setDedupe: (arg: boolean) => void
   setShowMostVisitedUsers: (arg: boolean) => void
@@ -115,13 +114,7 @@ export const settingsMap = {
       store.setRedGifsOnly(f)
     },
   },
-  hideButtons: {
-    smallScreensOnly: false,
-    title: 'Hide card Buttons',
-    callback: (f: boolean, store: AppState) => {
-      store.setHideButtons(f)
-    },
-  },
+
   dedupe: {
     smallScreensOnly: false,
     title: 'De-duplicate posts',
@@ -158,10 +151,10 @@ export const useAppStore = create<AppState>()(
       smallScreen: false,
       blocked: [],
       currentlyOpenDialog: undefined,
-      showMoreRecentlyVisited: false,
-      showMoreMostVisitedSubreddits: false,
-      showMoreMostVisitedUsers: false,
-      sidebarOpen: false,
+      showMoreRecentlyVisited: true,
+      showMoreMostVisitedSubreddits: true,
+      showMoreMostVisitedUsers: true,
+      sidebarOpen: true,
       isFullscreen: false,
       defaultPage: '/r/funny',
       noGifs: true,
@@ -176,7 +169,6 @@ export const useAppStore = create<AppState>()(
       showMostVisitedSubreddits: false,
       showRecentlyVisited: false,
       redGifsOnly: false,
-      hideButtons: false,
       skipPinned: false,
       dedupe: false,
       confirmed: false,
@@ -316,11 +308,7 @@ export const useAppStore = create<AppState>()(
           skipPinned: flag,
         }))
       },
-      setHideButtons: flag => {
-        set(() => ({
-          hideButtons: flag,
-        }))
-      },
+
       setRedGifsOnly: flag => {
         set(() => ({
           redGifsOnly: flag,

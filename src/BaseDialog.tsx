@@ -1,12 +1,9 @@
 import { useEffect, useRef } from 'react'
 
-// icons
 import { FaX } from 'react-icons/fa6'
 
-// utils
 import Button from './Button'
 import { useDialogShown } from './util'
-// components
 
 export default function BaseDialog({
   open,
@@ -35,7 +32,7 @@ export default function BaseDialog({
     <dialog ref={ref} className="modal">
       <div className="modal-box">
         <Button
-          className="float-right"
+          className="float-right modal-backdrop"
           onClick={() => {
             onClose()
           }}

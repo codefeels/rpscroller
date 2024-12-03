@@ -1,18 +1,11 @@
-import { lazy, useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 
 import { GiHamburgerMenu } from 'react-icons/gi'
 
-import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
-import { type Post, hasFavorite } from './util'
-import Link from './Link'
+import { normalizeSubreddit, type Post } from './util'
 
-// icons
-
-// components
-
-// lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
 
 async function savePost(post: Post) {
@@ -33,15 +26,20 @@ function MenuItem({
   children: React.ReactNode
 }) {
   return (
-    <li>
-      <a>{children}</a>
+    <li onClick={onClick}>
+      <a onClick={onClick}>{children}</a>
     </li>
   )
 }
 
-function Items({ val }: { val: string }) {
+function Items({
+  val,
+  onFeedOpen,
+}: {
+  val: string
+  onFeedOpen: (arg: string) => void
+}) {
   const store = useAppStore()
-  const [addToFeedDialogOpen, setAddToFeedDialogOpen] = useState(false)
   return (
     <>
       <MenuItem
@@ -61,7 +59,7 @@ function Items({ val }: { val: string }) {
 
       <MenuItem
         onClick={() => {
-          setAddToFeedDialogOpen(true)
+          onFeedOpen(val)
         }}
       >
         Add {val} to feed
@@ -70,10 +68,11 @@ function Items({ val }: { val: string }) {
   )
 }
 
-export default function CardButtons({ post }: { post: Post }) {
+export default function CardDropdown({ post }: { post: Post }) {
   const store = useAppStore()
   const { author, subreddit_name_prefixed, crosspost_parent_list } = post
   const userreddit = `u/${author}`
+  const [addToFeedDialogVal, setAddToFeedDialogVal] = useState<string>()
 
   const { val } = store
   const origsubreddit =
@@ -82,19 +81,39 @@ export default function CardButtons({ post }: { post: Post }) {
 
   return (
     <>
-      <details className="dropdown">
-        <summary className="btn">
+      <div className="dropdown">
+        <div tabIndex={0} role="button" className="btn m-1">
           <GiHamburgerMenu />
-        </summary>
-        <ul className="menu dropdown-content bg-base-200 rounded-box w-auto z-[1] whitespace-nowrap">
-          {thissubreddit === userreddit ? null : <Items val={thissubreddit} />}
+        </div>
+        <ul
+          tabIndex={0}
+          className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+        >
+          {thissubreddit === userreddit ? null : (
+            <Items
+              onFeedOpen={() => {
+                setAddToFeedDialogVal(thissubreddit)
+              }}
+              val={thissubreddit}
+            />
+          )}
 
           <hr />
-          <Items val={`/u/${author}`} />
+          <Items
+            onFeedOpen={() => {
+              setAddToFeedDialogVal(normalizeSubreddit(`/u/${author}`))
+            }}
+            val={`/u/${author}`}
+          />
           {origsubreddit ? (
             <>
               <hr />
-              <Items val={origsubreddit} />
+              <Items
+                onFeedOpen={() => {
+                  setAddToFeedDialogVal(origsubreddit)
+                }}
+                val={origsubreddit}
+              />
             </>
           ) : null}
 
@@ -132,7 +151,18 @@ export default function CardButtons({ post }: { post: Post }) {
             </MenuItem>
           )}
         </ul>
-      </details>
+      </div>
+
+      {addToFeedDialogVal ? (
+        <Suspense fallback={null}>
+          <AddToFeedDialog
+            subreddit={addToFeedDialogVal}
+            onClose={() => {
+              setAddToFeedDialogVal(undefined)
+            }}
+          />
+        </Suspense>
+      ) : null}
     </>
   )
 }

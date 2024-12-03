@@ -4,7 +4,8 @@ import { IoIosSettings } from 'react-icons/io'
 import { MdBlock } from 'react-icons/md'
 
 // store
-import Lists from './Feeds'
+import Button from './Button'
+import Feeds from './Feeds'
 import MenuItem from './MenuItem'
 import MostVisitedSubreddits from './MostVisitedSubreddits'
 import MostVisitedUsers from './MostVisitedUsers'
@@ -13,7 +14,6 @@ import SearchBox from './SearchBox'
 import SidebarWrapper from './SidebarWrapper'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
-import Button from './Button'
 
 // components
 
@@ -31,7 +31,7 @@ export default function Sidebar() {
 
       <RecentlyVisited />
       <hr />
-      <Lists />
+      <Feeds />
       <hr />
       <MostVisitedUsers />
       <hr />
@@ -77,6 +77,7 @@ export default function Sidebar() {
           About
         </Button>
       </MenuItem>
+      <div style={{ height: 300 }} />
     </SidebarWrapper>
   )
 }
