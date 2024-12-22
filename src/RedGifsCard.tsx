@@ -16,16 +16,15 @@ function RedGifsCardLoaded({
   post: Post
 }) {
   const { title, url } = post
+  const h = superTall ? 'h-[200vh] w-full' : 'h-[80vh] w-full'
   return (
     <>
       <iframe
         title={title}
         src={`https://www.redgifs.com/ifr/${redGifUrlToId(url)}`}
-        className={superTall ? 'h-[200vh] w-full' : 'h-[80vh] w-full'}
+        className={`${h} overflow-hidden`}
         loading="lazy"
         allowFullScreen
-        scrolling="no"
-        frameBorder="0"
       />
     </>
   )
