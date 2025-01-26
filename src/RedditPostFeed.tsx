@@ -3,11 +3,14 @@ import { useEffect, useRef } from 'react'
 import useSWRInfinite from 'swr/infinite'
 import { useIntersectionObserver } from 'usehooks-ts'
 
+import Button from './Button'
 import CardList from './CardList'
 import ErrorMessage from './ErrorMessage'
 import LoadingSpinner from './LoadingSpinner'
 import { useAppStore } from './store'
-import { type RedditResponse, modeMap } from './util'
+import { modeMap } from './util'
+
+import type { RedditResponse } from './util'
 
 const getKey = (url: string) => {
   return (
@@ -124,7 +127,20 @@ export default function RedditPostFeed() {
             ) : isReachingEnd ? (
               'End of feed!'
             ) : (
-              'Scroll all the way down to load more...'
+              <div>
+                Scroll all the way down or{' '}
+                <Button
+                  onClick={() => {
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    setSize(size + 1).then(() => {
+                      isRecharging.current = false
+                    })
+                  }}
+                >
+                  Click here
+                </Button>{' '}
+                to load more
+              </div>
             )}
           </div>
         </>
