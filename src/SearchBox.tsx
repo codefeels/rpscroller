@@ -29,7 +29,7 @@ export default function SearchBox() {
         id="box"
         type="text"
         tabIndex={0}
-        className="rounded"
+        className="rounded-sm"
         value={text}
         onChange={event => {
           setText(event.target.value)

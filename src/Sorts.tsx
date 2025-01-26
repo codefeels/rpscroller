@@ -41,7 +41,7 @@ export default function Sorts() {
       </Button>
       {showMenu ? (
         <div
-          className="absolute left-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-white dark:bg-black"
+          className="absolute left-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden bg-white dark:bg-black"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
