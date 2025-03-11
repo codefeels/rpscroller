@@ -22,6 +22,7 @@ interface AppState {
   smallScreen: boolean
   noGifs: boolean
   redGifsOnly: boolean
+  noRedGifs: boolean
   sidebarOpen: boolean
   blocked: string[]
   fullscreen: boolean
@@ -85,6 +86,7 @@ interface AppState {
   setSkipPinned: (arg: boolean) => void
   setFullscreen: (arg: boolean) => void
   setRedGifsOnly: (arg: boolean) => void
+  setNoRedGifs: (arg: boolean) => void
   setMode: (arg?: string) => void
   setVal: (arg?: string) => void
 
@@ -113,6 +115,13 @@ export const settingsMap = {
     title: 'RedGifs only',
     callback: (f: boolean, store: AppState) => {
       store.setRedGifsOnly(f)
+    },
+  },
+  noRedGifs: {
+    smallScreensOnly: false,
+    title: 'No RedGifs',
+    callback: (f: boolean, store: AppState) => {
+      store.setNoRedGifs(f)
     },
   },
   hideButtons: {
@@ -176,6 +185,7 @@ export const useAppStore = create<AppState>()(
       showMostVisitedSubreddits: false,
       showRecentlyVisited: false,
       redGifsOnly: false,
+      noRedGifs: false,
       hideButtons: false,
       skipPinned: false,
       dedupe: false,
@@ -324,6 +334,11 @@ export const useAppStore = create<AppState>()(
       setRedGifsOnly: flag => {
         set(() => ({
           redGifsOnly: flag,
+        }))
+      },
+      setNoRedGifs: flag => {
+        set(() => ({
+          noRedGifs: flag,
         }))
       },
       setMode: mode => {

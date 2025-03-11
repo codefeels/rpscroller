@@ -3,8 +3,15 @@ import { useAppStore } from './store'
 import { type Post, deduplicate } from './util'
 
 export default function CardList({ posts }: { posts: Post[] }) {
-  const { noGifs, blocked, skipPinned, dedupe, fullscreen, redGifsOnly } =
-    useAppStore()
+  const {
+    noGifs,
+    blocked,
+    skipPinned,
+    dedupe,
+    fullscreen,
+    noRedGifs,
+    redGifsOnly,
+  } = useAppStore()
   let result = posts
     .filter(post => !('comment_type' in post))
     .filter(
@@ -20,6 +27,7 @@ export default function CardList({ posts }: { posts: Post[] }) {
     )
     .filter(post => (noGifs ? !post.url.endsWith('.gif') : true))
     .filter(post => (redGifsOnly ? post.url.includes('redgifs') : true))
+    .filter(post => (noRedGifs ? !post.url.includes('redgifs') : true))
     .filter(post => (skipPinned ? !post.pinned : true))
     .filter(post => !blocked.includes(post.author))
 
