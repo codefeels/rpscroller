@@ -1,4 +1,4 @@
-// icons
+
 import { FaSave, FaShoppingCart } from 'react-icons/fa'
 import { IoIosSettings } from 'react-icons/io'
 import { MdBlock } from 'react-icons/md'

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { formatDistanceToNow } from 'date-fns'
-// icons
+
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6'
 import { IoMdHome } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'

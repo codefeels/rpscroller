@@ -1,4 +1,4 @@
-// icons
+
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { FaTrash } from 'react-icons/fa6'
 import { MdFavorite } from 'react-icons/md'

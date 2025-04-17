@@ -1,10 +1,10 @@
-// icons
+
 import { Suspense, lazy, useState } from 'react'
 
 import { FaPlus } from 'react-icons/fa6'
 import { MdBlock, MdFavorite } from 'react-icons/md'
 
-// locals
+
 import Button from './Button'
 import { useAppStore } from './store'
 import { type Post, hasFavorite } from './util'

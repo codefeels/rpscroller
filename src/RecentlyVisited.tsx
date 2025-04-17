@@ -1,4 +1,4 @@
-// icons
+
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { FaClock, FaTrash } from 'react-icons/fa6'
 

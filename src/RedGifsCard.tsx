@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useDebounceValue, useIntersectionObserver } from 'usehooks-ts'
 
-// locals
+
 import Button from './Button'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'

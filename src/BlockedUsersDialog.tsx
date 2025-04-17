@@ -1,6 +1,6 @@
 import { MdDelete } from 'react-icons/md'
 
-// locals
+
 import BaseDialog from './BaseDialog'
 import Button from './Button'
 import { useAppStore } from './store'

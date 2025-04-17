@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-// utils
-// icons
+
+
 import { FaTrash } from 'react-icons/fa6'
 
 // components

@@ -1,6 +1,6 @@
 import { Suspense, lazy, useState } from 'react'
 
-// icons
+
 import { FaEdit, FaMinus, FaPlus, FaTrash } from 'react-icons/fa'
 import { FaBook } from 'react-icons/fa6'
 

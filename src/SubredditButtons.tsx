@@ -1,8 +1,8 @@
 import { Suspense, lazy, useState } from 'react'
 
-// locals
 
-// icons
+
+
 import { FaSave } from 'react-icons/fa'
 import { FaPlus } from 'react-icons/fa6'
 import { MdFavorite } from 'react-icons/md'
