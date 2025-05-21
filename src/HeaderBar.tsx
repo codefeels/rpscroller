@@ -1,11 +1,11 @@
 import { GiHamburgerMenu } from 'react-icons/gi'
 
 import SearchBox from './SearchBox'
+import Settings from './Settings'
 import Sorts from './Sorts'
 import flame from './favicon.svg'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
-import Settings from './Settings'
 
 function Logo() {
   return (

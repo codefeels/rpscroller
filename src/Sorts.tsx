@@ -10,7 +10,7 @@ export default function Sorts() {
       <select
         value={mode}
         className="select"
-        onChange={event => store.setMode(event.target.value)}
+        onChange={event => { store.setMode(event.target.value); }}
       >
         {[...modeMap.entries()].map(([key, val]) => (
           <option

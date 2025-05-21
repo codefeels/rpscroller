@@ -10,7 +10,6 @@ import type { Post } from './util'
 
 function RedGifsCardLoaded({ post, val }: { post: Post; val: number }) {
   const { title, url } = post
-  console.log({ val })
   return (
     <>
       <iframe
@@ -58,7 +57,9 @@ export default function RedGifsCard({ post }: { post: Post }) {
           max={300}
           className="range [--range-fill:0]"
           value={val}
-          onChange={event => setVal(+event.target.value)}
+          onChange={event => {
+            setVal(+event.target.value)
+          }}
         />
       )}
       {debouncedIsIntersecting ? (

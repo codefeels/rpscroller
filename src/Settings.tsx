@@ -1,7 +1,7 @@
 import { IoIosSettings } from 'react-icons/io'
 
-import { settingsMap, useAppStore } from './store'
 import Checkbox from './Checkbox'
+import { settingsMap, useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
 
 export default function Settings() {
@@ -20,10 +20,9 @@ export default function Settings() {
         {Object.entries(settingsMap)
           .filter(([, val]) => (!small && val.smallScreensOnly ? false : true))
           .map(([key, { title, callback }]) => (
-            <li>
+            <li key={key}>
               <Checkbox
                 id={key}
-                key={key}
                 checked={store[key as keyof typeof store] as boolean}
                 label={title}
                 onChange={event => {
