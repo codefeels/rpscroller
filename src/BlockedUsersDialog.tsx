@@ -1,11 +1,9 @@
 import { MdDelete } from 'react-icons/md'
 
-
 import BaseDialog from './BaseDialog'
 import Button from './Button'
 import { useAppStore } from './store'
 import { normalizeForDisplay } from './util'
-// components
 
 export default function BlockedUsersDialog({
   open,

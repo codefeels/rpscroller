@@ -1,13 +1,9 @@
 import { Suspense, lazy, useState } from 'react'
 
-
-
-
 import { FaSave } from 'react-icons/fa'
 import { FaPlus } from 'react-icons/fa6'
 import { MdFavorite } from 'react-icons/md'
 
-// components
 import Button from './Button'
 import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'

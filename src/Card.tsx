@@ -1,12 +1,10 @@
 import { lazy } from 'react'
 
-// components
 import CardHeader from './CardHeader'
 import ImageCard from './ImageCard'
 
-// type
 import type { Post } from './util'
-// lazies
+
 const RedGifsCard = lazy(() => import('./RedGifsCard'))
 const GalleryCard = lazy(() => import('./GalleryCard'))
 

@@ -4,8 +4,6 @@ import Button from './Button'
 import ImageCard from './ImageCard'
 import { type Post, decode } from './util'
 
-// components
-
 export default function GalleryCard({ post }: { post: Post }) {
   const { gallery_data, crosspost_parent_list } = post
   const [frame, setFrame] = useState(0)

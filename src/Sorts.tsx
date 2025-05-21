@@ -1,7 +1,5 @@
-
 import { GoChevronDown } from 'react-icons/go'
 
-// components
 import MenuItem from './MenuItem'
 import { useAppStore } from './store'
 import { modeMap } from './util'

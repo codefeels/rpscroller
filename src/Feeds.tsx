@@ -1,12 +1,8 @@
 import { Suspense, lazy, useState } from 'react'
 
-
 import { FaEdit, FaMinus, FaPlus, FaTrash } from 'react-icons/fa'
 import { FaBook } from 'react-icons/fa6'
 
-// store
-
-// components
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'

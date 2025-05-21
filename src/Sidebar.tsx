@@ -1,9 +1,7 @@
-
 import { FaSave, FaShoppingCart } from 'react-icons/fa'
 import { IoIosSettings } from 'react-icons/io'
 import { MdBlock } from 'react-icons/md'
 
-// store
 import Lists from './Feeds'
 import MenuItem from './MenuItem'
 import MostVisitedSubreddits from './MostVisitedSubreddits'
@@ -13,8 +11,6 @@ import SearchBox from './SearchBox'
 import SidebarWrapper from './SidebarWrapper'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
-
-// components
 
 export default function Sidebar() {
   const store = useAppStore()
