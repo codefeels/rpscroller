@@ -4,7 +4,6 @@ import { useAppStore } from './store'
 
 // lazies
 const AboutDialog = lazy(() => import('./AboutDialog'))
-const SettingsDialog = lazy(() => import('./SettingsDialog'))
 const FavoriteUsersDialog = lazy(() => import('./FavoriteUsersDialog'))
 const BlockedUsersDialog = lazy(() => import('./BlockedUsersDialog'))
 const MakeMultiRedditDialog = lazy(() => import('./MakeMultiRedditDialog'))
@@ -18,14 +17,6 @@ export default function DialogHelper() {
 
   return (
     <Suspense fallback={null}>
-      {currentlyOpenDialog === 'settings' ? (
-        <SettingsDialog
-          open
-          onClose={() => {
-            store.setCurrentlyOpenDialog(undefined)
-          }}
-        />
-      ) : null}
       {currentlyOpenDialog === 'favoriteUsers' ? (
         <FavoriteUsersDialog
           open

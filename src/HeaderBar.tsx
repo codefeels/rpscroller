@@ -5,6 +5,7 @@ import Sorts from './Sorts'
 import flame from './favicon.svg'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
+import Settings from './Settings'
 
 function Logo() {
   return (
@@ -32,18 +33,21 @@ function HamburgerMenu() {
   )
 }
 
-export default function HeaderBar() {
-  const store = useAppStore()
-  const { headerOnBottomOfScreen } = store
-  const small = useSmallScreen()
-  return small && headerOnBottomOfScreen ? (
+function SmallScreenHeaderOnBottom() {
+  return (
     <div className="lg:p-2 myheader z-10 w-full border-t-2 border-slate-500 fixed flex bottom-0 right-0">
       <Sorts />
+      <Settings />
       <Spacer />
       <HamburgerMenu />
       <Logo />
     </div>
-  ) : (
+  )
+}
+
+function NormalHeader() {
+  const small = useSmallScreen()
+  return (
     <div className="lg:p-2 myheader z-10 w-full border-b-2 border-slate-500 flex sticky top-0">
       <HamburgerMenu />
       <Logo />
@@ -51,6 +55,17 @@ export default function HeaderBar() {
       {small ? null : <SearchBox />}
       <Spacer />
       <Sorts />
+      <Settings />
     </div>
+  )
+}
+
+export default function HeaderBar() {
+  const { headerOnBottomOfScreen } = useAppStore()
+  const small = useSmallScreen()
+  return small && headerOnBottomOfScreen ? (
+    <SmallScreenHeaderOnBottom />
+  ) : (
+    <NormalHeader />
   )
 }

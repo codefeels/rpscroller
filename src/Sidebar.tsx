@@ -1,5 +1,4 @@
 import { FaSave, FaShoppingCart } from 'react-icons/fa'
-import { IoIosSettings } from 'react-icons/io'
 import { MdBlock } from 'react-icons/md'
 
 import Lists from './Feeds'
@@ -32,13 +31,6 @@ export default function Sidebar() {
       <hr />
       <MostVisitedSubreddits />
       <hr />
-      <MenuItem
-        onClick={() => {
-          store.setCurrentlyOpenDialog('settings')
-        }}
-      >
-        <IoIosSettings className="inline" /> Settings
-      </MenuItem>
       <MenuItem
         onClick={() => {
           store.setVal('savedposts')

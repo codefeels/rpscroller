@@ -1,0 +1,38 @@
+import { IoIosSettings } from 'react-icons/io'
+
+import { settingsMap, useAppStore } from './store'
+import Checkbox from './Checkbox'
+import { useSmallScreen } from './useSmallScreen'
+
+export default function Settings() {
+  const store = useAppStore()
+  const small = useSmallScreen()
+
+  return (
+    <div className="dropdown dropdown-bottom dropdown-end">
+      <div tabIndex={0} role="button" className="btn m-1">
+        <IoIosSettings />
+      </div>
+      <ul
+        tabIndex={0}
+        className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+      >
+        {Object.entries(settingsMap)
+          .filter(([, val]) => (!small && val.smallScreensOnly ? false : true))
+          .map(([key, { title, callback }]) => (
+            <li>
+              <Checkbox
+                id={key}
+                key={key}
+                checked={store[key as keyof typeof store] as boolean}
+                label={title}
+                onChange={event => {
+                  callback(event.target.checked, store)
+                }}
+              />{' '}
+            </li>
+          ))}
+      </ul>
+    </div>
+  )
+}
