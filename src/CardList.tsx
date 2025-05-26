@@ -1,4 +1,5 @@
 import Card from './Card'
+import NoResultsMessage from './NoResultsMessage'
 import { useAppStore } from './store'
 import { type Post, deduplicate } from './util'
 
@@ -41,11 +42,7 @@ export default function CardList({ posts }: { posts: Post[] }) {
           {result.length > 0 ? (
             result.map(post => <Card key={post.id} post={post} />)
           ) : (
-            <h1>
-              No results on this page, check your filters in the settings or
-              this may just have been a page of comments if you are browsing a
-              user page
-            </h1>
+            <NoResultsMessage />
           )}
         </div>
       </div>
