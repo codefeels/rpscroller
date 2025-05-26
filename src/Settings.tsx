@@ -3,6 +3,7 @@ import { IoIosSettings } from 'react-icons/io'
 import Checkbox from './Checkbox'
 import { settingsMap, useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
+import Button from './Button'
 
 export default function Settings() {
   const store = useAppStore()
@@ -10,9 +11,9 @@ export default function Settings() {
 
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
-      <div tabIndex={0} role="button" className="btn m-1">
+      <Button className="ml-2">
         <IoIosSettings />
-      </div>
+      </Button>
       <ul
         tabIndex={0}
         className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"

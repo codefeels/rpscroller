@@ -1,5 +1,5 @@
 import { FaSave, FaShoppingCart } from 'react-icons/fa'
-import { MdBlock } from 'react-icons/md'
+import { MdBlock, MdInfo } from 'react-icons/md'
 
 import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
@@ -52,15 +52,12 @@ export default function Sidebar() {
       >
         <MdBlock className="inline" /> Blocked users
       </MenuItem>
-
-      <hr />
-
       <MenuItem
         onClick={() => {
           store.setCurrentlyOpenDialog('about')
         }}
       >
-        About
+        <MdInfo className="inline" /> About
       </MenuItem>
     </SidebarWrapper>
   )

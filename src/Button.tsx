@@ -17,7 +17,13 @@ export default function Button({
     <button
       id={id}
       className={[
-        'bg-gray-300 hover:bg-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100 p-0.5 m-0.5 rounded-sm',
+        'btn',
+        'btn-soft',
+        'btn-sm',
+        'font-normal',
+        'text-base',
+        'p-1',
+        'm-1',
         className,
       ]
         .filter(f => !!f)

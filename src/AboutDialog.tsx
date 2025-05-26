@@ -11,27 +11,26 @@ export default function AboutDialog({
 }) {
   return (
     <BaseDialog open={open} onClose={onClose}>
-      <div className="mt-5">
+      <div className="mt-5 flex flex-col gap-6">
         <div className="font-extrabold">
           rpscroller <img className="h-8 inline" src={flame} alt="app icon" />
         </div>
 
-        <div className="mt-5">
-          If you have any bugs or suggestions send a issue to the repo
-        </div>
-        <div className="mt-5">
+        <div>If you have any bugs or suggestions send a issue to the repo</div>
+        <div>
           Don&apos;t scroll too hard, you only get about 100 requests per minute
           and I&apos;m not using the authenticated API
         </div>
-        <div className="mt-5">
+        <div>
           By using this app, you agree to{' '}
           <Link href="https://www.redditinc.com/policies">
             Reddit&apos;s user agreement
           </Link>
         </div>
-        <div className="mt-5">
+        <div>
+          Contact/Report issues/Source code:{' '}
           <Link href="https://github.com/codefeels/rpscroller?tab=readme-ov-file">
-            Source code
+            GitHub
           </Link>
         </div>
       </div>
