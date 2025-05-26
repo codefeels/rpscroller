@@ -1,12 +1,12 @@
 import { FaMinus, FaPlus } from 'react-icons/fa'
-import { FaClock, FaTrash } from 'react-icons/fa6'
+import { FaTrash } from 'react-icons/fa6'
 
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'
-import { normalizeForDisplay } from './util'
+import { isUserSubreddit, normalizeForDisplay } from './util'
 
-export default function RecentlyVisited() {
+export default function RecentlyVisitedSubreddits() {
   const store = useAppStore()
   const { showMoreRecentlyVisited, recentlyVisited, showRecentlyVisited } =
     store
@@ -14,7 +14,7 @@ export default function RecentlyVisited() {
 
   return (
     <div>
-      Recently visited <FaClock className="inline" />:
+      Recently visited subs:
       <Button
         onClick={() => {
           store.setShowRecentlyVisited(!showRecentlyVisited)
@@ -30,6 +30,7 @@ export default function RecentlyVisited() {
         {showRecentlyVisited ? (
           <div>
             {recentlyVisited
+              .filter(f => !isUserSubreddit(f.name))
               .slice(0, showMoreRecentlyVisited ? 1000 : 20)
               .filter(recentVisit => !s.has(recentVisit.name))
               .map(recentVisit => (
@@ -51,13 +52,6 @@ export default function RecentlyVisited() {
                   </Button>
                 </div>
               ))}
-            <Button
-              onClick={() => {
-                store.clearRecentlyVisited()
-              }}
-            >
-              Clear
-            </Button>
             <Button
               onClick={() => {
                 store.setShowMoreRecentlyVisited(!showMoreRecentlyVisited)

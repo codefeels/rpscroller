@@ -2,13 +2,12 @@ import { Suspense, lazy, useEffect } from 'react'
 
 import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
-import Sidebar from './Sidebar'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
 
 // lazies
-const RedditPostFeed = lazy(() => import('./RedditPostFeed'))
-const SavedPostFeed = lazy(() => import('./SavedPostFeed'))
+const MobileApp = lazy(() => import('./MobileApp'))
+const DesktopApp = lazy(() => import('./DesktopApp'))
 
 export default function App() {
   const store = useAppStore()
@@ -60,56 +59,12 @@ export default function App() {
   }, [val])
 
   return (
-    <div>
+    <>
       <HeaderBar />
-      {small ? <MobileApp /> : <DesktopApp />}
+      <Suspense fallback={null}>
+        {small ? <MobileApp /> : <DesktopApp />}
+      </Suspense>
       <DialogHelper />
-    </div>
-  )
-}
-
-function MobileApp() {
-  const store = useAppStore()
-  const { sidebarOpen } = store
-
-  return (
-    <div>
-      {sidebarOpen ? <Sidebar /> : null}
-      <Feed />
-    </div>
-  )
-}
-
-function DesktopApp() {
-  const store = useAppStore()
-  const { sidebarOpen } = store
-
-  return (
-    <div className="relative">
-      {sidebarOpen ? (
-        <div className="grid grid-cols-12">
-          <div className="col-span-2 border-r-2 border-slate-500">
-            <div className="sticky overflow-auto max-h-screen top-12">
-              <Sidebar />
-            </div>
-          </div>
-          <div className="col-span-10">
-            <Feed />
-          </div>
-        </div>
-      ) : (
-        <Feed />
-      )}
-    </div>
-  )
-}
-
-function Feed() {
-  const store = useAppStore()
-  const { val } = store
-  return (
-    <Suspense fallback={null}>
-      {val === 'savedposts' ? <SavedPostFeed /> : <RedditPostFeed />}
-    </Suspense>
+    </>
   )
 }

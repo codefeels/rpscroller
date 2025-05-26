@@ -94,7 +94,7 @@ export const useAppStore = create<AppState>()(
       headerOnBottomOfScreen: false,
       recentlyVisited: [],
       bottomOfScreen: false,
-      fullscreen: false,
+      fullscreen: true,
       rerenderCount: 0,
       showFeeds: true,
       showMostVisitedUsers: false,

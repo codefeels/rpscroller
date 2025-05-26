@@ -23,7 +23,6 @@ export default function Button({
         'font-normal',
         'text-base',
         'p-1',
-        'm-1',
         className,
       ]
         .filter(f => !!f)

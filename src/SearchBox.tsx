@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { MdFavorite } from 'react-icons/md'
 
-import Button from './Button'
+import ButtonM1 from './ButtonM1'
 import { useAppStore } from './store'
 import { hasFavorite } from './util'
 
@@ -32,15 +32,15 @@ export default function SearchBox() {
             setText(event.target.value)
           }}
         />
-        <Button type="submit">Submit</Button>
+        <ButtonM1 type="submit">Submit</ButtonM1>
         {hasFavorite(text, store.favorites) ? null : (
-          <Button
+          <ButtonM1
             onClick={() => {
               store.addFavorite(text)
             }}
           >
             <MdFavorite className="inline" />
-          </Button>
+          </ButtonM1>
         )}
       </div>
     </form>

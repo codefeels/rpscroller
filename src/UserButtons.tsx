@@ -3,9 +3,11 @@ import { Suspense, lazy, useState } from 'react'
 import { FaPlus } from 'react-icons/fa6'
 import { MdBlock, MdFavorite } from 'react-icons/md'
 
-import Button from './Button'
+import ButtonM1 from './ButtonM1'
 import { useAppStore } from './store'
-import { type Post, hasFavorite } from './util'
+import { hasFavorite } from './util'
+
+import type { Post } from './util'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
@@ -19,38 +21,38 @@ export default function UserButtons({ post }: { post: Post }) {
   const userreddit = `/u/${author}`
   return (
     <div>
-      <Button
+      <ButtonM1
         onClick={() => {
           store.setVal(`/user/${author}`)
         }}
       >
         Browse {`/u/${author}`}
-      </Button>
+      </ButtonM1>
       {hasFavUser ? null : (
-        <Button
+        <ButtonM1
           onClick={() => {
             store.addFavorite(`/user/${author}`)
           }}
         >
           <MdFavorite className="inline" /> {userreddit}
-        </Button>
+        </ButtonM1>
       )}
       {hasFavUser || blocked.includes(author) ? null : (
-        <Button
+        <ButtonM1
           onClick={() => {
             store.setBlocked(author)
           }}
         >
           <MdBlock className="inline" /> Block {userreddit}
-        </Button>
+        </ButtonM1>
       )}
-      <Button
+      <ButtonM1
         onClick={() => {
           setAddToFeedDialogOpen(true)
         }}
       >
         <FaPlus className="inline" /> Add {userreddit} to feed
-      </Button>
+      </ButtonM1>
       {addToFeedDialogOpen ? (
         <Suspense fallback={null}>
           <AddToFeedDialog

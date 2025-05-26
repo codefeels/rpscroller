@@ -6,7 +6,8 @@ import SearchBox from './SearchBox'
 import SidebarFeeds from './SidebarFeeds'
 import SidebarMostVisitedSubreddits from './SidebarMostVisitedSubreddits'
 import SidebarMostVisitedUsers from './SidebarMostVisitedUsers'
-import SidebarRecentlyVisited from './SidebarRecentlyVisited'
+import SidebarRecentlyVisitedSubreddits from './SidebarRecentlyVisitedSubreddits'
+import SidebarRecentlyVisitedUsers from './SidebarRecentlyVisitedUsers'
 import SidebarWrapper from './SidebarWrapper'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
@@ -23,7 +24,9 @@ export default function Sidebar() {
         </>
       ) : null}
 
-      <SidebarRecentlyVisited />
+      <SidebarRecentlyVisitedUsers />
+      <hr />
+      <SidebarRecentlyVisitedSubreddits />
       <hr />
       <SidebarFeeds />
       <hr />

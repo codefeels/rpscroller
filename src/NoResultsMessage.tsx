@@ -13,7 +13,7 @@ export default function NoResultsMessage() {
       {redGifsOnly ? (
         <div>
           Note: RedGifs only is on.
-          <Button onClick={() => store.setRedGifsOnly(!redGifsOnly)}>
+          <Button onClick={() => { store.setRedGifsOnly(!redGifsOnly); }}>
             Turn off RedGifs only
           </Button>
         </div>

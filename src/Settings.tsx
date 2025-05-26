@@ -1,9 +1,9 @@
 import { IoIosSettings } from 'react-icons/io'
 
+import Button from './Button'
 import Checkbox from './Checkbox'
 import { settingsMap, useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
-import Button from './Button'
 
 export default function Settings() {
   const store = useAppStore()
