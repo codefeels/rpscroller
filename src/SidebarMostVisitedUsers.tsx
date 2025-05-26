@@ -7,20 +7,18 @@ import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'
 import { isUserSubreddit, normalizeForDisplay } from './util'
 
-export default function MostVisitedSubreddits() {
+export default function SidebarMostVisitedUsers() {
   const store = useAppStore()
-  const {
-    showMoreMostVisitedSubreddits,
-    recentlyVisited,
-    showMostVisitedSubreddits,
-  } = store
+  const { showMoreMostVisitedUsers, recentlyVisited, showMostVisitedUsers } =
+    store
+
   return (
     <>
       <div>
-        Most visited subreddits{' '}
+        Most visited users{' '}
         <Button
           onClick={() => {
-            store.setCurrentlyOpenDialog('favoriteSubreddits')
+            store.setCurrentlyOpenDialog('favoriteUsers')
           }}
         >
           <MdFavorite />
@@ -28,26 +26,25 @@ export default function MostVisitedSubreddits() {
         :{' '}
         <Button
           onClick={() => {
-            store.setShowMostVisitedSubreddits(!showMostVisitedSubreddits)
+            store.setShowMostVisitedUsers(!showMostVisitedUsers)
           }}
         >
-          {showMostVisitedSubreddits ? (
+          {showMostVisitedUsers ? (
             <FaMinus className="inline" />
           ) : (
             <FaPlus className="inline" />
           )}
         </Button>
       </div>
-      {showMostVisitedSubreddits ? (
+      {showMostVisitedUsers ? (
         <>
           {recentlyVisited
-            .filter(f => !isUserSubreddit(f.name))
+            .filter(f => isUserSubreddit(f.name))
             .sort((a, b) => b.visitedCount - a.visitedCount)
-            .slice(0, showMoreMostVisitedSubreddits ? 20 : 5)
+            .slice(0, showMoreMostVisitedUsers ? 20 : 5)
             .map(l => (
               <div key={l.name}>
                 <SpanMenuItem
-                  key={l.name}
                   onClick={() => {
                     store.setVal(l.name)
                   }}
@@ -65,12 +62,10 @@ export default function MostVisitedSubreddits() {
             ))}
           <Button
             onClick={() => {
-              store.setShowMoreMostVisitedSubreddits(
-                !showMoreMostVisitedSubreddits,
-              )
+              store.setShowMoreMostVisitedUsers(!showMoreMostVisitedUsers)
             }}
           >
-            {showMoreMostVisitedSubreddits ? 'Show less' : 'Show more'}
+            {showMoreMostVisitedUsers ? 'Show less' : 'Show more'}
           </Button>
         </>
       ) : null}

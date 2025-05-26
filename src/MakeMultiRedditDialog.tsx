@@ -20,12 +20,13 @@ export default function MakeMultiRedditDialog({
   onClose: () => void
 }) {
   const store = useAppStore()
-  const { favorites } = store
+  const { recentlyVisited, favorites } = store
   const [multi, setMulti] = useState<string[]>([])
   const [sortVisits, setSortVisits] = useState(-1)
   const [sortDateAdded, setSortDateAdded] = useState(0)
   const [feedName, setFeedName] = useState('')
   const [creatingFeed, setCreatingFeed] = useState(true)
+  const ret = Object.fromEntries(recentlyVisited.map(r => [r.name, r]))
 
   const favs = [
     ...favorites
@@ -35,8 +36,15 @@ export default function MakeMultiRedditDialog({
       .filter(f => isUserSubreddit(f.name))
       .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
   ]
-    .map(f => ({ ...f, dateAdded: new Date(f.dateAdded) }))
-    .sort((a, b) => (a.visitedCount - b.visitedCount) * sortVisits)
+    .map(f => ({
+      ...f,
+      dateAdded: new Date(ret[f.name]?.dateAdded || new Date()),
+    }))
+    .sort(
+      (a, b) =>
+        ((ret[a.name]?.visitedCount || 0) - (ret[b.name]?.visitedCount || 0)) *
+        sortVisits,
+    )
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
     <BaseDialog open={open} onClose={onClose}>
@@ -127,7 +135,7 @@ export default function MakeMultiRedditDialog({
                         {normalizeForDisplay(f.name)}
                       </Button>
                     </td>
-                    <td>{f.visitedCount}</td>
+                    <td>{ret[f.name]?.visitedCount}</td>
                     <td>
                       {formatDistanceToNowStrict(f.dateAdded, {
                         addSuffix: true,

@@ -24,11 +24,20 @@ export default function Favorites({
   favorites: Favorite[]
 }) {
   const store = useAppStore()
+  const { recentlyVisited } = store
   const [sortVisits, setSortVisits] = useState(-1)
   const [sortDateAdded, setSortDateAdded] = useState(0)
+  const ret = Object.fromEntries(recentlyVisited.map(r => [r.name, r]))
   const favs = [...favorites]
-    .map(f => ({ ...f, dateAdded: new Date(f.dateAdded) }))
-    .sort((a, b) => (a.visitedCount - b.visitedCount) * sortVisits)
+    .map(f => ({
+      ...f,
+      dateAdded: new Date(ret[f.name]?.dateAdded || new Date()),
+    }))
+    .sort(
+      (a, b) =>
+        ((ret[a.name]?.visitedCount || 0) - (ret[b.name]?.visitedCount || 0)) *
+        sortVisits,
+    )
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
     <BaseDialog open={open} onClose={onClose}>
@@ -99,7 +108,7 @@ export default function Favorites({
                       {normalizeForDisplay(f.name)}
                     </Button>
                   </td>
-                  <td>{f.visitedCount}</td>
+                  <td>{ret[f.name]?.visitedCount}</td>
                   <td>
                     {formatDistanceToNow(f.dateAdded, { addSuffix: true })}
                   </td>
