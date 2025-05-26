@@ -116,10 +116,7 @@ export interface RecentlyVisited {
 }
 
 export interface Favorite {
-  visitedCount: number
   name: string
-  dateAdded: Date
-  lastVisited: Date
 }
 
 export interface Feed {

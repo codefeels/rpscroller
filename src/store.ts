@@ -11,11 +11,54 @@ import {
   normalizeSubreddit,
 } from './util'
 
+/**
+ * Compare two subreddit strings for equality after normalization
+ */
 function cmp(r1: string, r2: string) {
   return normalizeForComparison(r1) === normalizeForComparison(r2)
 }
 
+/**
+ * Maximum number of recently visited items to keep
+ */
 const MAX_RECENTLY_VISITED = 20
+
+/**
+ * Update a recently visited item or create a new one
+ */
+function updateRecentlyVisitedItem(
+  existingItem: RecentlyVisited | undefined,
+  name: string,
+): RecentlyVisited {
+  return {
+    name,
+    lastVisited: new Date(),
+    dateAdded: existingItem?.dateAdded ?? new Date(),
+    visitedCount: (existingItem?.visitedCount ?? 0) + 1,
+  }
+}
+
+/**
+ * Update the recently visited list with a new visit
+ */
+function updateRecentlyVisitedList(
+  currentList: RecentlyVisited[],
+  newVal: string,
+): RecentlyVisited[] {
+  // Find if this item already exists in the list
+  const existingItem = currentList.find(item => cmp(item.name, newVal))
+
+  // Create updated item
+  const updatedItem = updateRecentlyVisitedItem(existingItem, newVal)
+
+  // Filter out the existing item (if any) and ensure we don't exceed the max size
+  const filteredList = currentList
+    .filter(item => !cmp(item.name, newVal))
+    .slice(0, MAX_RECENTLY_VISITED - 1)
+
+  // Add the updated item at the beginning
+  return [updatedItem, ...filteredList]
+}
 
 interface AppState {
   rerenderCount: number
@@ -278,12 +321,14 @@ export const useAppStore = create<AppState>()(
       },
       removeFromRecentlyVisited: (name: string) => {
         set(state => ({
-          recentlyVisited: state.recentlyVisited.filter(f => f.name !== name),
+          recentlyVisited: state.recentlyVisited.filter(
+            item => !cmp(item.name, name),
+          ),
         }))
       },
       removeFeed: (name: string) => {
         set(state => ({
-          feeds: state.feeds.filter(f => f.name !== name),
+          feeds: state.feeds.filter(feed => feed.name !== name),
         }))
       },
       clearRecentlyVisited: () => {
@@ -354,69 +399,59 @@ export const useAppStore = create<AppState>()(
       setVal: newVal => {
         const newValNormalized = maybeNormalizeSubreddit(newVal)
         set(state => {
-          const { val, feeds, favorites, recentlyVisited } = state
-          const set = new Set(feeds.map(f => `r/${f.subreddits.join('+')}`))
+          const { val, feeds, recentlyVisited } = state
+          const feedPaths = new Set(
+            feeds.map(f => `r/${f.subreddits.join('+')}`),
+          )
 
-          if (newValNormalized) {
-            const isChanging = !cmp(newValNormalized, val)
-            const old = recentlyVisited.find(f => cmp(f.name, newValNormalized))
-            return {
-              val: newValNormalized,
-              mode: 'hot',
-              sidebarOpen: state.smallScreen ? false : state.sidebarOpen,
-              favorites: favorites.map(favorite => ({
-                ...favorite,
-                visitedCount:
-                  cmp(newValNormalized, favorite.name) && isChanging
-                    ? favorite.visitedCount + 1
-                    : favorite.visitedCount,
-                lastVisited: new Date(),
-              })),
-              recentlyVisited:
-                set.has(newValNormalized) || !isChanging
-                  ? recentlyVisited
-                  : [
-                      {
-                        ...old,
-                        name: newValNormalized,
-                        lastVisited: new Date(),
-                        dateAdded: old?.dateAdded ?? new Date(),
-                        visitedCount: (old?.visitedCount ?? 0) + 1,
-                      },
-                      ...recentlyVisited
-                        .slice(
-                          recentlyVisited.length > MAX_RECENTLY_VISITED ? 1 : 0,
-                        )
-                        .filter(f => f.name !== newValNormalized),
-                    ],
-            }
-          } else {
+          if (!newValNormalized) {
             return {
               val: undefined,
               sidebarOpen: state.smallScreen ? false : state.sidebarOpen,
             }
           }
+
+          const isChanging = !cmp(newValNormalized, val)
+
+          // Update state with new value
+          return {
+            val: newValNormalized,
+            mode: 'hot',
+            sidebarOpen: state.smallScreen ? false : state.sidebarOpen,
+
+            // Update recently visited list
+            recentlyVisited:
+              isChanging && !feedPaths.has(newValNormalized)
+                ? updateRecentlyVisitedList(recentlyVisited, newValNormalized)
+                : recentlyVisited,
+          }
         })
       },
       addFavorite: newFav => {
         const newFavNormalized = normalizeSubreddit(newFav)
-        set(state => ({
-          favorites: hasFavorite(newFavNormalized, state.favorites)
-            ? state.favorites
-            : [
+        set(state => {
+          // Skip if already in favorites
+          if (hasFavorite(newFavNormalized, state.favorites)) {
+            return {
+              favorites: state.favorites,
+            }
+          } else {
+            return {
+              favorites: [
                 ...state.favorites,
                 {
                   name: newFavNormalized,
-                  visitedCount: 0,
-                  dateAdded: new Date(),
-                  lastVisited: new Date(),
                 },
               ],
-        }))
+            }
+          }
+        })
       },
       removeFavorite: val => {
         set(state => ({
-          favorites: state.favorites.filter(f => f.name !== val),
+          favorites: state.favorites.filter(
+            favorite => !cmp(favorite.name, val),
+          ),
         }))
       },
     }),
@@ -430,18 +465,40 @@ export const useAppStore = create<AppState>()(
       onRehydrateStorage: () => {
         return state => {
           if (state) {
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            state.val = val || state.defaultPage || ''
-            // @ts-expect-error old mapover
-            state.recentlyVisited =
-              typeof state.recentlyVisited[0] === 'string'
-                ? state.recentlyVisited.map(s => ({
-                    name: s,
-                    visitedCount: 1,
-                    lastVisited: new Date(),
-                    dateAdded: new Date(),
-                  }))
-                : state.recentlyVisited
+            // Use URL param value, fallback to default page, or empty string
+            state.val = val ?? state.defaultPage ?? ''
+
+            // Handle migration from old format (string array) to new format
+            // (RecentlyVisited[])
+            if (state.recentlyVisited?.length > 0) {
+              if (typeof state.recentlyVisited[0] === 'string') {
+                // Convert old string format to RecentlyVisited objects
+                state.recentlyVisited = (
+                  state.recentlyVisited as unknown as string[]
+                ).map(s => ({
+                  name: s,
+                  visitedCount: 1,
+                  lastVisited: new Date(),
+                  dateAdded: new Date(),
+                }))
+              } else {
+                // Ensure dates are properly converted from string to Date objects
+                state.recentlyVisited = state.recentlyVisited.map(item => ({
+                  ...item,
+                  lastVisited: new Date(item.lastVisited),
+                  dateAdded: new Date(item.dateAdded),
+                }))
+              }
+            }
+
+            // Ensure favorites dates are properly converted from string to Date objects
+            if (state.favorites?.length > 0) {
+              state.favorites = state.favorites.map(item => ({
+                ...item,
+                lastVisited: new Date(item.lastVisited),
+                dateAdded: new Date(item.dateAdded),
+              }))
+            }
           }
         }
       },

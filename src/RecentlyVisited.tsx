@@ -29,7 +29,7 @@ export default function RecentlyVisited() {
       {showRecentlyVisited ? (
         <div>
           {recentlyVisited
-            .slice(0, showMoreRecentlyVisited ? 20 : 5)
+            .slice(0, showMoreRecentlyVisited ? 1000 : 5)
             .filter(recentVisit => !s.has(recentVisit.name))
             .map(recentVisit => (
               <div key={recentVisit.name}>
