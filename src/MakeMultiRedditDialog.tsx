@@ -38,11 +38,11 @@ export default function MakeMultiRedditDialog({
   ]
     .map(f => ({
       ...f,
-      dateAdded: new Date(ret[f.name]?.dateAdded || new Date()),
+      dateAdded: new Date(ret[f.name]?.dateAdded ?? new Date()),
     }))
     .sort(
       (a, b) =>
-        ((ret[a.name]?.visitedCount || 0) - (ret[b.name]?.visitedCount || 0)) *
+        ((ret[a.name]?.visitedCount ?? 0) - (ret[b.name]?.visitedCount ?? 0)) *
         sortVisits,
     )
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)

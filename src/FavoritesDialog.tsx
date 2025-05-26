@@ -28,14 +28,14 @@ export default function Favorites({
   const [sortVisits, setSortVisits] = useState(-1)
   const [sortDateAdded, setSortDateAdded] = useState(0)
   const ret = Object.fromEntries(recentlyVisited.map(r => [r.name, r]))
-  const favs = [...favorites]
+  const favs = favorites
     .map(f => ({
       ...f,
-      dateAdded: new Date(ret[f.name]?.dateAdded || new Date()),
+      dateAdded: new Date(ret[f.name]?.dateAdded ?? new Date()),
     }))
     .sort(
       (a, b) =>
-        ((ret[a.name]?.visitedCount || 0) - (ret[b.name]?.visitedCount || 0)) *
+        ((ret[a.name]?.visitedCount ?? 0) - (ret[b.name]?.visitedCount ?? 0)) *
         sortVisits,
     )
     .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)

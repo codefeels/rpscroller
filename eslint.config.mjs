@@ -69,6 +69,7 @@ export default tseslint.config(
       'unicorn/no-null': 'off',
       'unicorn/no-nested-ternary': 'off',
       'unicorn/filename-case': 'off',
+      'unicorn/prefer-ternary': 'off',
       'react/react-in-jsx-scope': 'off',
 
       'import/no-unresolved': 'off',

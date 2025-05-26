@@ -334,46 +334,32 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'settings',
-      partialize: state => {
-        return Object.fromEntries(
+      partialize: state =>
+        Object.fromEntries(
           Object.entries(state).filter(([key]) => !filterSet.has(key)),
-        )
-      },
+        ),
       onRehydrateStorage: () => {
         return state => {
           if (state) {
             // Use URL param value, fallback to default page, or empty string
-            state.val = val ?? state.defaultPage ?? ''
+            state.val = val ?? state.defaultPage
 
             // Handle migration from old format (string array) to new format
             // (RecentlyVisited[])
-            if (state.recentlyVisited?.length > 0) {
-              if (typeof state.recentlyVisited[0] === 'string') {
-                // Convert old string format to RecentlyVisited objects
-                state.recentlyVisited = (
-                  state.recentlyVisited as unknown as string[]
-                ).map(s => ({
-                  name: s,
-                  visitedCount: 1,
-                  lastVisited: new Date(),
-                  dateAdded: new Date(),
-                }))
-              } else {
-                // Ensure dates are properly converted from string to Date objects
-                state.recentlyVisited = state.recentlyVisited.map(item => ({
-                  ...item,
-                  lastVisited: new Date(item.lastVisited),
-                  dateAdded: new Date(item.dateAdded),
-                }))
-              }
-            }
 
-            // Ensure favorites dates are properly converted from string to Date objects
-            if (state.favorites?.length > 0) {
-              state.favorites = state.favorites.map(item => ({
+            state.recentlyVisited =
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              state.recentlyVisited?.map(item => ({
                 ...item,
-              }))
-            }
+                lastVisited: new Date(item.lastVisited),
+                dateAdded: new Date(item.dateAdded),
+              })) || []
+
+            state.favorites =
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              state.favorites?.map(item => ({
+                ...item,
+              })) || []
           }
         }
       },
