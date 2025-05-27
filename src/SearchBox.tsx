@@ -20,6 +20,7 @@ export default function SearchBox() {
       className="inline"
       onSubmit={event => {
         event.preventDefault()
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         navigate(text)
       }}
     >

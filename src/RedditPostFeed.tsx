@@ -12,7 +12,7 @@ import { getFeedKey } from './getFeedKey'
 import { useAppStore } from './store'
 import { modeMap } from './util'
 
-import type { RedditResponse } from './util'
+import type { RedditResponse } from './util';
 
 export default function RedditPostFeed() {
   const store = useAppStore()
@@ -20,19 +20,6 @@ export default function RedditPostFeed() {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.9,
   })
-  //
-  // useEffect(() => {
-  //   function onPopState(event: PopStateEvent) {
-  //     if (event.state) {
-  //       store.setVal((event.state as { val: string }).val)
-  //     }
-  //   }
-  //   // Handle forward/back buttons
-  //   window.addEventListener('popstate', onPopState)
-  //   return () => {
-  //     window.removeEventListener('popstate', onPopState)
-  //   }
-  // }, [store])
 
   const isRecharging = useRef(false)
 
@@ -48,7 +35,7 @@ export default function RedditPostFeed() {
     isValidating,
     isLoading,
   } = useSWRInfinite(getFeedKey(url), async (url: string) => {
-    const ret = (await myfetchjson(url))
+    const ret = await myfetchjson<RedditResponse>(url)
     return ret.data
   })
 

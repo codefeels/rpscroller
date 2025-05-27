@@ -18,7 +18,7 @@ export default function AddToFeedDialog({
       <div style={{ minWidth: 500, minHeight: 200 }}>
         {store.feeds.length > 0 ? (
           <div>
-            <h1>Add "{subreddit}" to existing feed:</h1>
+            <h1>Add &quot;{subreddit}&quot; to existing feed:</h1>
             <ul>
               {store.feeds.map(feed => (
                 <li key={feed.name}>
@@ -42,7 +42,7 @@ export default function AddToFeedDialog({
           </div>
         ) : null}
         <div>
-          Create new feed with "{subreddit}"
+          Create new feed with &quot;{subreddit}&quot;
           <form
             onSubmit={event => {
               event.preventDefault()

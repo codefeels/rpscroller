@@ -22,7 +22,7 @@ export default function App() {
     // Extract val from hash path or search params
     const hashPath = location.pathname.slice(1) // Remove leading slash
     const searchParams = new URLSearchParams(location.search)
-    const modeParam = searchParams.get('mode') || 'hot'
+    const modeParam = searchParams.get('mode') ?? 'hot'
 
     // If we have a path, use it as val
     if (hashPath && hashPath !== val) {

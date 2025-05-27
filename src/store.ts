@@ -32,7 +32,7 @@ const getInitialValues = () => {
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const mode = searchParams.get('mode') || 'hot'
-  const val = path || searchParams.get('val')
+  const val = path ?? searchParams.get('val')
 
   return { mode, val }
 }

@@ -21,6 +21,7 @@ export default function Sorts() {
       const search = searchParams.toString()
         ? `?${searchParams.toString()}`
         : ''
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       navigate(`/${val}${search}`, { replace: true })
     }
   }
