@@ -8,7 +8,7 @@ import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { useAppStore } from './store'
 import { isUserSubreddit, normalizeForDisplay } from './util'
 
-export default function RecentlyVisitedSubreddits() {
+export default function SidebarMostVisitedSubreddits() {
   const store = useAppStore()
   const { recentlyVisited } = store
   const s = new Set(store.feeds.map(f => `r/${f.subreddits.join('+')}`))
@@ -19,15 +19,10 @@ export default function RecentlyVisitedSubreddits() {
     setShowMoreRecentlyVisitedSubreddits,
   ] = useLocalStorage('showMoreRecentlyVisitedSubreddits', true)
 
-  const list = recentlyVisited
-    .filter(f => !isUserSubreddit(f.name))
-    .slice(0, showMoreRecentlyVisitedSubreddits ? 1000 : 7)
-    .filter(recentVisit => !s.has(recentVisit.name))
-
   return (
     <SidebarSectionWrapper>
       <div className="flex gap-1">
-        Recently visited subs:
+        Most visited subs
         <Button
           onClick={() => {
             setShowRecentlyVisitedSubreddits(!showRecentlyVisitedSubreddits)
@@ -51,15 +46,24 @@ export default function RecentlyVisitedSubreddits() {
       </div>
       {showRecentlyVisitedSubreddits ? (
         <div>
-          {list.length > 0
-            ? list.map(recentVisit => (
-                <Link key={recentVisit.name} to={recentVisit.name}>
-                  <MenuItem>
-                    - {normalizeForDisplay(recentVisit.name)} (
-                    {recentVisit.visitedCount})
-                  </MenuItem>
-                </Link>
-              ))
+          {recentlyVisited
+            .filter(f => !isUserSubreddit(f.name))
+            .sort((a, b) => b.visitedCount - a.visitedCount)
+            .slice(0, showMoreRecentlyVisitedSubreddits ? 1000 : 7)
+            .filter(recentVisit => !s.has(recentVisit.name)).length > 0
+            ? recentlyVisited
+                .filter(f => !isUserSubreddit(f.name))
+                .sort((a, b) => b.visitedCount - a.visitedCount)
+                .slice(0, showMoreRecentlyVisitedSubreddits ? 1000 : 7)
+                .filter(recentVisit => !s.has(recentVisit.name))
+                .map(recentVisit => (
+                  <Link key={recentVisit.name} to={recentVisit.name}>
+                    <MenuItem>
+                      - {normalizeForDisplay(recentVisit.name)} (
+                      {recentVisit.visitedCount})
+                    </MenuItem>
+                  </Link>
+                ))
             : 'No items'}
         </div>
       ) : null}

@@ -7,6 +7,7 @@ import { useSmallScreen } from './useSmallScreen'
 import { redGifUrlToId } from './util'
 
 import type { Post } from './util'
+import Button from './Button'
 
 function RedGifsCardLoaded({ post, val }: { post: Post; val: number }) {
   const { title, url } = post
@@ -51,16 +52,32 @@ export default function RedGifsCard({ post }: { post: Post }) {
   return (
     <div ref={ref}>
       {small ? null : (
-        <input
-          type="range"
-          min={50}
-          max={300}
-          className="range [--range-fill:0]"
-          value={val}
-          onChange={event => {
-            setVal(+event.target.value)
-          }}
-        />
+        <div>
+          <input
+            type="range"
+            min={50}
+            max={300}
+            className="range [--range-fill:0]"
+            value={val}
+            onChange={event => {
+              setVal(+event.target.value)
+            }}
+          />
+          <Button
+            onClick={() => {
+              setVal(200)
+            }}
+          >
+            Maximize
+          </Button>
+          <Button
+            onClick={() => {
+              setVal(80)
+            }}
+          >
+            Minimize
+          </Button>
+        </div>
       )}
       {debouncedIsIntersecting ? (
         <RedGifsCardLoaded val={val} post={post} />

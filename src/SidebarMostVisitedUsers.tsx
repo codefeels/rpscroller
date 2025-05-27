@@ -8,7 +8,7 @@ import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { useAppStore } from './store'
 import { isUserSubreddit, normalizeForDisplay } from './util'
 
-export default function RecentlyVisitedUsers() {
+export default function SidebarMostVisitedUsers() {
   const store = useAppStore()
   const { recentlyVisited } = store
   const s = new Set(store.feeds.map(f => `r/${f.subreddits.join('+')}`))
@@ -19,13 +19,14 @@ export default function RecentlyVisitedUsers() {
 
   const list = recentlyVisited
     .filter(f => isUserSubreddit(f.name))
+    .sort((a, b) => b.visitedCount - a.visitedCount)
     .slice(0, showMoreRecentlyVisitedUsers ? 1000 : 7)
     .filter(recentVisit => !s.has(recentVisit.name))
 
   return (
     <SidebarSectionWrapper>
       <div className="flex gap-1">
-        Recently visited users:
+        Most visited users:
         <Button
           onClick={() => {
             setShowRecentlyVisitedUsers(!showRecentlyVisitedUsers)
