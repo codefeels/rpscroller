@@ -10,16 +10,9 @@ export interface AppState {
   blocked: string[]
   bottomOfScreen: boolean
   fullscreen: boolean
-  showMoreRecentlyVisited: boolean
-  showMoreMostVisitedUsers: boolean
-  showMoreMostVisitedSubreddits: boolean
   defaultPage: string
   feeds: Feed[]
-  showFeeds: boolean
   isFullscreen: boolean
-  showMostVisitedUsers: boolean
-  showMostVisitedSubreddits: boolean
-  showRecentlyVisited: boolean
   headerOnBottomOfScreen: boolean
   recentlyVisited: RecentlyVisited[]
   mode: string
@@ -32,9 +25,6 @@ export interface AppState {
   currentlyOpenDialog: string | undefined
 
   setSmallScreen: (arg: boolean) => void
-  setShowMoreRecentlyVisited: (arg: boolean) => void
-  setShowMoreMostVisitedSubreddits: (arg: boolean) => void
-  setShowMoreMostVisitedUsers: (arg: boolean) => void
   setCurrentlyOpenDialog: (arg: string | undefined) => void
   setSidebarOpen: (arg: boolean) => void
   toggleSidebarOpen: () => void
@@ -62,10 +52,6 @@ export interface AppState {
   setHideButtons: (arg: boolean) => void
   setConfirmed: (arg: boolean) => void
   setDedupe: (arg: boolean) => void
-  setShowMostVisitedUsers: (arg: boolean) => void
-  setShowMostVisitedSubreddits: (arg: boolean) => void
-  setShowRecentlyVisited: (arg: boolean) => void
-  setShowFeeds: (arg: boolean) => void
   setNoGifs: (arg: boolean) => void
   setSkipPinned: (arg: boolean) => void
   setFullscreen: (arg: boolean) => void

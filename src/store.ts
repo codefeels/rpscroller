@@ -83,9 +83,6 @@ export const useAppStore = create<AppState>()(
       smallScreen: false,
       blocked: [],
       currentlyOpenDialog: undefined,
-      showMoreRecentlyVisited: false,
-      showMoreMostVisitedSubreddits: false,
-      showMoreMostVisitedUsers: false,
       sidebarOpen: false,
       isFullscreen: false,
       defaultPage: '/r/funny',
@@ -96,10 +93,6 @@ export const useAppStore = create<AppState>()(
       bottomOfScreen: false,
       fullscreen: true,
       rerenderCount: 0,
-      showFeeds: true,
-      showMostVisitedUsers: false,
-      showMostVisitedSubreddits: false,
-      showRecentlyVisited: false,
       redGifsOnly: false,
       noRedGifs: false,
       hideButtons: false,
@@ -129,27 +122,6 @@ export const useAppStore = create<AppState>()(
       },
       forceRerender: () => {
         set(state => ({ rerenderCount: state.rerenderCount + 1 }))
-      },
-      setShowMostVisitedUsers: arg => {
-        set(() => ({ showMostVisitedUsers: arg }))
-      },
-      setShowMostVisitedSubreddits: arg => {
-        set(() => ({ showMostVisitedSubreddits: arg }))
-      },
-      setShowFeeds: arg => {
-        set(() => ({ showFeeds: arg }))
-      },
-      setShowRecentlyVisited: arg => {
-        set(() => ({ showRecentlyVisited: arg }))
-      },
-      setShowMoreRecentlyVisited: arg => {
-        set(() => ({ showMoreRecentlyVisited: arg }))
-      },
-      setShowMoreMostVisitedUsers: arg => {
-        set(() => ({ showMoreMostVisitedUsers: arg }))
-      },
-      setShowMoreMostVisitedSubreddits: arg => {
-        set(() => ({ showMoreMostVisitedSubreddits: arg }))
       },
       createFeed: ({
         subreddits,

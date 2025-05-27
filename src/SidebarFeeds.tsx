@@ -2,6 +2,7 @@ import { Suspense, lazy, useState } from 'react'
 
 import { FaEdit, FaMinus, FaPlus, FaTrash } from 'react-icons/fa'
 import { FaBook } from 'react-icons/fa6'
+import { useLocalStorage } from 'usehooks-ts'
 
 import Button from './Button'
 import SpanMenuItem from './SpanMenuItem'
@@ -53,7 +54,8 @@ function FeedRow({ feed }: { feed: Feed }) {
 
 export default function Feeds() {
   const store = useAppStore()
-  const { showFeeds, feeds } = store
+  const { feeds } = store
+  const [showFeeds, setShowFeeds] = useLocalStorage('showFeeds', true)
   return (
     <>
       {feeds.length > 0 ? (
@@ -62,7 +64,7 @@ export default function Feeds() {
             Feeds <FaBook className="inline" />:{' '}
             <Button
               onClick={() => {
-                store.setShowFeeds(!showFeeds)
+                setShowFeeds(!showFeeds)
               }}
             >
               {showFeeds ? (

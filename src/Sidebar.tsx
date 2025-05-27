@@ -4,13 +4,12 @@ import { MdBlock, MdInfo } from 'react-icons/md'
 import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
 import SidebarFeeds from './SidebarFeeds'
-import SidebarMostVisitedSubreddits from './SidebarMostVisitedSubreddits'
-import SidebarMostVisitedUsers from './SidebarMostVisitedUsers'
 import SidebarRecentlyVisitedSubreddits from './SidebarRecentlyVisitedSubreddits'
 import SidebarRecentlyVisitedUsers from './SidebarRecentlyVisitedUsers'
 import SidebarWrapper from './SidebarWrapper'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
+import SidebarSimilarSubreddits from './SidebarSimilarSubreddits'
 
 export default function Sidebar() {
   const store = useAppStore()
@@ -24,15 +23,13 @@ export default function Sidebar() {
         </>
       ) : null}
 
-      <SidebarRecentlyVisitedUsers />
+      <SidebarSimilarSubreddits />
       <hr />
       <SidebarRecentlyVisitedSubreddits />
       <hr />
+      <SidebarRecentlyVisitedUsers />
+      <hr />
       <SidebarFeeds />
-      <hr />
-      <SidebarMostVisitedUsers />
-      <hr />
-      <SidebarMostVisitedSubreddits />
       <hr />
       <MenuItem
         onClick={() => {

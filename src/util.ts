@@ -163,3 +163,11 @@ export const modeMap = new Map([
   ['random', { title: 'Random', url: 'random.json' }],
   ['controversial', { title: 'Controversial', url: 'controversial.json' }],
 ])
+
+export function maybeSort<T>(
+  arg: T[],
+  flag: boolean,
+  cb: (a: T, b: T) => number,
+) {
+  return flag ? arg.sort(cb) : arg
+}

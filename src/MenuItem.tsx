@@ -7,7 +7,7 @@ export default function MenuItem({
 }) {
   return (
     <div
-      className="hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer m-1 whitespace-nowrap"
+      className="hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer whitespace-nowrap"
       onClick={onClick}
     >
       {children}
