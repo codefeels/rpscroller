@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { FaMinus, FaPlus, FaSort } from 'react-icons/fa6'
+import { FaMinus, FaPlus, FaSort, FaFilter } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import { useLocalStorage } from 'usehooks-ts'
 
@@ -11,7 +11,8 @@ import { SortDialog } from './SortDialog'
 import { useAppStore } from './store'
 import { isUserSubreddit, maybeSort, normalizeForDisplay } from './util'
 
-import type { SortTypes } from './consts'
+import type { FilterTypes, SortTypes } from './consts'
+import { FilterDialog } from './FilterDialog'
 
 export default function RecentlyVisitedUsers() {
   const store = useAppStore()
@@ -25,7 +26,12 @@ export default function RecentlyVisitedUsers() {
     'sortMode',
     'recentlyVisited',
   )
+  const [filterMode, setFilterMode] = useLocalStorage<FilterTypes>(
+    'filterMode',
+    'all',
+  )
   const [sortDialogOpen, setSortDialogOpen] = useState(false)
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false)
 
   const list = maybeSort(
     recentlyVisited.filter(f => isUserSubreddit(f.name)),
@@ -60,6 +66,13 @@ export default function RecentlyVisitedUsers() {
         </Button>
         <Button
           onClick={() => {
+            setFilterDialogOpen(true)
+          }}
+        >
+          <FaFilter />
+        </Button>
+        <Button
+          onClick={() => {
             setShowMoreRecentlyVisitedUsers(!showMoreRecentlyVisitedUsers)
           }}
         >
@@ -84,6 +97,15 @@ export default function RecentlyVisitedUsers() {
         <SortDialog
           sortMode={sortMode}
           setSortMode={setSortMode}
+          onClose={() => {
+            setSortDialogOpen(false)
+          }}
+        />
+      ) : null}
+      {filterDialogOpen ? (
+        <FilterDialog
+          filterMode={filterMode}
+          setFilterMode={setFilterMode}
           onClose={() => {
             setSortDialogOpen(false)
           }}
