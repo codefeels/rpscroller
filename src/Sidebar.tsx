@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
-import SidebarFeeds from './SidebarFeeds'
+import SidebarFeedList from './SidebarFeedList'
 import SidebarRecentlyVisitedSubreddits from './SidebarRecentlyVisitedSubreddits'
 import SidebarRecentlyVisitedUsers from './SidebarRecentlyVisitedUsers'
 import SidebarSimilarSubreddits from './SidebarSimilarSubreddits'
@@ -30,7 +30,7 @@ export default function Sidebar() {
       <hr />
       <SidebarRecentlyVisitedUsers />
       <hr />
-      <SidebarFeeds />
+      <SidebarFeedList />
       <hr />
       <Link to="/savedposts">
         <MenuItem>

@@ -12,7 +12,7 @@ function Spacer() {
 
 function SmallScreenHeaderOnBottom() {
   return (
-    <div className="lg:p-2 z-10 w-full border-t-2 border-slate-500 fixed flex bottom-0 right-0">
+    <div className="lg:p-2 z-10 w-full border-t-2 border-slate-500 bg-inherit fixed flex bottom-0 right-0">
       <Sorts />
       <Settings />
       <Spacer />
