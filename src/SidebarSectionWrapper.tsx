@@ -3,5 +3,5 @@ export default function SidebarSectionWrapper({
 }: {
   children: React.ReactNode
 }) {
-  return <div>{children}</div>
+  return <div className="border-b border-r-slate-600 pb-2 pt-2">{children}</div>
 }

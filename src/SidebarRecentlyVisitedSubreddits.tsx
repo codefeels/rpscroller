@@ -14,9 +14,6 @@ import { isUserSubreddit, maybeSort, normalizeForDisplay } from './util'
 
 import type { SortTypes } from './consts'
 
-
-
-
 export default function RecentlyVisitedSubreddits() {
   const store = useAppStore()
   const { recentlyVisited } = store
@@ -32,9 +29,16 @@ export default function RecentlyVisitedSubreddits() {
     'recentlyVisited',
   )
   const [sortDialogOpen, setSortDialogOpen] = useState(false)
+  const list = maybeSort(
+    recentlyVisited.filter(f => !isUserSubreddit(f.name)),
+    sortMode === 'visitedCount',
+    (a, b) => b.visitedCount - a.visitedCount,
+  )
+    .slice(0, showMoreRecentlyVisitedSubreddits ? 1000 : 7)
+    .filter(recentVisit => !s.has(recentVisit.name))
 
   return (
-    <div>
+    <SidebarSectionWrapper>
       <div className="flex gap-1">
         {sortMode === 'recentlyVisited' ? 'Recently visited' : 'Most visited'}{' '}
         subs:
@@ -49,7 +53,11 @@ export default function RecentlyVisitedSubreddits() {
             <FaPlus className="inline" />
           )}
         </Button>
-        <Button onClick={() => { setSortDialogOpen(true); }}>
+        <Button
+          onClick={() => {
+            setSortDialogOpen(true)
+          }}
+        >
           <BiSortAlt2 />
         </Button>
         <Button
@@ -63,33 +71,28 @@ export default function RecentlyVisitedSubreddits() {
         </Button>
       </div>
       {showRecentlyVisitedSubreddits ? (
-        <SidebarSectionWrapper>
-          <div>
-            {maybeSort(
-              recentlyVisited.filter(f => !isUserSubreddit(f.name)),
-              sortMode === 'visitedCount',
-              (a, b) => b.visitedCount - a.visitedCount,
-            )
-              .slice(0, showMoreRecentlyVisitedSubreddits ? 1000 : 10)
-              .filter(recentVisit => !s.has(recentVisit.name))
-              .map(recentVisit => (
+        <div>
+          {list.length
+            ? list.map(recentVisit => (
                 <Link key={recentVisit.name} to={recentVisit.name}>
                   <MenuItem>
                     - {normalizeForDisplay(recentVisit.name)} (
                     {recentVisit.visitedCount})
                   </MenuItem>
                 </Link>
-              ))}
-          </div>
-        </SidebarSectionWrapper>
+              ))
+            : 'No items'}
+        </div>
       ) : null}
       {sortDialogOpen ? (
         <SortDialog
           sortMode={sortMode}
           setSortMode={setSortMode}
-          onClose={() => { setSortDialogOpen(false); }}
+          onClose={() => {
+            setSortDialogOpen(false)
+          }}
         />
       ) : null}
-    </div>
+    </SidebarSectionWrapper>
   )
 }

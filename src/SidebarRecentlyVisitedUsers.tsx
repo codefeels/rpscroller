@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
-import { BiSortAlt2 } from 'react-icons/bi'
-import { FaMinus, FaPlus } from 'react-icons/fa'
+import { FaSort, FaMinus, FaPlus } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import { useLocalStorage } from 'usehooks-ts'
 
@@ -13,9 +12,6 @@ import { useAppStore } from './store'
 import { isUserSubreddit, maybeSort, normalizeForDisplay } from './util'
 
 import type { SortTypes } from './consts'
-
-
-
 
 export default function RecentlyVisitedUsers() {
   const store = useAppStore()
@@ -31,8 +27,16 @@ export default function RecentlyVisitedUsers() {
   )
   const [sortDialogOpen, setSortDialogOpen] = useState(false)
 
+  const list = maybeSort(
+    recentlyVisited.filter(f => isUserSubreddit(f.name)),
+    sortMode === 'visitedCount',
+    (a, b) => b.visitedCount - a.visitedCount,
+  )
+    .slice(0, showMoreRecentlyVisitedUsers ? 1000 : 7)
+    .filter(recentVisit => !s.has(recentVisit.name))
+
   return (
-    <div>
+    <SidebarSectionWrapper>
       <div className="flex gap-1">
         {sortMode === 'recentlyVisited' ? 'Recently visited' : 'Most visited'}{' '}
         users:
@@ -47,8 +51,12 @@ export default function RecentlyVisitedUsers() {
             <FaPlus className="inline" />
           )}
         </Button>
-        <Button onClick={() => { setSortDialogOpen(true); }}>
-          <BiSortAlt2 />
+        <Button
+          onClick={() => {
+            setSortDialogOpen(true)
+          }}
+        >
+          <FaSort />
         </Button>
         <Button
           onClick={() => {
@@ -59,33 +67,28 @@ export default function RecentlyVisitedUsers() {
         </Button>
       </div>
       {showRecentlyVisitedUsers ? (
-        <SidebarSectionWrapper>
-          <div>
-            {maybeSort(
-              recentlyVisited.filter(f => isUserSubreddit(f.name)),
-              sortMode === 'visitedCount',
-              (a, b) => b.visitedCount - a.visitedCount,
-            )
-              .slice(0, showMoreRecentlyVisitedUsers ? 1000 : 10)
-              .filter(recentVisit => !s.has(recentVisit.name))
-              .map(recentVisit => (
+        <div>
+          {list.length
+            ? list.map(recentVisit => (
                 <Link key={recentVisit.name} to={recentVisit.name}>
                   <MenuItem>
                     - {normalizeForDisplay(recentVisit.name)} (
                     {recentVisit.visitedCount})
                   </MenuItem>
                 </Link>
-              ))}
-          </div>
-        </SidebarSectionWrapper>
+              ))
+            : 'No items'}
+        </div>
       ) : null}
       {sortDialogOpen ? (
         <SortDialog
           sortMode={sortMode}
           setSortMode={setSortMode}
-          onClose={() => { setSortDialogOpen(false); }}
+          onClose={() => {
+            setSortDialogOpen(false)
+          }}
         />
       ) : null}
-    </div>
+    </SidebarSectionWrapper>
   )
 }

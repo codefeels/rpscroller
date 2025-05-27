@@ -50,27 +50,26 @@ export default function MakeMultiRedditDialog({
     <BaseDialog open={open} onClose={onClose}>
       {creatingFeed ? (
         <div>
-          <h4>
-            Make multi-reddit
-            <div>
-              <div>
-                <Button
-                  onClick={() => {
-                    setCreatingFeed(false)
-                  }}
-                >
-                  Create feed
-                </Button>
-                <Button
-                  onClick={() => {
-                    setMulti([])
-                  }}
-                >
-                  Clear
-                </Button>
-              </div>
+          <h4>Make multi-reddit</h4>
+          <div>
+            <div>Current feed: {multi.join(', ')}</div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  setCreatingFeed(false)
+                }}
+              >
+                Create feed
+              </Button>
+              <Button
+                onClick={() => {
+                  setMulti([])
+                }}
+              >
+                Clear
+              </Button>
             </div>
-          </h4>
+          </div>
 
           <div className="max-h-[80vh] overflow-auto">
             <table>

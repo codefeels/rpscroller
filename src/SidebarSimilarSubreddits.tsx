@@ -8,7 +8,7 @@ import MenuItem from './MenuItem'
 import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { fetchGraphData } from './fetchGraph'
 import { useAppStore } from './store'
-import { normalizeForDisplay } from './util'
+import { isUserSubreddit, normalizeForDisplay } from './util'
 
 export default function SidebarSimilarSubreddits() {
   const store = useAppStore()
@@ -29,30 +29,32 @@ export default function SidebarSimilarSubreddits() {
   )
 
   const ret = Object.fromEntries(recentlyVisited.map(r => [r.name, r]))
-  return (
-    <div>
-      Similar subreddits:
-      <Button
-        onClick={() => {
-          setShowSimilarSubreddits(!showSimilarSubreddits)
-        }}
-      >
-        {showSimilarSubreddits ? (
-          <FaMinus className="inline" />
-        ) : (
-          <FaPlus className="inline" />
-        )}
-      </Button>
-      <Button
-        className="ml-1"
-        onClick={() => {
-          setShowMoreSimilar(!showMoreSimilar)
-        }}
-      >
-        {showMoreSimilar ? 'Show less' : 'Show more'}
-      </Button>
+  return !isUserSubreddit(val) ? (
+    <SidebarSectionWrapper>
+      <div>
+        Similar subreddits:
+        <Button
+          onClick={() => {
+            setShowSimilarSubreddits(!showSimilarSubreddits)
+          }}
+        >
+          {showSimilarSubreddits ? (
+            <FaMinus className="inline" />
+          ) : (
+            <FaPlus className="inline" />
+          )}
+        </Button>
+        <Button
+          className="ml-1"
+          onClick={() => {
+            setShowMoreSimilar(!showMoreSimilar)
+          }}
+        >
+          {showMoreSimilar ? 'Show less' : 'Show more'}
+        </Button>
+      </div>
       {showSimilarSubreddits ? (
-        <SidebarSectionWrapper>
+        <div>
           {isLoading ? <div>Loading</div> : null}
           {error ? <div className="text-error">{`${error}`}</div> : null}
           {data ? (
@@ -69,7 +71,7 @@ export default function SidebarSimilarSubreddits() {
                       (ret[normalizeForDisplay(b)]?.visitedCount ?? 0)) *
                     -1,
                 )
-                .slice(0, showMoreSimilar ? 1000 : 10)
+                .slice(0, showMoreSimilar ? 1000 : 7)
                 .map(r => (
                   <Link key={r} to={r}>
                     <MenuItem>
@@ -80,8 +82,8 @@ export default function SidebarSimilarSubreddits() {
                 ))}
             </div>
           ) : null}
-        </SidebarSectionWrapper>
+        </div>
       ) : null}
-    </div>
-  )
+    </SidebarSectionWrapper>
+  ) : null
 }

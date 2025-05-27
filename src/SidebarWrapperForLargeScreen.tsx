@@ -3,5 +3,5 @@ export default function SidebarWrapperForLargeScreen({
 }: {
   children: React.ReactNode
 }) {
-  return <div className="mt-5 mb-20">{children}</div>
+  return <div className="mt-3 mb-20">{children}</div>
 }
