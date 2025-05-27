@@ -3,9 +3,9 @@ import { FaBook } from 'react-icons/fa6'
 import { useLocalStorage } from 'usehooks-ts'
 
 import Button from './Button'
+import SidebarFeedRow from './SidebarFeedRow'
 import { useAppStore } from './store'
 
-import SidebarFeedRow from './SidebarFeedRow'
 
 export default function Feeds() {
   const store = useAppStore()

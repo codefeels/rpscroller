@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+
 import { useAppStore } from './store'
 import { modeMap } from './util'
 
@@ -9,15 +10,17 @@ export default function Sorts() {
 
   const handleModeChange = (newMode: string) => {
     store.setMode(newMode)
-    
+
     // Update URL with new mode
     if (val) {
       const searchParams = new URLSearchParams()
       if (newMode !== 'hot') {
         searchParams.set('mode', newMode)
       }
-      
-      const search = searchParams.toString() ? `?${searchParams.toString()}` : ''
+
+      const search = searchParams.toString()
+        ? `?${searchParams.toString()}`
+        : ''
       navigate(`/${val}${search}`, { replace: true })
     }
   }

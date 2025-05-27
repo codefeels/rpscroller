@@ -14,26 +14,26 @@ import type { Feed } from './util'
 // Parse initial values from hash URL if available
 const getInitialValues = () => {
   // Get the hash path without the leading # and /
-  const hashPath = window.location.hash.substring(2) || ''
+  const hashPath = window.location.hash.slice(2) || ''
   const searchParams = new URLSearchParams(window.location.search)
-  
+
   // Extract path and search params
   const pathParts = hashPath.split('?')
   const path = pathParts[0]
-  
+
   // If we have search params in the hash, parse them
   if (pathParts.length > 1) {
     const hashParams = new URLSearchParams(pathParts[1])
     // Merge hash params into search params (hash params take precedence)
-    hashParams.forEach((value, key) => {
+    for (const [key, value] of hashParams.entries()) {
       searchParams.set(key, value)
-    })
+    }
   }
-  
+
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const mode = searchParams.get('mode') || 'hot'
   const val = path || searchParams.get('val')
-  
+
   return { mode, val }
 }
 
@@ -107,7 +107,7 @@ export const useAppStore = create<AppState>()(
       currentlyOpenDialog: undefined,
       sidebarOpen: false,
       isFullscreen: false,
-      defaultPage: '/r/funny',
+      defaultPage: 'r/funny',
       noGifs: true,
       feeds: [],
       headerOnBottomOfScreen: false,

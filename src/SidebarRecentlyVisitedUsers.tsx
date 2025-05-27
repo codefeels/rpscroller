@@ -1,15 +1,21 @@
+import { useState } from 'react'
+
+import { BiSortAlt2 } from 'react-icons/bi'
 import { FaMinus, FaPlus } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 import { useLocalStorage } from 'usehooks-ts'
 
 import Button from './Button'
-import SidebarSectionWrapper from './SidebarSectionWrapper'
 import MenuItem from './MenuItem'
+import SidebarSectionWrapper from './SidebarSectionWrapper'
+import { SortDialog } from './SortDialog'
 import { useAppStore } from './store'
 import { isUserSubreddit, maybeSort, normalizeForDisplay } from './util'
-import { BiSortAlt2 } from 'react-icons/bi'
-import RadioCheckbox from './RadioCheckbox'
-import { sortModes } from './consts'
-import { Link } from 'react-router-dom'
+
+import type { SortTypes } from './consts'
+
+
+
 
 export default function RecentlyVisitedUsers() {
   const store = useAppStore()
@@ -19,9 +25,11 @@ export default function RecentlyVisitedUsers() {
     useLocalStorage('showRecentlyVisitedUsers', true)
   const [showMoreRecentlyVisitedUsers, setShowMoreRecentlyVisitedUsers] =
     useLocalStorage('showMoreRecentlyVisitedUsers', true)
-  const [sortMode, setSortMode] = useLocalStorage<
-    'visitedCount' | 'recentlyVisited'
-  >('sortMode', 'recentlyVisited')
+  const [sortMode, setSortMode] = useLocalStorage<SortTypes>(
+    'sortMode',
+    'recentlyVisited',
+  )
+  const [sortDialogOpen, setSortDialogOpen] = useState(false)
 
   return (
     <div>
@@ -39,30 +47,9 @@ export default function RecentlyVisitedUsers() {
             <FaPlus className="inline" />
           )}
         </Button>
-        <div className="dropdown dropdown-bottom">
-          <Button>
-            <BiSortAlt2 />
-          </Button>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-          >
-            {Object.entries(sortModes).map(([key, val]) => (
-              <li key={key}>
-                <RadioCheckbox
-                  id={key}
-                  checked={key === sortMode}
-                  label={val}
-                  onChange={event => {
-                    if (event.target.checked) {
-                      setSortMode(key as 'recentlyVisited' | 'visitedCount')
-                    }
-                  }}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Button onClick={() => { setSortDialogOpen(true); }}>
+          <BiSortAlt2 />
+        </Button>
         <Button
           onClick={() => {
             setShowMoreRecentlyVisitedUsers(!showMoreRecentlyVisitedUsers)
@@ -82,7 +69,7 @@ export default function RecentlyVisitedUsers() {
               .slice(0, showMoreRecentlyVisitedUsers ? 1000 : 10)
               .filter(recentVisit => !s.has(recentVisit.name))
               .map(recentVisit => (
-                <Link key={recentVisit.name} to={`${recentVisit.name}`}>
+                <Link key={recentVisit.name} to={recentVisit.name}>
                   <MenuItem>
                     - {normalizeForDisplay(recentVisit.name)} (
                     {recentVisit.visitedCount})
@@ -91,6 +78,13 @@ export default function RecentlyVisitedUsers() {
               ))}
           </div>
         </SidebarSectionWrapper>
+      ) : null}
+      {sortDialogOpen ? (
+        <SortDialog
+          sortMode={sortMode}
+          setSortMode={setSortMode}
+          onClose={() => { setSortDialogOpen(false); }}
+        />
       ) : null}
     </div>
   )

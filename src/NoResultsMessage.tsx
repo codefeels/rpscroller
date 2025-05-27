@@ -2,15 +2,6 @@ import Button from './Button'
 import { useAppStore } from './store'
 
 export default function NoResultsMessage({
-  totalPosts,
-  commentTypeFiltered,
-  urlTypeFiltered,
-  gifFiltered,
-  redGifsOnlyFiltered,
-  noRedGifsFiltered,
-  pinnedFiltered,
-  blockedFiltered,
-  remainingPosts,
   totalFiltered,
 }: {
   totalPosts: number
@@ -29,8 +20,8 @@ export default function NoResultsMessage({
   return (
     <>
       <h1>
-        No results on this page, check your filters in the settings or this may
-        just have been a page of comments if you are browsing a user page
+        Check your filters in the settings or this may just have been a page of
+        comments if you are browsing a user page
       </h1>
       {redGifsOnly ? (
         <div>
@@ -51,6 +42,10 @@ export default function NoResultsMessage({
             etc): {totalFiltered}
           </div>
         ) : null}
+      </div>
+      <div>
+        Note that we are not able to embed v.redd.it videos from e.g. popular
+        SFW reddits
       </div>
     </>
   )

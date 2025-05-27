@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
@@ -16,13 +17,11 @@ export default function App() {
   const small = useSmallScreen()
   const navigate = useNavigate()
   const location = useLocation()
-  console.log('render', { val })
 
   // Parse hash location and update store
   useEffect(() => {
-    console.log('here', val)
     // Extract val from hash path or search params
-    const hashPath = location.pathname.substring(1) // Remove leading slash
+    const hashPath = location.pathname.slice(1) // Remove leading slash
     const searchParams = new URLSearchParams(location.search)
     const modeParam = searchParams.get('mode') || 'hot'
 
@@ -46,35 +45,20 @@ export default function App() {
     document.title = val ? val.slice(0, 20) : 'RPScroller'
   }, [val])
 
-  useEffect(() => {
-    function listener() {
-      if (document.fullscreenElement) {
-        store.setIsFullscreen(true)
-      } else {
-        store.setIsFullscreen(false)
-      }
-    }
-    document.addEventListener('fullscreenchange', listener)
-    return () => {
-      document.removeEventListener('fullscreenchange', listener)
-    }
-  }, [store])
-
   // Update URL when val changes
-  useEffect(() => {
-    console.log('here2', val)
-    if (val) {
-      const searchParams = new URLSearchParams()
-      if (store.mode !== 'hot') {
-        searchParams.set('mode', store.mode)
-      }
-
-      const search = searchParams.toString()
-        ? `?${searchParams.toString()}`
-        : ''
-      navigate(`/${val}${search}`, { replace: false })
-    }
-  }, [val, store.mode, navigate])
+  // useEffect(() => {
+  //   if (val) {
+  //     const searchParams = new URLSearchParams()
+  //     if (store.mode !== 'hot') {
+  //       searchParams.set('mode', store.mode)
+  //     }
+  //
+  //     const search = searchParams.toString()
+  //       ? `?${searchParams.toString()}`
+  //       : ''
+  //     navigate(`/${val}${search}`, { replace: false })
+  //   }
+  // }, [val, store.mode, navigate])
 
   return (
     <>

@@ -3,13 +3,13 @@ import { Suspense, lazy, useState } from 'react'
 import { FaSave } from 'react-icons/fa'
 import { FaPlus } from 'react-icons/fa6'
 import { MdFavorite } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 
 import Button from './Button'
 import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
 import { type Post, hasFavorite } from './util'
-import { Link } from 'react-router-dom'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))

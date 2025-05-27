@@ -1,14 +1,14 @@
 import { FaMinus, FaPlus } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 import useSWR from 'swr'
 import { useLocalStorage } from 'usehooks-ts'
 
 import Button from './Button'
+import MenuItem from './MenuItem'
 import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { fetchGraphData } from './fetchGraph'
 import { useAppStore } from './store'
 import { normalizeForDisplay } from './util'
-import MenuItem from './MenuItem'
-import { Link } from 'react-router-dom'
 
 export default function SidebarSimilarSubreddits() {
   const store = useAppStore()
@@ -71,7 +71,7 @@ export default function SidebarSimilarSubreddits() {
                 )
                 .slice(0, showMoreSimilar ? 1000 : 10)
                 .map(r => (
-                  <Link key={r} to={`${r}`}>
+                  <Link key={r} to={r}>
                     <MenuItem>
                       - {normalizeForDisplay(r)} (
                       {ret[normalizeForDisplay(r)]?.visitedCount ?? 0})

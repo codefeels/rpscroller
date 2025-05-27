@@ -7,10 +7,10 @@ import SearchBox from './SearchBox'
 import SidebarFeeds from './SidebarFeeds'
 import SidebarRecentlyVisitedSubreddits from './SidebarRecentlyVisitedSubreddits'
 import SidebarRecentlyVisitedUsers from './SidebarRecentlyVisitedUsers'
+import SidebarSimilarSubreddits from './SidebarSimilarSubreddits'
 import SidebarWrapper from './SidebarWrapper'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
-import SidebarSimilarSubreddits from './SidebarSimilarSubreddits'
 
 export default function Sidebar() {
   const store = useAppStore()

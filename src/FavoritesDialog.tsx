@@ -4,6 +4,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa6'
 import { IoMdHome } from 'react-icons/io'
 import { MdDelete } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 
 import BaseDialog from './BaseDialog'
 import Button from './Button'
@@ -11,7 +12,6 @@ import { useAppStore } from './store'
 import { normalizeForDisplay } from './util'
 
 import type { Favorite } from './util'
-import { Link } from 'react-router-dom'
 
 export default function Favorites({
   open,

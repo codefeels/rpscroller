@@ -7,12 +7,12 @@ import Button from './Button'
 import CardList from './CardList'
 import ErrorMessage from './ErrorMessage'
 import LoadingSpinner from './LoadingSpinner'
+import { myfetchjson } from './fetchUtils'
+import { getFeedKey } from './getFeedKey'
 import { useAppStore } from './store'
 import { modeMap } from './util'
 
 import type { RedditResponse } from './util'
-import { getFeedKey } from './getFeedKey'
-import { myfetchjson } from './fetchUtils'
 
 export default function RedditPostFeed() {
   const store = useAppStore()

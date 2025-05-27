@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { MdFavorite } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 import ButtonM1 from './ButtonM1'
 import { useAppStore } from './store'
 import { hasFavorite } from './util'
-import { useNavigate } from 'react-router-dom'
 
 export default function SearchBox() {
   const store = useAppStore()
