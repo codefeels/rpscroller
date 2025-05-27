@@ -8,7 +8,6 @@ export interface AppState {
   noRedGifs: boolean
   sidebarOpen: boolean
   blocked: string[]
-  bottomOfScreen: boolean
   fullscreen: boolean
   defaultPage: string
   feeds: Feed[]
