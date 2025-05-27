@@ -5,7 +5,7 @@ import { FaPlus } from 'react-icons/fa6'
 import { MdFavorite } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
-import Button from './Button'
+import ButtonM1 from './ButtonM1'
 import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
@@ -45,37 +45,37 @@ export default function SubredditButtons({ post }: { post: Post }) {
       {origsubreddit ? (
         <>
           <Link to={origsubreddit}>
-            <Button>Browse {origsubreddit}</Button>
+            <ButtonM1>Browse {origsubreddit}</ButtonM1>
           </Link>
           {hasFavSubOrig ? null : (
-            <Button
+            <ButtonM1
               onClick={() => {
                 store.addFavorite(origsubreddit)
               }}
             >
               <MdFavorite className="inline" /> {origsubreddit}
-            </Button>
+            </ButtonM1>
           )}
         </>
       ) : null}
       {thissubreddit === userreddit ? null : (
         <>
           <Link to={thissubreddit}>
-            <Button>Browse {thissubreddit}</Button>
+            <ButtonM1>Browse {thissubreddit}</ButtonM1>
           </Link>
           {hasFavSubThis ? null : (
-            <Button
+            <ButtonM1
               onClick={() => {
                 store.addFavorite(thissubreddit)
               }}
             >
               <MdFavorite className="inline" /> {thissubreddit}
-            </Button>
+            </ButtonM1>
           )}
         </>
       )}
       {val === 'savedposts' ? (
-        <Button
+        <ButtonM1
           onClick={() => {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             ;(async () => {
@@ -91,9 +91,9 @@ export default function SubredditButtons({ post }: { post: Post }) {
           }}
         >
           <FaSave className="inline" /> Remove from saved
-        </Button>
+        </ButtonM1>
       ) : (
-        <Button
+        <ButtonM1
           onClick={() => {
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             ;(async () => {
@@ -112,15 +112,15 @@ export default function SubredditButtons({ post }: { post: Post }) {
           }}
         >
           <FaSave className="inline" /> {saved ? 'Saved!' : 'Save post'}
-        </Button>
+        </ButtonM1>
       )}
-      <Button
+      <ButtonM1
         onClick={() => {
           setAddToFeedDialogOpen(true)
         }}
       >
         <FaPlus className="inline" /> Add {subreddit_name_prefixed} to feed
-      </Button>
+      </ButtonM1>
       {addToFeedDialogOpen ? (
         <Suspense fallback={null}>
           <AddToFeedDialog

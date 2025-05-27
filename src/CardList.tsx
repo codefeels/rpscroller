@@ -1,7 +1,8 @@
 import Card from './Card'
 import NoResultsMessage from './NoResultsMessage'
+import { filterPosts } from './postFilters'
 import { useAppStore } from './store'
-import { type Post, deduplicate } from './util'
+import { type Post } from './util'
 
 export default function CardList({ posts }: { posts: Post[] }) {
   const {
@@ -13,69 +14,15 @@ export default function CardList({ posts }: { posts: Post[] }) {
     noRedGifs,
     redGifsOnly,
   } = useAppStore()
-  let result = posts
-  const totalPosts = posts.length
-
-  // Filter out comments
-  const afterCommentFilter = result.filter(post => !('comment_type' in post))
-  const commentTypeFiltered = result.length - afterCommentFilter.length
-  result = afterCommentFilter
-  console.log({ posts })
-
-  // Filter by URL type
-  const afterUrlFilter = result.filter(
-    ({ url }) =>
-      url.includes('redgifs') ||
-      url.endsWith('.jpg') ||
-      url.endsWith('.webp') ||
-      url.endsWith('.jpeg') ||
-      url.endsWith('.png') ||
-      url.endsWith('.gif') ||
-      url.endsWith('.webp') ||
-      url.startsWith('https://www.reddit.com/gallery'),
-  )
-  const urlTypeFiltered = result.length - afterUrlFilter.length
-  result = afterUrlFilter
-
-  // Filter GIFs if needed
-  const afterGifFilter = result.filter(post =>
-    noGifs ? !post.url.endsWith('.gif') : true,
-  )
-  const gifFiltered = result.length - afterGifFilter.length
-  result = afterGifFilter
-
-  // Filter for RedGifs only if needed
-  const afterRedGifsOnlyFilter = result.filter(post =>
-    redGifsOnly ? post.url.includes('redgifs') : true,
-  )
-  const redGifsOnlyFiltered = result.length - afterRedGifsOnlyFilter.length
-  result = afterRedGifsOnlyFilter
-
-  // Filter out RedGifs if needed
-  const afterNoRedGifsFilter = result.filter(post =>
-    noRedGifs ? !post.url.includes('redgifs') : true,
-  )
-  const noRedGifsFiltered = result.length - afterNoRedGifsFilter.length
-  result = afterNoRedGifsFilter
-
-  // Filter pinned posts if needed
-  const afterPinnedFilter = result.filter(post =>
-    skipPinned ? !post.pinned : true,
-  )
-  const pinnedFiltered = result.length - afterPinnedFilter.length
-  result = afterPinnedFilter
-
-  // Filter blocked authors
-  const afterBlockedFilter = result.filter(
-    post => !blocked.includes(post.author),
-  )
-  const blockedFiltered = result.length - afterBlockedFilter.length
-  result = afterBlockedFilter
-
-  if (dedupe) {
-    result = deduplicate(result, post => post.url)
-  }
-  console.log({ result })
+  
+  const { filteredPosts: result, stats } = filterPosts(posts, {
+    noGifs,
+    blocked,
+    skipPinned,
+    dedupe,
+    noRedGifs,
+    redGifsOnly,
+  })
   return (
     <div className="flex justify-center overflow-hidden">
       <div className={fullscreen ? 'lg:w-11/12' : 'lg:w-1/2'}>
@@ -84,16 +31,16 @@ export default function CardList({ posts }: { posts: Post[] }) {
             result.map(post => <Card key={post.id} post={post} />)
           ) : (
             <NoResultsMessage
-              totalPosts={totalPosts}
-              commentTypeFiltered={commentTypeFiltered}
-              urlTypeFiltered={urlTypeFiltered}
-              gifFiltered={gifFiltered}
-              redGifsOnlyFiltered={redGifsOnlyFiltered}
-              noRedGifsFiltered={noRedGifsFiltered}
-              pinnedFiltered={pinnedFiltered}
-              blockedFiltered={blockedFiltered}
-              remainingPosts={result.length}
-              totalFiltered={totalPosts - result.length}
+              totalPosts={stats.totalPosts}
+              commentTypeFiltered={stats.commentTypeFiltered}
+              urlTypeFiltered={stats.urlTypeFiltered}
+              gifFiltered={stats.gifFiltered}
+              redGifsOnlyFiltered={stats.redGifsOnlyFiltered}
+              noRedGifsFiltered={stats.noRedGifsFiltered}
+              pinnedFiltered={stats.pinnedFiltered}
+              blockedFiltered={stats.blockedFiltered}
+              remainingPosts={stats.remainingPosts}
+              totalFiltered={stats.totalPosts - stats.remainingPosts}
             />
           )}
         </div>

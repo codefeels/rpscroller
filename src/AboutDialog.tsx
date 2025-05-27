@@ -28,6 +28,12 @@ export default function AboutDialog({
           </Link>
         </div>
         <div>
+          Similar reddit data from{' '}
+          <a href="https://github.com/anvaka/map-of-reddit-data">
+            https://github.com/anvaka/map-of-reddit-data
+          </a>
+        </div>
+        <div>
           Contact/Report issues/Source code:{' '}
           <Link href="https://github.com/codefeels/rpscroller?tab=readme-ov-file">
             GitHub

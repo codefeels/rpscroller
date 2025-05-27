@@ -10,7 +10,7 @@ export default function ButtonM1(props: {
 }) {
   const { children, ...rest } = props
   return (
-    <Button {...rest} className="m-1">
+    <Button {...rest} className="m-0.5">
       {children}
     </Button>
   )

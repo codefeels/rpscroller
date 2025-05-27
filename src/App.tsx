@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react'
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
@@ -15,7 +15,6 @@ export default function App() {
   const store = useAppStore()
   const { val } = store
   const small = useSmallScreen()
-  const navigate = useNavigate()
   const location = useLocation()
 
   // Parse hash location and update store
@@ -42,23 +41,8 @@ export default function App() {
   }, [small, store])
 
   useEffect(() => {
-    document.title = val ? val.slice(0, 20) : 'RPScroller'
+    document.title = val ? val.slice(0, 20) : 'rpscroller'
   }, [val])
-
-  // Update URL when val changes
-  // useEffect(() => {
-  //   if (val) {
-  //     const searchParams = new URLSearchParams()
-  //     if (store.mode !== 'hot') {
-  //       searchParams.set('mode', store.mode)
-  //     }
-  //
-  //     const search = searchParams.toString()
-  //       ? `?${searchParams.toString()}`
-  //       : ''
-  //     navigate(`/${val}${search}`, { replace: false })
-  //   }
-  // }, [val, store.mode, navigate])
 
   return (
     <>
