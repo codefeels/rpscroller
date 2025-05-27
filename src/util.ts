@@ -159,9 +159,6 @@ export const modeMap = new Map([
   ['topmonth', { title: 'Top (month)', url: '/top.json?t=month' }],
   ['topyear', { title: 'Top (year)', url: '/top.json?t=year' }],
   ['topall', { title: 'Top (all time)', url: '/top.json?t=all' }],
-  ['rising', { title: 'Rising', url: 'rising.json' }],
-  ['random', { title: 'Random', url: 'random.json' }],
-  ['controversial', { title: 'Controversial', url: 'controversial.json' }],
 ])
 
 export function maybeSort<T>(
