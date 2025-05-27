@@ -1,9 +1,9 @@
-import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { FaSave, FaShoppingCart } from 'react-icons/fa'
 import { MdBlock, MdInfo } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
 import MenuItem from './MenuItem'
+import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { useAppStore } from './store'
 
 export default function SidebarExtra() {

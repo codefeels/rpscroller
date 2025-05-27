@@ -18,7 +18,7 @@ export default function Checkbox({
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="mr-2"
+        className="checkbox mr-2"
       />
       <label htmlFor={id}>{label}</label>
     </div>

@@ -72,7 +72,7 @@ export default function RecentlyVisitedSubreddits() {
       </div>
       {showRecentlyVisitedSubreddits ? (
         <div>
-          {list.length
+          {list.length > 0
             ? list.map(recentVisit => (
                 <Link key={recentVisit.name} to={recentVisit.name}>
                   <MenuItem>

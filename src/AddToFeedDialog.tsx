@@ -16,13 +16,13 @@ export default function AddToFeedDialog({
   return (
     <BaseDialog open onClose={onClose}>
       <div style={{ minWidth: 500, minHeight: 200 }}>
-        Add {subreddit} to feed
         {store.feeds.length > 0 ? (
           <div>
-            <h1>Existing feeds:</h1>
+            <h1>Add "{subreddit}" to existing feed:</h1>
             <ul>
               {store.feeds.map(feed => (
                 <li key={feed.name}>
+                  -{' '}
                   <Button
                     onClick={() => {
                       store.addToFeed({
@@ -42,7 +42,7 @@ export default function AddToFeedDialog({
           </div>
         ) : null}
         <div>
-          Create new feed
+          Create new feed with "{subreddit}"
           <form
             onSubmit={event => {
               event.preventDefault()
@@ -60,6 +60,7 @@ export default function AddToFeedDialog({
               <input
                 id="feedname"
                 type="text"
+                className="input"
                 value={feedName}
                 onChange={event => {
                   setFeedName(event.target.value)

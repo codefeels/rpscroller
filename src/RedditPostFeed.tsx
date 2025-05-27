@@ -48,7 +48,7 @@ export default function RedditPostFeed() {
     isValidating,
     isLoading,
   } = useSWRInfinite(getFeedKey(url), async (url: string) => {
-    const ret = (await myfetchjson(url)) as RedditResponse
+    const ret = (await myfetchjson(url))
     return ret.data
   })
 

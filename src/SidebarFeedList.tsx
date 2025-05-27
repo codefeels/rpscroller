@@ -3,8 +3,8 @@ import { useLocalStorage } from 'usehooks-ts'
 
 import Button from './Button'
 import SidebarFeedRow from './SidebarFeedRow'
-import { useAppStore } from './store'
 import SidebarSectionWrapper from './SidebarSectionWrapper'
+import { useAppStore } from './store'
 
 export default function SidebarFeedList() {
   const store = useAppStore()

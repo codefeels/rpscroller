@@ -37,12 +37,13 @@ export default function EditFeedDialog({
           <input
             id="feedname"
             type="text"
+            className="input"
             value={feedName}
             onChange={event => {
               setFeedName(event.target.value)
             }}
           />
-          <button type="submit">Submit</button>
+          <Button type="submit">Submit</Button>
           <div className="mt-10">
             List of subreddits in feed
             <ul>

@@ -162,6 +162,7 @@ export default function MakeMultiRedditDialog({
               <input
                 id="feedname"
                 type="text"
+                className="input"
                 value={feedName}
                 onChange={event => {
                   setFeedName(event.target.value)

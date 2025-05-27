@@ -29,7 +29,7 @@ export default function SidebarSimilarSubreddits() {
   )
 
   const ret = Object.fromEntries(recentlyVisited.map(r => [r.name, r]))
-  return !isUserSubreddit(val) ? (
+  return isUserSubreddit(val) ? null : (
     <SidebarSectionWrapper>
       <div>
         Similar subreddits:
@@ -85,5 +85,5 @@ export default function SidebarSimilarSubreddits() {
         </div>
       ) : null}
     </SidebarSectionWrapper>
-  ) : null
+  )
 }

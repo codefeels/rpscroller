@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { FaSort, FaMinus, FaPlus } from 'react-icons/fa6'
+import { FaMinus, FaPlus, FaSort } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import { useLocalStorage } from 'usehooks-ts'
 
@@ -68,7 +68,7 @@ export default function RecentlyVisitedUsers() {
       </div>
       {showRecentlyVisitedUsers ? (
         <div>
-          {list.length
+          {list.length > 0
             ? list.map(recentVisit => (
                 <Link key={recentVisit.name} to={recentVisit.name}>
                   <MenuItem>
