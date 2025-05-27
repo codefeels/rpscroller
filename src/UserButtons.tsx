@@ -8,6 +8,7 @@ import { useAppStore } from './store'
 import { hasFavorite } from './util'
 
 import type { Post } from './util'
+import { Link } from 'react-router-dom'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
@@ -21,13 +22,9 @@ export default function UserButtons({ post }: { post: Post }) {
   const userreddit = `/u/${author}`
   return (
     <div>
-      <ButtonM1
-        onClick={() => {
-          store.setVal(`/user/${author}`)
-        }}
-      >
-        Browse {`/u/${author}`}
-      </ButtonM1>
+      <Link to={`/user/${author}`}>
+        <ButtonM1>Browse {`/u/${author}`}</ButtonM1>
+      </Link>
       {hasFavUser ? null : (
         <ButtonM1
           onClick={() => {

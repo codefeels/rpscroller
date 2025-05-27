@@ -5,11 +5,13 @@ import { MdFavorite } from 'react-icons/md'
 import ButtonM1 from './ButtonM1'
 import { useAppStore } from './store'
 import { hasFavorite } from './util'
+import { useNavigate } from 'react-router-dom'
 
 export default function SearchBox() {
   const store = useAppStore()
   const { val } = store
   const [text, setText] = useState(val)
+  const navigate = useNavigate()
   useEffect(() => {
     setText(val)
   }, [val])
@@ -18,7 +20,7 @@ export default function SearchBox() {
       className="inline"
       onSubmit={event => {
         event.preventDefault()
-        store.setVal(text)
+        navigate(text)
       }}
     >
       <div className="flex">

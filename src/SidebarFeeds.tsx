@@ -1,56 +1,11 @@
-import { Suspense, lazy, useState } from 'react'
-
-import { FaEdit, FaMinus, FaPlus, FaTrash } from 'react-icons/fa'
+import { FaMinus, FaPlus } from 'react-icons/fa'
 import { FaBook } from 'react-icons/fa6'
 import { useLocalStorage } from 'usehooks-ts'
 
 import Button from './Button'
-import SpanMenuItem from './SpanMenuItem'
 import { useAppStore } from './store'
 
-import type { Feed } from './util'
-
-const EditFeedDialog = lazy(() => import('./EditFeedDialog'))
-
-function FeedRow({ feed }: { feed: Feed }) {
-  const store = useAppStore()
-  const [editFeedDialogOpen, setEditFeedDialogOpen] = useState(false)
-  return (
-    <div>
-      <SpanMenuItem
-        onClick={() => {
-          store.setVal(`/r/${feed.subreddits.join('+')}`)
-        }}
-      >
-        - {feed.name}
-      </SpanMenuItem>
-      <Button
-        onClick={() => {
-          setEditFeedDialogOpen(true)
-        }}
-      >
-        <FaEdit />
-      </Button>
-      <Button
-        onClick={() => {
-          store.removeFeed(feed.name)
-        }}
-      >
-        <FaTrash />
-      </Button>
-      {editFeedDialogOpen ? (
-        <Suspense fallback={null}>
-          <EditFeedDialog
-            onClose={() => {
-              setEditFeedDialogOpen(false)
-            }}
-            feed={feed}
-          />
-        </Suspense>
-      ) : null}
-    </div>
-  )
-}
+import SidebarFeedRow from './SidebarFeedRow'
 
 export default function Feeds() {
   const store = useAppStore()
@@ -74,7 +29,9 @@ export default function Feeds() {
               )}
             </Button>
           </div>
-          {showFeeds ? feeds.map(l => <FeedRow feed={l} key={l.name} />) : null}
+          {showFeeds
+            ? feeds.map(l => <SidebarFeedRow feed={l} key={l.name} />)
+            : null}
         </div>
       ) : null}
     </>

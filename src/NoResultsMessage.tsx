@@ -45,112 +45,12 @@ export default function NoResultsMessage({
         </div>
       ) : null}
       <div>
-        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-          <thead>
-            <tr>
-              <th
-                style={{
-                  border: '1px solid',
-                  padding: '8px',
-                  textAlign: 'left',
-                }}
-              >
-                Statistic
-              </th>
-              <th
-                style={{
-                  border: '1px solid',
-                  padding: '8px',
-                  textAlign: 'left',
-                }}
-              >
-                Count
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                Total Posts
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {totalPosts}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                Comments Filtered
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {commentTypeFiltered}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                URL Type Filtered
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {urlTypeFiltered}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                GIFs Filtered
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {gifFiltered}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                RedGifs Only Filtered
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {redGifsOnlyFiltered}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                Non-RedGifs Filtered
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {noRedGifsFiltered}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                Pinned Filtered
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {pinnedFiltered}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                Blocked Filtered
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {blockedFiltered}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                Remaining Posts
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {remainingPosts}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                Total Filtered
-              </td>
-              <td style={{ border: '1px solid', padding: '8px' }}>
-                {totalFiltered}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        {totalFiltered ? (
+          <div>
+            Total posts filtered out (non-image posts, not matching filters,
+            etc): {totalFiltered}
+          </div>
+        ) : null}
       </div>
     </>
   )

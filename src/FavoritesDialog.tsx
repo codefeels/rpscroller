@@ -11,6 +11,7 @@ import { useAppStore } from './store'
 import { normalizeForDisplay } from './util'
 
 import type { Favorite } from './util'
+import { Link } from 'react-router-dom'
 
 export default function Favorites({
   open,
@@ -100,13 +101,9 @@ export default function Favorites({
               {favs.map(f => (
                 <tr key={f.name}>
                   <td className="whitespace-nowrap">
-                    <Button
-                      onClick={() => {
-                        store.setVal(f.name)
-                      }}
-                    >
-                      {normalizeForDisplay(f.name)}
-                    </Button>
+                    <Link to={f.name}>
+                      <Button>{normalizeForDisplay(f.name)}</Button>
+                    </Link>
                   </td>
                   <td>{ret[f.name]?.visitedCount}</td>
                   <td>

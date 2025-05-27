@@ -9,6 +9,7 @@ import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
 import { type Post, hasFavorite } from './util'
+import { Link } from 'react-router-dom'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
@@ -43,13 +44,9 @@ export default function SubredditButtons({ post }: { post: Post }) {
       {error ? <ErrorMessage error={error} /> : null}
       {origsubreddit ? (
         <>
-          <Button
-            onClick={() => {
-              store.setVal(origsubreddit)
-            }}
-          >
-            Browse {origsubreddit}
-          </Button>
+          <Link to={origsubreddit}>
+            <Button>Browse {origsubreddit}</Button>
+          </Link>
           {hasFavSubOrig ? null : (
             <Button
               onClick={() => {
@@ -63,13 +60,9 @@ export default function SubredditButtons({ post }: { post: Post }) {
       ) : null}
       {thissubreddit === userreddit ? null : (
         <>
-          <Button
-            onClick={() => {
-              store.setVal(thissubreddit)
-            }}
-          >
-            Browse {thissubreddit}
-          </Button>
+          <Link to={thissubreddit}>
+            <Button>Browse {thissubreddit}</Button>
+          </Link>
           {hasFavSubThis ? null : (
             <Button
               onClick={() => {

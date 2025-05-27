@@ -4,6 +4,7 @@ import BaseDialog from './BaseDialog'
 import Button from './Button'
 import { useAppStore } from './store'
 import { normalizeForDisplay } from './util'
+import { Link } from 'react-router-dom'
 
 export default function BlockedUsersDialog({
   open,
@@ -32,13 +33,9 @@ export default function BlockedUsersDialog({
               {blocked.map(f => (
                 <tr key={f}>
                   <td className="whitespace-nowrap">
-                    <Button
-                      onClick={() => {
-                        store.setVal(f)
-                      }}
-                    >
-                      {normalizeForDisplay(f)}
-                    </Button>
+                    <Link to={f}>
+                      <Button>{normalizeForDisplay(f)}</Button>
+                    </Link>
                   </td>
 
                   <td>
