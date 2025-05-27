@@ -1,5 +1,6 @@
 import { FaSave, FaShoppingCart } from 'react-icons/fa'
 import { MdBlock, MdInfo } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 
 import MenuItem from './MenuItem'
 import SearchBox from './SearchBox'
@@ -31,13 +32,11 @@ export default function Sidebar() {
       <hr />
       <SidebarFeeds />
       <hr />
-      <MenuItem
-        onClick={() => {
-          store.setVal('savedposts')
-        }}
-      >
-        <FaSave className="inline" /> Saved posts
-      </MenuItem>
+      <Link to="/savedposts">
+        <MenuItem>
+          <FaSave className="inline" /> Saved posts
+        </MenuItem>
+      </Link>
       <MenuItem
         onClick={() => {
           store.setCurrentlyOpenDialog('multi')

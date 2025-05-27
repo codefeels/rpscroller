@@ -11,28 +11,8 @@ import { useAppStore } from './store'
 import { modeMap } from './util'
 
 import type { RedditResponse } from './util'
-
-const getKey = (url: string) => {
-  return (
-    pageIndex: number,
-    previousPageData?: {
-      after?: string
-    },
-  ) => {
-    // reached the end
-    if (previousPageData && !previousPageData.after) {
-      return null
-    }
-
-    // first page, we don't have `previousPageData`
-    if (pageIndex === 0) {
-      return `${url}${url.includes('?') ? '&' : '?'}limit=25`
-    }
-
-    // add the cursor to the API endpoint
-    return `${url}${url.includes('?') ? '&' : '?'}after=${previousPageData?.after}&limit=25`
-  }
-}
+import { getFeedKey } from './getFeedKey'
+import { myfetchjson } from './fetchUtils'
 
 export default function RedditPostFeed() {
   const store = useAppStore()
@@ -67,12 +47,8 @@ export default function RedditPostFeed() {
     error,
     isValidating,
     isLoading,
-  } = useSWRInfinite(getKey(url), async (url: string) => {
-    const res = await fetch(url)
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status} fetching ${url} ${await res.text()}`)
-    }
-    const ret = (await res.json()) as RedditResponse
+  } = useSWRInfinite(getFeedKey(url), async (url: string) => {
+    const ret = (await myfetchjson(url)) as RedditResponse
     return ret.data
   })
 

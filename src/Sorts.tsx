@@ -1,9 +1,26 @@
+import { useNavigate } from 'react-router-dom'
 import { useAppStore } from './store'
 import { modeMap } from './util'
 
 export default function Sorts() {
   const store = useAppStore()
-  const { mode } = store
+  const { mode, val } = store
+  const navigate = useNavigate()
+
+  const handleModeChange = (newMode: string) => {
+    store.setMode(newMode)
+    
+    // Update URL with new mode
+    if (val) {
+      const searchParams = new URLSearchParams()
+      if (newMode !== 'hot') {
+        searchParams.set('mode', newMode)
+      }
+      
+      const search = searchParams.toString() ? `?${searchParams.toString()}` : ''
+      navigate(`/${val}${search}`, { replace: true })
+    }
+  }
 
   return (
     <div className="relative">
@@ -11,7 +28,7 @@ export default function Sorts() {
         value={mode}
         className="select"
         onChange={event => {
-          store.setMode(event.target.value)
+          handleModeChange(event.target.value)
         }}
       >
         {[...modeMap.entries()].map(([key, val]) => (
@@ -19,7 +36,7 @@ export default function Sorts() {
             key={key}
             value={key}
             onClick={() => {
-              store.setMode(key)
+              handleModeChange(key)
             }}
           >
             {val.title}

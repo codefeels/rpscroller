@@ -9,6 +9,7 @@ import RadioCheckbox from './RadioCheckbox'
 import { BiSortAlt2 } from 'react-icons/bi'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 import { sortModes } from './consts'
+import { Link } from 'react-router-dom'
 
 export default function RecentlyVisitedSubreddits() {
   const store = useAppStore()
@@ -85,15 +86,12 @@ export default function RecentlyVisitedSubreddits() {
               .slice(0, showMoreRecentlyVisitedSubreddits ? 1000 : 10)
               .filter(recentVisit => !s.has(recentVisit.name))
               .map(recentVisit => (
-                <MenuItem
-                  key={recentVisit.name}
-                  onClick={() => {
-                    store.setVal(recentVisit.name)
-                  }}
-                >
-                  - {normalizeForDisplay(recentVisit.name)} (
-                  {recentVisit.visitedCount})
-                </MenuItem>
+                <Link key={recentVisit.name} to={`${recentVisit.name}`}>
+                  <MenuItem>
+                    - {normalizeForDisplay(recentVisit.name)} (
+                    {recentVisit.visitedCount})
+                  </MenuItem>
+                </Link>
               ))}
           </div>
         </SidebarSectionWrapper>

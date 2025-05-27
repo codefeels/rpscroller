@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
@@ -13,19 +14,27 @@ export default function App() {
   const store = useAppStore()
   const { val } = store
   const small = useSmallScreen()
+  const navigate = useNavigate()
+  const location = useLocation()
+  console.log('render', { val })
 
-  // Handle forward/back buttons
+  // Parse hash location and update store
   useEffect(() => {
-    function onPopState(event: PopStateEvent) {
-      if (event.state) {
-        store.setVal((event.state as { val: string }).val)
-      }
+    console.log('here', val)
+    // Extract val from hash path or search params
+    const hashPath = location.pathname.substring(1) // Remove leading slash
+    const searchParams = new URLSearchParams(location.search)
+    const modeParam = searchParams.get('mode') || 'hot'
+
+    // If we have a path, use it as val
+    if (hashPath && hashPath !== val) {
+      store.setVal(hashPath)
     }
-    window.addEventListener('popstate', onPopState)
-    return () => {
-      window.removeEventListener('popstate', onPopState)
+    // If we have a mode param, update it
+    if (modeParam !== store.mode) {
+      store.setMode(modeParam)
     }
-  }, [store])
+  }, [location, store, val])
 
   useEffect(() => {
     if (store.smallScreen !== small) {
@@ -34,8 +43,8 @@ export default function App() {
   }, [small, store])
 
   useEffect(() => {
-    document.title = val.slice(0, 20)
-  }, [val, store])
+    document.title = val ? val.slice(0, 20) : 'RPScroller'
+  }, [val])
 
   useEffect(() => {
     function listener() {
@@ -51,12 +60,21 @@ export default function App() {
     }
   }, [store])
 
-  // update URL
+  // Update URL when val changes
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    params.set('val', val)
-    window.history.pushState({ val }, '', `?${params.toString()}`)
-  }, [val])
+    console.log('here2', val)
+    if (val) {
+      const searchParams = new URLSearchParams()
+      if (store.mode !== 'hot') {
+        searchParams.set('mode', store.mode)
+      }
+
+      const search = searchParams.toString()
+        ? `?${searchParams.toString()}`
+        : ''
+      navigate(`/${val}${search}`, { replace: false })
+    }
+  }, [val, store.mode, navigate])
 
   return (
     <>

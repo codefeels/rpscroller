@@ -15,3 +15,7 @@ export async function myfetcharraybuffer(uri: string) {
   const res = await myfetch(uri)
   return res.arrayBuffer()
 }
+export async function myfetchjson(uri: string) {
+  const res = await myfetch(uri)
+  return res.json()
+}

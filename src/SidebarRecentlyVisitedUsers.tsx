@@ -9,6 +9,7 @@ import { isUserSubreddit, maybeSort, normalizeForDisplay } from './util'
 import { BiSortAlt2 } from 'react-icons/bi'
 import RadioCheckbox from './RadioCheckbox'
 import { sortModes } from './consts'
+import { Link } from 'react-router-dom'
 
 export default function RecentlyVisitedUsers() {
   const store = useAppStore()
@@ -81,14 +82,12 @@ export default function RecentlyVisitedUsers() {
               .slice(0, showMoreRecentlyVisitedUsers ? 1000 : 10)
               .filter(recentVisit => !s.has(recentVisit.name))
               .map(recentVisit => (
-                <MenuItem
-                  onClick={() => {
-                    store.setVal(recentVisit.name)
-                  }}
-                >
-                  - {normalizeForDisplay(recentVisit.name)} (
-                  {recentVisit.visitedCount})
-                </MenuItem>
+                <Link key={recentVisit.name} to={`${recentVisit.name}`}>
+                  <MenuItem>
+                    - {normalizeForDisplay(recentVisit.name)} (
+                    {recentVisit.visitedCount})
+                  </MenuItem>
+                </Link>
               ))}
           </div>
         </SidebarSectionWrapper>

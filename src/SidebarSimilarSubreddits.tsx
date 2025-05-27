@@ -8,6 +8,7 @@ import { fetchGraphData } from './fetchGraph'
 import { useAppStore } from './store'
 import { normalizeForDisplay } from './util'
 import MenuItem from './MenuItem'
+import { Link } from 'react-router-dom'
 
 export default function SidebarSimilarSubreddits() {
   const store = useAppStore()
@@ -70,14 +71,12 @@ export default function SidebarSimilarSubreddits() {
                 )
                 .slice(0, showMoreSimilar ? 1000 : 10)
                 .map(r => (
-                  <MenuItem
-                    onClick={() => {
-                      store.setVal(r)
-                    }}
-                  >
-                    - {normalizeForDisplay(r)} (
-                    {ret[normalizeForDisplay(r)]?.visitedCount ?? 0})
-                  </MenuItem>
+                  <Link key={r} to={`${r}`}>
+                    <MenuItem>
+                      - {normalizeForDisplay(r)} (
+                      {ret[normalizeForDisplay(r)]?.visitedCount ?? 0})
+                    </MenuItem>
+                  </Link>
                 ))}
             </div>
           ) : null}
