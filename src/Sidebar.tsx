@@ -8,6 +8,8 @@ import SidebarMostVisitedUsers from './SidebarMostVisitedUsers'
 import SidebarSimilarSubreddits from './SidebarSimilarSubreddits'
 import SidebarWrapper from './SidebarWrapper'
 import { useSmallScreen } from './useSmallScreen'
+import SidebarFavoriteUsers from './SidebarFavoriteUsers'
+import SidebarFavoriteSubreddits from './SidebarFavoriteSubreddits'
 
 export default function Sidebar() {
   const small = useSmallScreen()
@@ -20,6 +22,8 @@ export default function Sidebar() {
       <SidebarMostVisitedUsers />
       <SidebarRecentlyVisitedSubreddits />
       <SidebarRecentlyVisitedUsers />
+      <SidebarFavoriteSubreddits />
+      <SidebarFavoriteUsers />
       <SidebarFeedList />
       <SidebarExtra />
     </SidebarWrapper>
