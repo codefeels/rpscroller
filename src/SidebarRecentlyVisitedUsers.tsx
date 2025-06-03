@@ -1,6 +1,6 @@
+import AbstractSidebarList from './AbstractSidebarList'
 import { useAppStore } from './store'
 import { isUserSubreddit } from './util'
-import AbstractSidebarList from './AbstractSidebarList'
 
 export default function RecentlyVisitedSubreddits() {
   const store = useAppStore()

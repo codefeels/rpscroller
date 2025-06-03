@@ -1,35 +1,24 @@
 import Card from './Card'
 import NoResultsMessage from './NoResultsMessage'
-import { filterPosts } from './postFilters'
+import { type FilterStats } from './postFilters'
 import { useAppStore } from './store'
 import { type Post } from './util'
 
-export default function CardList({ posts }: { posts: Post[] }) {
-  const {
-    noGifs,
-    blocked,
-    skipPinned,
-    dedupe,
-    fullscreen,
-    noRedGifs,
-    redGifsOnly,
-  } = useAppStore()
-  
-  const { filteredPosts: result, stats } = filterPosts(posts, {
-    noGifs,
-    blocked,
-    skipPinned,
-    dedupe,
-    noRedGifs,
-    redGifsOnly,
-  })
+export default function CardList({
+  posts,
+  stats,
+}: {
+  posts: Post[]
+  stats?: FilterStats
+}) {
+  const { fullscreen } = useAppStore()
   return (
     <div className="flex justify-center overflow-hidden">
       <div className={fullscreen ? 'lg:w-11/12' : 'lg:w-1/2'}>
         <div className="flex flex-col space-y-20">
-          {result.length > 0 ? (
-            result.map(post => <Card key={post.id} post={post} />)
-          ) : (
+          {posts.length > 0 ? (
+            posts.map(post => <Card key={post.id} post={post} />)
+          ) : stats ? (
             <NoResultsMessage
               totalPosts={stats.totalPosts}
               commentTypeFiltered={stats.commentTypeFiltered}
@@ -42,7 +31,7 @@ export default function CardList({ posts }: { posts: Post[] }) {
               remainingPosts={stats.remainingPosts}
               totalFiltered={stats.totalPosts - stats.remainingPosts}
             />
-          )}
+          ) : null}
         </div>
       </div>
     </div>

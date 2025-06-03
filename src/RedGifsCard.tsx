@@ -2,12 +2,12 @@ import { useState } from 'react'
 
 import { useDebounceValue, useIntersectionObserver } from 'usehooks-ts'
 
+import Button from './Button'
 import { useAppStore } from './store'
 import { useSmallScreen } from './useSmallScreen'
 import { redGifUrlToId } from './util'
 
 import type { Post } from './util'
-import Button from './Button'
 
 function RedGifsCardLoaded({ post, val }: { post: Post; val: number }) {
   const { title, url } = post
