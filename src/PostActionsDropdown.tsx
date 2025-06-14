@@ -9,6 +9,7 @@ import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
 import { type Post, hasFavorite, normalizeForComparison } from './util'
 import ButtonM1 from './ButtonM1'
+import { Link } from 'react-router-dom'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
@@ -58,24 +59,30 @@ export default function PostActionsDropdown({ post }: { post: Post }) {
 
   return (
     <div className="inline">
-      <ButtonM1>
-        <FaPlay className="inline" /> {userreddit}
-      </ButtonM1>
-      {origsubreddit ? (
+      <Link to={userreddit}>
         <ButtonM1>
-          <FaPlay className="inline" /> {origsubreddit}
+          <FaPlay className="inline" /> Browse {userreddit}
         </ButtonM1>
+      </Link>
+      {origsubreddit ? (
+        <Link to={origsubreddit}>
+          <ButtonM1>
+            <FaPlay className="inline" /> Browse {origsubreddit}
+          </ButtonM1>
+        </Link>
       ) : null}
       {!isUserSubreddit ? (
-        <ButtonM1>
-          <FaPlay className="inline" /> {thissubreddit}
-        </ButtonM1>
+        <Link to={thissubreddit}>
+          <ButtonM1>
+            <FaPlay className="inline" /> Browse {thissubreddit}
+          </ButtonM1>
+        </Link>
       ) : null}
       <div className="dropdown">
         {error ? <ErrorMessage error={error} /> : null}
 
         <ButtonM1 className="inline">
-          <MdMoreHoriz />
+          More options <MdMoreHoriz />
         </ButtonM1>
 
         <ul
