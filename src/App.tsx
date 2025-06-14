@@ -6,6 +6,7 @@ import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
 import { useAppStore } from './store'
 import { useIsSmallScreen } from './useIsSmallScreen'
+import { normalizeForDisplay } from './util'
 
 // lazies
 const MobileApp = lazy(() => import('./MobileApp'))
@@ -16,6 +17,7 @@ export default function App() {
   const { val } = store
   const small = useIsSmallScreen()
   const location = useLocation()
+  const val2 = normalizeForDisplay(val)
 
   // Parse hash location and update store
   useEffect(() => {
@@ -25,14 +27,14 @@ export default function App() {
     const modeParam = searchParams.get('mode') ?? 'hot'
 
     // If we have a path, use it as val
-    if (hashPath && hashPath !== val) {
+    if (hashPath && hashPath !== val2) {
       store.setVal(hashPath)
     }
     // If we have a mode param, update it
     if (modeParam !== store.mode) {
       store.setMode(modeParam)
     }
-  }, [location, store, val])
+  }, [location, store, val2])
 
   useEffect(() => {
     if (store.smallScreen !== small) {
