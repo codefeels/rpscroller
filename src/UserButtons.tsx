@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState } from 'react'
 
+import { FaHome } from 'react-icons/fa'
 import { FaPlus } from 'react-icons/fa6'
 import { MdBlock, MdFavorite } from 'react-icons/md'
 import { Link } from 'react-router-dom'
@@ -49,6 +50,13 @@ export default function UserButtons({ post }: { post: Post }) {
         }}
       >
         <FaPlus className="inline" /> Add {userreddit} to feed
+      </ButtonM1>
+      <ButtonM1
+        onClick={() => {
+          store.setDefaultPage(userreddit)
+        }}
+      >
+        <FaHome className="inline" /> Set {userreddit} as home
       </ButtonM1>
       {addToFeedDialogOpen ? (
         <Suspense fallback={null}>

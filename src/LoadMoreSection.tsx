@@ -8,6 +8,8 @@ import LoadingSpinner from './LoadingSpinner'
 import { filterPosts } from './postFilters'
 import { useAppStore } from './store'
 
+import type { Post } from './util'
+
 export default function LoadMoreSection({
   data: data2,
   setSize,
@@ -17,10 +19,10 @@ export default function LoadMoreSection({
 }: {
   isLoading: boolean
   isValidating: boolean
-  data: any[]
+  data: { children: { data: Post }[] }[]
   setSize: (
     size: number | ((_size: number) => number),
-  ) => Promise<any[] | undefined>
+  ) => Promise<{ children: { data: Post }[] }[] | undefined>
   size: number
 }) {
   const { noGifs, blocked, skipPinned, dedupe, noRedGifs, redGifsOnly } =
@@ -30,13 +32,12 @@ export default function LoadMoreSection({
   })
   const isRecharging = useRef(false)
 
-  const data = data2?.flatMap(d => d.children).map(d => d.data)
+  const data = data2.flatMap(d => d.children).map(d => d.data)
   // these flags from https://swr.vercel.app/examples/infinite-loading
-  const isLoadingMore =
-    isLoading || (size > 0 && data2?.[size - 1] === undefined)
-  const isEmpty = (data2?.[0]?.children.length ?? 0) === 0
-  const isReachingEnd = isEmpty || (data2?.at(-1)?.children.length ?? 0) < 25
-  const isRefreshing = isValidating && data2 && data2.length === size
+  const isLoadingMore = isLoading || (size > 0 && data2[size - 1] === undefined)
+  const isEmpty = (data2[0]?.children.length ?? 0) === 0
+  const isReachingEnd = isEmpty || (data2.at(-1)?.children.length ?? 0) < 25
+  const isRefreshing = isValidating && data2.length === size
   useEffect(() => {
     if (
       isIntersecting &&
@@ -84,13 +85,7 @@ export default function LoadMoreSection({
             were comments) ... Scroll all the way down or{' '}
             <Button
               onClick={() => {
-                 
-                if (
-                  !isRecharging.current &&
-                  !isLoading &&
-                  !isRefreshing &&
-                  !isReachingEnd
-                ) {
+                if (!isRecharging.current && !isRefreshing) {
                   isRecharging.current = true
                   setTimeout(() => {
                     setSize(size + 1)

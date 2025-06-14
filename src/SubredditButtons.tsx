@@ -1,6 +1,6 @@
 import { Suspense, lazy, useState } from 'react'
 
-import { FaSave } from 'react-icons/fa'
+import { FaHome, FaSave } from 'react-icons/fa'
 import { FaPlus } from 'react-icons/fa6'
 import { MdFavorite } from 'react-icons/md'
 import { Link } from 'react-router-dom'
@@ -120,6 +120,13 @@ export default function SubredditButtons({ post }: { post: Post }) {
         }}
       >
         <FaPlus className="inline" /> Add {subreddit_name_prefixed} to feed
+      </ButtonM1>
+      <ButtonM1
+        onClick={() => {
+          store.setDefaultPage(subreddit_name_prefixed)
+        }}
+      >
+        <FaHome className="inline" /> Set {subreddit_name_prefixed} as home
       </ButtonM1>
       {addToFeedDialogOpen ? (
         <Suspense fallback={null}>

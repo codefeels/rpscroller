@@ -335,7 +335,8 @@ export const useAppStore = create<AppState>()(
         return state => {
           if (state) {
             // Use URL param value, fallback to default page, or empty string
-            state.val = val ?? state.defaultPage
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            state.val = val || state.defaultPage
 
             // Handle migration from old format (string array) to new format
             // (RecentlyVisited[])
