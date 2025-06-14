@@ -7,6 +7,7 @@ import CardList from './CardList'
 import LoadingSpinner from './LoadingSpinner'
 import { filterPosts } from './postFilters'
 import { useAppStore } from './store'
+import { useIsSmallScreen } from './useIsSmallScreen'
 
 import type { Post } from './util'
 
@@ -27,8 +28,10 @@ export default function LoadMoreSection({
 }) {
   const { noGifs, blocked, skipPinned, dedupe, noRedGifs, redGifsOnly } =
     useAppStore()
+  const small = useIsSmallScreen()
+
   const { isIntersecting, ref } = useIntersectionObserver({
-    threshold: 0.9,
+    threshold: small ? 0.5 : 0.8,
   })
   const isRecharging = useRef(false)
 

@@ -4,7 +4,7 @@ import SearchBox from './SearchBox'
 import Settings from './Settings'
 import Sorts from './Sorts'
 import { useAppStore } from './store'
-import { useSmallScreen } from './useSmallScreen'
+import { useIsSmallScreen } from './useIsSmallScreen'
 
 function Spacer() {
   return <div className="grow" />
@@ -23,7 +23,7 @@ function SmallScreenHeaderOnBottom() {
 }
 
 function NormalHeader() {
-  const small = useSmallScreen()
+  const small = useIsSmallScreen()
   return (
     <div className="lg:p-2 z-10 w-full border-b-2 border-slate-500 bg-inherit flex sticky top-0">
       <HamburgerMenu />
@@ -39,7 +39,7 @@ function NormalHeader() {
 
 export default function HeaderBar() {
   const { headerOnBottomOfScreen } = useAppStore()
-  const small = useSmallScreen()
+  const small = useIsSmallScreen()
   return small && headerOnBottomOfScreen ? (
     <SmallScreenHeaderOnBottom />
   ) : (

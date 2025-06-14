@@ -3,11 +3,11 @@ import { IoIosSettings } from 'react-icons/io'
 import Button from './Button'
 import Checkbox from './Checkbox'
 import { settingsMap, useAppStore } from './store'
-import { useSmallScreen } from './useSmallScreen'
+import { useIsSmallScreen } from './useIsSmallScreen'
 
 export default function Settings() {
   const store = useAppStore()
-  const small = useSmallScreen()
+  const small = useIsSmallScreen()
 
   return (
     <div className="dropdown dropdown-bottom dropdown-end">

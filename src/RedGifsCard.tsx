@@ -4,7 +4,7 @@ import { useDebounceValue, useIntersectionObserver } from 'usehooks-ts'
 
 import Button from './Button'
 import { useAppStore } from './store'
-import { useSmallScreen } from './useSmallScreen'
+import { useIsSmallScreen } from './useIsSmallScreen'
 import { redGifUrlToId } from './util'
 
 import type { Post } from './util'
@@ -47,7 +47,7 @@ export default function RedGifsCard({ post }: { post: Post }) {
     threshold: isFullscreen ? 1 : val > 100 ? 0.2 : 0.4,
   })
   const [debouncedIsIntersecting] = useDebounceValue(isIntersecting, 1000)
-  const small = useSmallScreen()
+  const small = useIsSmallScreen()
 
   return (
     <div ref={ref}>

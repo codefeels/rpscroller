@@ -9,10 +9,10 @@ import SidebarRecentlyVisitedSubreddits from './SidebarRecentlyVisitedSubreddits
 import SidebarRecentlyVisitedUsers from './SidebarRecentlyVisitedUsers'
 import SidebarSimilarSubreddits from './SidebarSimilarSubreddits'
 import SidebarWrapper from './SidebarWrapper'
-import { useSmallScreen } from './useSmallScreen'
+import { useIsSmallScreen } from './useIsSmallScreen'
 
 export default function Sidebar() {
-  const small = useSmallScreen()
+  const small = useIsSmallScreen()
   return (
     <SidebarWrapper>
       {small ? <SearchBox /> : null}

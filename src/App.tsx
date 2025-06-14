@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom'
 import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
 import { useAppStore } from './store'
-import { useSmallScreen } from './useSmallScreen'
+import { useIsSmallScreen } from './useIsSmallScreen'
 
 // lazies
 const MobileApp = lazy(() => import('./MobileApp'))
@@ -14,7 +14,7 @@ const DesktopApp = lazy(() => import('./DesktopApp'))
 export default function App() {
   const store = useAppStore()
   const { val } = store
-  const small = useSmallScreen()
+  const small = useIsSmallScreen()
   const location = useLocation()
 
   // Parse hash location and update store
