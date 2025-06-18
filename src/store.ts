@@ -102,7 +102,6 @@ export const settingsMap = {
 export const useAppStore = create<AppState>()(
   persist(
     set => ({
-      smallScreen: false,
       blocked: [],
       currentlyOpenDialog: undefined,
       sidebarOpen: true,
@@ -123,9 +122,7 @@ export const useAppStore = create<AppState>()(
       mode,
       val: `${val}`,
       favorites: [],
-      setSmallScreen: arg => {
-        set(() => ({ smallScreen: arg }))
-      },
+
       setCurrentlyOpenDialog: arg => {
         set(() => ({ currentlyOpenDialog: arg }))
       },
@@ -279,7 +276,7 @@ export const useAppStore = create<AppState>()(
           if (!newValNormalized) {
             return {
               val: undefined,
-              sidebarOpen: state.smallScreen ? false : state.sidebarOpen,
+              sidebarOpen: state.sidebarOpen,
             }
           }
 
@@ -289,7 +286,7 @@ export const useAppStore = create<AppState>()(
           return {
             val: newValNormalized,
             mode: 'hot',
-            sidebarOpen: state.smallScreen ? false : state.sidebarOpen,
+            sidebarOpen: state.sidebarOpen,
 
             // Update recently visited list
             recentlyVisited:

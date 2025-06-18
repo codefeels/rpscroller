@@ -2,7 +2,6 @@ import type { Favorite, Feed, RecentlyVisited } from './util'
 
 export interface AppState {
   rerenderCount: number
-  smallScreen: boolean
   noGifs: boolean
   redGifsOnly: boolean
   noRedGifs: boolean
@@ -23,7 +22,6 @@ export interface AppState {
   confirmed: boolean
   currentlyOpenDialog: string | undefined
 
-  setSmallScreen: (arg: boolean) => void
   setCurrentlyOpenDialog: (arg: string | undefined) => void
   setSidebarOpen: (arg: boolean) => void
   toggleSidebarOpen: () => void
