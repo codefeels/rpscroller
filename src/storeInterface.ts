@@ -15,7 +15,6 @@ export interface AppState {
   recentlyVisited: RecentlyVisited[]
   mode: string
   favorites: Favorite[]
-  val: string
   skipPinned: boolean
   dedupe: boolean
   hideButtons: boolean
@@ -55,7 +54,6 @@ export interface AppState {
   setRedGifsOnly: (arg: boolean) => void
   setNoRedGifs: (arg: boolean) => void
   setMode: (arg?: string) => void
-  setVal: (arg?: string) => void
 
   // favorites
   addFavorite: (arg: string) => void

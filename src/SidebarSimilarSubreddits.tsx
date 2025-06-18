@@ -9,10 +9,12 @@ import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { fetchGraphData } from './fetchGraph'
 import { useAppStore } from './store'
 import { isUserSubreddit, normalizeForDisplay } from './util'
+import { useCurrentPage } from './useCurrentPage'
 
 export default function SidebarSimilarSubreddits() {
   const store = useAppStore()
-  const { val, recentlyVisited } = store
+  const { defaultPage, recentlyVisited } = store
+  const val = useCurrentPage(defaultPage)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, isLoading, error } = useSWR('graph', () => fetchGraphData(), {
     revalidateIfStale: false,

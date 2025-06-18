@@ -2,10 +2,12 @@ import { useNavigate } from 'react-router-dom'
 
 import { useAppStore } from './store'
 import { modeMap } from './util'
+import { useCurrentPage } from './useCurrentPage'
 
 export default function Sorts() {
   const store = useAppStore()
-  const { mode, val } = store
+  const { defaultPage, mode } = store
+  const val = useCurrentPage(defaultPage)
   const navigate = useNavigate()
 
   const handleModeChange = (newMode: string) => {

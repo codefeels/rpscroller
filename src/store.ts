@@ -1,12 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-import { cmp, updateRecentlyVisitedList } from './storeUtils'
-import {
-  hasFavorite,
-  maybeNormalizeSubreddit,
-  normalizeSubreddit,
-} from './util'
+import { cmp } from './storeUtils'
+import { hasFavorite, normalizeSubreddit } from './util'
 
 import type { AppState } from './storeInterface'
 import type { Feed } from './util'
@@ -19,7 +15,6 @@ const getInitialValues = () => {
 
   // Extract path and search params
   const pathParts = hashPath.split('?')
-  const path = pathParts[0]
 
   // If we have search params in the hash, parse them
   if (pathParts.length > 1) {
@@ -32,12 +27,11 @@ const getInitialValues = () => {
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const mode = searchParams.get('mode') || 'hot'
-  const val = path ?? searchParams.get('val')
 
-  return { mode, val }
+  return { mode }
 }
 
-const { mode, val } = getInitialValues()
+const { mode } = getInitialValues()
 const filterSet = new Set(['val'])
 
 export const settingsMap = {
@@ -120,7 +114,6 @@ export const useAppStore = create<AppState>()(
       dedupe: false,
       confirmed: false,
       mode,
-      val: `${val}`,
       favorites: [],
 
       setCurrentlyOpenDialog: arg => {
@@ -265,37 +258,7 @@ export const useAppStore = create<AppState>()(
           defaultPage,
         }))
       },
-      setVal: newVal => {
-        const newValNormalized = maybeNormalizeSubreddit(newVal)
-        set(state => {
-          const { val, feeds, recentlyVisited } = state
-          const feedPaths = new Set(
-            feeds.map(f => `r/${f.subreddits.join('+')}`),
-          )
 
-          if (!newValNormalized) {
-            return {
-              val: undefined,
-              sidebarOpen: state.sidebarOpen,
-            }
-          }
-
-          const isChanging = !cmp(newValNormalized, val)
-
-          // Update state with new value
-          return {
-            val: newValNormalized,
-            mode: 'hot',
-            sidebarOpen: state.sidebarOpen,
-
-            // Update recently visited list
-            recentlyVisited:
-              isChanging && !feedPaths.has(newValNormalized)
-                ? updateRecentlyVisitedList(recentlyVisited, newValNormalized)
-                : recentlyVisited,
-          }
-        })
-      },
       addFavorite: newFav => {
         const newFavNormalized = normalizeSubreddit(newFav)
         set(state => {
@@ -331,13 +294,8 @@ export const useAppStore = create<AppState>()(
       onRehydrateStorage: () => {
         return state => {
           if (state) {
-            // Use URL param value, fallback to default page, or empty string
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            state.val = val || state.defaultPage
-
             // Handle migration from old format (string array) to new format
             // (RecentlyVisited[])
-
             state.recentlyVisited =
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               state.recentlyVisited?.map(item => ({

@@ -9,10 +9,12 @@ import { useAppStore } from './store'
 import { modeMap } from './util'
 
 import type { RedditResponse } from './util'
+import { useCurrentPage } from './useCurrentPage'
 
 export default function RedditPostFeed() {
   const store = useAppStore()
-  const { mode, val } = store
+  const { defaultPage, mode } = store
+  const val = useCurrentPage(defaultPage)
 
   const endpoint = modeMap.get(mode)?.url
   const url = `https://www.reddit.com/${val.startsWith('/') ? val.slice(1) : val}${endpoint ?? ''}`

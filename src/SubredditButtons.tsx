@@ -10,6 +10,7 @@ import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
 import { type Post, hasFavorite } from './util'
+import { useCurrentPage } from './useCurrentPage'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
@@ -28,7 +29,8 @@ export default function SubredditButtons({ post }: { post: Post }) {
   const store = useAppStore()
   const { author, subreddit, subreddit_name_prefixed, crosspost_parent_list } =
     post
-  const { val } = store
+  const { defaultPage } = store
+  const val = useCurrentPage(defaultPage)
   const origsubreddit =
     crosspost_parent_list?.[0]?.subreddit_name_prefixed ?? ''
   const thissubreddit = subreddit_name_prefixed

@@ -6,10 +6,12 @@ import { useNavigate } from 'react-router-dom'
 import ButtonM1 from './ButtonM1'
 import { useAppStore } from './store'
 import { hasFavorite } from './util'
+import { useCurrentPage } from './useCurrentPage'
 
 export default function SearchBox() {
   const store = useAppStore()
-  const { val } = store
+  const { defaultPage } = store
+  const val = useCurrentPage(defaultPage)
   const [text, setText] = useState(val)
   const navigate = useNavigate()
   useEffect(() => {

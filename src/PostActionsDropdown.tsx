@@ -10,6 +10,7 @@ import { useAppStore } from './store'
 import { type Post, hasFavorite, normalizeForComparison } from './util'
 import ButtonM1 from './ButtonM1'
 import { Link } from 'react-router-dom'
+import { useCurrentPage } from './useCurrentPage'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
@@ -28,7 +29,8 @@ export default function PostActionsDropdown({ post }: { post: Post }) {
   const store = useAppStore()
   const { author, subreddit, subreddit_name_prefixed, crosspost_parent_list } =
     post
-  const { val, favorites, blocked } = store
+  const { defaultPage, favorites, blocked } = store
+  const val = useCurrentPage(defaultPage)
 
   // User-related states
   const userreddit = `/u/${author}`

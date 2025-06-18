@@ -1,29 +1,19 @@
 import { Suspense, lazy, useEffect } from 'react'
 
-import { useLocation } from 'react-router-dom'
-
 import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
-import { useAppStore } from './store'
 import { useIsSmallScreen } from './useIsSmallScreen'
+import { useCurrentPage } from './useCurrentPage'
+import { useAppStore } from './store'
 
 // lazies
 const MobileApp = lazy(() => import('./MobileApp'))
 const DesktopApp = lazy(() => import('./DesktopApp'))
 
 export default function App() {
-  const store = useAppStore()
-  const { val } = store
   const small = useIsSmallScreen()
-  const location = useLocation()
-  const setVal = useAppStore(state => state.setVal)
-
-  useEffect(() => {
-    const hashPath = location.pathname.slice(1)
-    if (hashPath) {
-      setVal(hashPath)
-    }
-  }, [location, setVal])
+  const { defaultPage } = useAppStore()
+  const val = useCurrentPage(defaultPage)
 
   useEffect(() => {
     document.title = val ? val.slice(0, 20) : 'rpscroller'
