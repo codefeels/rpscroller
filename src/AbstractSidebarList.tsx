@@ -6,6 +6,8 @@ import Button from './Button'
 import MenuItem from './MenuItem'
 import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { normalizeForDisplay } from './util'
+import { useAppStore } from './store'
+import { useIsSmallScreen } from './useIsSmallScreen'
 
 export default function AbstractSidebarList({
   label,
@@ -16,6 +18,8 @@ export default function AbstractSidebarList({
   localStorageKey: string
   list: { name: string; visitedCount?: number }[]
 }) {
+  const store = useAppStore()
+  const isSmall = useIsSmallScreen()
   const [show, setShow] = useLocalStorage(localStorageKey, true)
   const [showMore, setShowMore] = useLocalStorage(
     'showMore-' + localStorageKey,
@@ -49,7 +53,15 @@ export default function AbstractSidebarList({
         <div>
           {list.length > 0
             ? list.slice(0, showMore ? 1000 : 7).map(entry => (
-                <Link key={entry.name} to={entry.name}>
+                <Link
+                  key={entry.name}
+                  to={entry.name}
+                  onClick={() => {
+                    if (isSmall) {
+                      store.setSidebarOpen(false)
+                    }
+                  }}
+                >
                   <MenuItem>
                     - {normalizeForDisplay(entry.name)}
                     {entry.visitedCount ? `(${entry.visitedCount})` : ''}
