@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom'
+import { normalizeSubreddit } from './util'
 
 export function useCurrentPage(defaultPage: string) {
   const location = useLocation()
-  return location.pathname.slice(1) || defaultPage
+  return normalizeSubreddit(location.pathname.slice(1) || defaultPage)
 }
