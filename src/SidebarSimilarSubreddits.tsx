@@ -8,8 +8,8 @@ import MenuItem from './MenuItem'
 import SidebarSectionWrapper from './SidebarSectionWrapper'
 import { fetchGraphData } from './fetchGraph'
 import { useAppStore } from './store'
-import { isUserSubreddit, normalizeForDisplay } from './util'
 import { useCurrentPage } from './useCurrentPage'
+import { isUserSubreddit, normalizeForDisplay } from './util'
 
 export default function SidebarSimilarSubreddits() {
   const store = useAppStore()

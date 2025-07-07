@@ -21,7 +21,10 @@ export interface FilterOptions {
   redGifsOnly: boolean
 }
 
-export function filterPosts(posts: Post[], options: FilterOptions): { filteredPosts: Post[], stats: FilterStats } {
+export function filterPosts(
+  posts: Post[],
+  options: FilterOptions,
+): { filteredPosts: Post[]; stats: FilterStats } {
   let result = posts
   const totalPosts = posts.length
   const stats: FilterStats = {
@@ -33,7 +36,7 @@ export function filterPosts(posts: Post[], options: FilterOptions): { filteredPo
     noRedGifsFiltered: 0,
     pinnedFiltered: 0,
     blockedFiltered: 0,
-    remainingPosts: 0
+    remainingPosts: 0,
   }
 
   // Filter out comments
@@ -96,10 +99,9 @@ export function filterPosts(posts: Post[], options: FilterOptions): { filteredPo
   }
 
   stats.remainingPosts = result.length
-  
+
   return {
     filteredPosts: result,
-    stats
+    stats,
   }
 }
-

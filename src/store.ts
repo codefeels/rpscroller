@@ -188,6 +188,43 @@ export const useAppStore = create<AppState>()(
           ),
         }))
       },
+      addToRecentlyVisited: (name: string) => {
+        const now = new Date()
+        set(state => {
+          const { recentlyVisited } = state
+          const existingIndex = recentlyVisited.findIndex(item =>
+            cmp(item.name, name),
+          )
+
+          if (existingIndex === -1) {
+            // Add new entry
+            return {
+              recentlyVisited: [
+                ...recentlyVisited,
+                {
+                  name,
+                  lastVisited: now,
+                  dateAdded: now,
+                  visitedCount: 1,
+                },
+              ],
+            }
+          } else {
+            // Update existing entry
+            const updatedList = [...recentlyVisited]
+            const existingItem = updatedList[existingIndex]
+            if (existingItem) {
+              updatedList[existingIndex] = {
+                ...existingItem,
+                name: existingItem.name,
+                lastVisited: now,
+                visitedCount: existingItem.visitedCount + 1,
+              }
+            }
+            return { recentlyVisited: updatedList }
+          }
+        })
+      },
       removeFeed: (name: string) => {
         set(state => ({
           feeds: state.feeds.filter(feed => feed.name !== name),

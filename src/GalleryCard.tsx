@@ -1,5 +1,7 @@
 import { useState } from 'react'
+
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+
 import ImageCard from './ImageCard'
 import { type Post, decode } from './util'
 

@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom'
 
 import ButtonM1 from './ButtonM1'
 import { useAppStore } from './store'
-import { hasFavorite } from './util'
 import { useCurrentPage } from './useCurrentPage'
+import { hasFavorite } from './util'
 
 export default function SearchBox() {
   const store = useAppStore()

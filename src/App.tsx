@@ -2,9 +2,9 @@ import { Suspense, lazy, useEffect } from 'react'
 
 import DialogHelper from './DialogHelper'
 import HeaderBar from './HeaderBar'
-import { useIsSmallScreen } from './useIsSmallScreen'
-import { useCurrentPage } from './useCurrentPage'
 import { useAppStore } from './store'
+import { useCurrentPage } from './useCurrentPage'
+import { useIsSmallScreen } from './useIsSmallScreen'
 
 // lazies
 const MobileApp = lazy(() => import('./MobileApp'))
@@ -12,12 +12,21 @@ const DesktopApp = lazy(() => import('./DesktopApp'))
 
 export default function App() {
   const small = useIsSmallScreen()
-  const { defaultPage } = useAppStore()
+  const { defaultPage, addToRecentlyVisited } = useAppStore()
   const val = useCurrentPage(defaultPage)
 
   useEffect(() => {
+    if (val) {
+      addToRecentlyVisited(val)
+    }
+  }, [val, addToRecentlyVisited])
+
+  useEffect(() => {
     document.title = val ? val.slice(0, 20) : 'rpscroller'
-  }, [val])
+    if (val) {
+      addToRecentlyVisited(val)
+    }
+  }, [val, addToRecentlyVisited])
 
   return (
     <>

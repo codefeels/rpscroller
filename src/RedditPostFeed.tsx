@@ -6,10 +6,10 @@ import LoadingSpinner from './LoadingSpinner'
 import { myfetchjson } from './fetchUtils'
 import { getFeedKey } from './getFeedKey'
 import { useAppStore } from './store'
+import { useCurrentPage } from './useCurrentPage'
 import { modeMap } from './util'
 
 import type { RedditResponse } from './util'
-import { useCurrentPage } from './useCurrentPage'
 
 export default function RedditPostFeed() {
   const store = useAppStore()

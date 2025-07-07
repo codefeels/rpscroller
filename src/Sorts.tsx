@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 
 import { useAppStore } from './store'
-import { modeMap } from './util'
 import { useCurrentPage } from './useCurrentPage'
+import { modeMap } from './util'
 
 export default function Sorts() {
   const store = useAppStore()

@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom'
+
 import { normalizeSubreddit } from './util'
 
 export function useCurrentPage(defaultPage: string) {

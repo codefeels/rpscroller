@@ -9,8 +9,8 @@ import ButtonM1 from './ButtonM1'
 import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
-import { type Post, hasFavorite } from './util'
 import { useCurrentPage } from './useCurrentPage'
+import { type Post, hasFavorite } from './util'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))

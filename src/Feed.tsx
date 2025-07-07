@@ -1,7 +1,7 @@
 import { Suspense, lazy } from 'react'
 
-import { useCurrentPage } from './useCurrentPage'
 import { useAppStore } from './store'
+import { useCurrentPage } from './useCurrentPage'
 
 const SavedPostFeed = lazy(() => import('./SavedPostFeed'))
 const RedditPostFeed = lazy(() => import('./RedditPostFeed'))

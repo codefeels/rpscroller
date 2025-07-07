@@ -3,14 +3,14 @@ import { Suspense, lazy, useState } from 'react'
 import { FaHome, FaSave } from 'react-icons/fa'
 import { FaPlay, FaPlus } from 'react-icons/fa6'
 import { MdBlock, MdFavorite, MdMoreHoriz } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 
+import ButtonM1 from './ButtonM1'
 import ErrorMessage from './ErrorMessage'
 import { dbPromise } from './savedPostsDb'
 import { useAppStore } from './store'
-import { type Post, hasFavorite, normalizeForComparison } from './util'
-import ButtonM1 from './ButtonM1'
-import { Link } from 'react-router-dom'
 import { useCurrentPage } from './useCurrentPage'
+import { type Post, hasFavorite, normalizeForComparison } from './util'
 
 // lazies
 const AddToFeedDialog = lazy(() => import('./AddToFeedDialog'))
@@ -73,13 +73,13 @@ export default function PostActionsDropdown({ post }: { post: Post }) {
           </ButtonM1>
         </Link>
       ) : null}
-      {!isUserSubreddit ? (
+      {isUserSubreddit ? null : (
         <Link to={thissubreddit}>
           <ButtonM1>
             <FaPlay className="inline" /> Browse {thissubreddit}
           </ButtonM1>
         </Link>
-      ) : null}
+      )}
       <div className="dropdown">
         {error ? <ErrorMessage error={error} /> : null}
 
@@ -94,30 +94,46 @@ export default function PostActionsDropdown({ post }: { post: Post }) {
           <li className="menu-title">User ({userreddit})</li>
           {!hasFavUser && (
             <li>
-              <button onClick={() => store.addFavorite(`/user/${author}`)}>
+              <button
+                onClick={() => {
+                  store.addFavorite(`/user/${author}`)
+                }}
+              >
                 <MdFavorite className="inline" /> Favorite user
               </button>
             </li>
           )}
           {!hasFavUser && !blocked.includes(author) && (
             <li>
-              <button onClick={() => store.setBlocked(author)}>
+              <button
+                onClick={() => {
+                  store.setBlocked(author)
+                }}
+              >
                 <MdBlock className="inline" /> Block user
               </button>
             </li>
           )}
           <li>
-            <button onClick={() => openAddToFeedDialog(`u_${author}`)}>
+            <button
+              onClick={() => {
+                openAddToFeedDialog(`u_${author}`)
+              }}
+            >
               <FaPlus className="inline" /> Add user to feed
             </button>
           </li>
           <li>
-            <button onClick={() => store.setDefaultPage(userreddit)}>
+            <button
+              onClick={() => {
+                store.setDefaultPage(userreddit)
+              }}
+            >
               <FaHome className="inline" /> Set user as home
             </button>
           </li>
 
-          {!isUserSubreddit ? (
+          {isUserSubreddit ? null : (
             <>
               <li className="menu-title">Subreddit {origsubreddit}</li>
 
@@ -125,7 +141,11 @@ export default function PostActionsDropdown({ post }: { post: Post }) {
                 <>
                   {!hasFavSubOrig && (
                     <li>
-                      <button onClick={() => store.addFavorite(origsubreddit)}>
+                      <button
+                        onClick={() => {
+                          store.addFavorite(origsubreddit)
+                        }}
+                      >
                         <MdFavorite className="inline" /> Favorite{' '}
                         {origsubreddit}
                       </button>
@@ -138,26 +158,38 @@ export default function PostActionsDropdown({ post }: { post: Post }) {
                 <>
                   {!hasFavSubThis && (
                     <li>
-                      <button onClick={() => store.addFavorite(thissubreddit)}>
+                      <button
+                        onClick={() => {
+                          store.addFavorite(thissubreddit)
+                        }}
+                      >
                         <MdFavorite className="inline" /> Favorite{' '}
                         {thissubreddit}
                       </button>
                     </li>
                   )}
                   <li>
-                    <button onClick={() => openAddToFeedDialog(subreddit)}>
+                    <button
+                      onClick={() => {
+                        openAddToFeedDialog(subreddit)
+                      }}
+                    >
                       <FaPlus className="inline" /> Add {thissubreddit} to feed
                     </button>
                   </li>
                   <li>
-                    <button onClick={() => store.setDefaultPage(thissubreddit)}>
+                    <button
+                      onClick={() => {
+                        store.setDefaultPage(thissubreddit)
+                      }}
+                    >
                       <FaHome className="inline" /> Set {thissubreddit} as home
                     </button>
                   </li>
                 </>
               )}
             </>
-          ) : null}
+          )}
 
           {/* Save Post Actions */}
           <li>

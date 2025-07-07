@@ -41,6 +41,7 @@ export interface AppState {
   // recently visited
   clearRecentlyVisited: () => void
   removeFromRecentlyVisited: (arg: string) => void
+  addToRecentlyVisited: (arg: string) => void
 
   forceRerender: () => void
   setHeaderOnBottomOfScreen: (arg: boolean) => void

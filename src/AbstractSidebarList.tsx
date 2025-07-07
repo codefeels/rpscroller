@@ -5,9 +5,9 @@ import { useLocalStorage } from 'usehooks-ts'
 import Button from './Button'
 import MenuItem from './MenuItem'
 import SidebarSectionWrapper from './SidebarSectionWrapper'
-import { normalizeForDisplay } from './util'
 import { useAppStore } from './store'
 import { useIsSmallScreen } from './useIsSmallScreen'
+import { normalizeForDisplay } from './util'
 
 export default function AbstractSidebarList({
   label,

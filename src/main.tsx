@@ -8,5 +8,5 @@ import './index.css'
 ReactDOM.createRoot(document.querySelector('#root')!).render(
   <HashRouter>
     <App />
-  </HashRouter>
+  </HashRouter>,
 )
