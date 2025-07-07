@@ -214,12 +214,6 @@ export const useAppStore = create<AppState>()(
             const updatedList = [...recentlyVisited]
             const existingItem = updatedList[existingIndex]
             if (existingItem) {
-              const timeSinceLastVisit = now.getTime() - existingItem.lastVisited.getTime()
-              // If the last visit was less than a second ago, don't increment the count
-              if (timeSinceLastVisit < 1000) {
-                return { recentlyVisited: updatedList }
-              }
-
               updatedList[existingIndex] = {
                 ...existingItem,
                 name: existingItem.name,
