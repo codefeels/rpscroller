@@ -18,7 +18,6 @@ export default function RedditPostFeed() {
 
   const endpoint = modeMap.get(mode)?.url
   const url = `https://www.reddit.com/${val.startsWith('/') ? val.slice(1) : val}${endpoint ?? ''}`
-
   const {
     data,
     size,
