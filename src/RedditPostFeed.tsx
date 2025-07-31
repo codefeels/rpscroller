@@ -26,10 +26,20 @@ export default function RedditPostFeed() {
     error,
     isValidating,
     isLoading,
-  } = useSWRInfinite(getFeedKey(url), async (url: string) => {
-    const ret = await myfetchjson<RedditResponse>(url)
-    return ret.data
-  })
+  } = useSWRInfinite(
+    getFeedKey(url),
+    async (url: string) => {
+      const ret = await myfetchjson<RedditResponse>(url)
+      return ret.data
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+      dedupingInterval: 60000,
+      focusThrottleInterval: 5000,
+    },
+  )
 
   return (
     <div>
