@@ -36,7 +36,7 @@ export default function RedditPostFeed() {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       revalidateIfStale: false,
-      dedupingInterval: 60000,
+      dedupingInterval: 60_000,
       focusThrottleInterval: 5000,
     },
   )
