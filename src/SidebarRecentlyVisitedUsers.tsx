@@ -13,7 +13,7 @@ export default function RecentlyVisitedSubreddits() {
       localStorageKey="recentlyVisitedUsers"
       list={recentlyVisited
         .filter(f => isUserSubreddit(f.name))
-        .sort((a, b) => +b.lastVisited - +a.lastVisited)
+        .toSorted((a, b) => +b.lastVisited - +a.lastVisited)
         .filter(entry => !s.has(entry.name))}
     />
   )

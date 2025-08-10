@@ -11,7 +11,7 @@ export default function SidebarMostVisitedSubreddits() {
     <AbstractSidebarList
       list={recentlyVisited
         .filter(f => isUserSubreddit(f.name))
-        .sort((a, b) => b.visitedCount - a.visitedCount)
+        .toSorted((a, b) => b.visitedCount - a.visitedCount)
         .filter(entry => !s.has(entry.name))}
       label="Most visited users"
       localStorageKey="mostVisitedUsers"

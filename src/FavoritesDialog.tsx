@@ -34,12 +34,12 @@ export default function Favorites({
       ...f,
       dateAdded: new Date(ret[f.name]?.dateAdded ?? new Date()),
     }))
-    .sort(
+    .toSorted(
       (a, b) =>
         ((ret[a.name]?.visitedCount ?? 0) - (ret[b.name]?.visitedCount ?? 0)) *
         sortVisits,
     )
-    .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
+    .toSorted((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
     <BaseDialog open={open} onClose={onClose}>
       <h4 className="font-extrabold">{title}</h4>

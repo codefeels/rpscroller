@@ -17,13 +17,13 @@ export default function FavoriteUsersDialog({
       title="Favorite users"
       open={open}
       onClose={onClose}
-      favorites={[
-        ...favorites
+      favorites={
+        favorites
           .filter(f => isUserSubreddit(f.name))
-          .sort((a, b) =>
+          .toSorted((a, b) =>
             a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
-          ),
-      ]}
+          )
+      }
     />
   )
 }

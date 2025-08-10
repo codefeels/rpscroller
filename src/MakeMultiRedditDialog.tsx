@@ -31,21 +31,25 @@ export default function MakeMultiRedditDialog({
   const favs = [
     ...favorites
       .filter(f => !isUserSubreddit(f.name))
-      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
+      .toSorted((a, b) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+      ),
     ...favorites
       .filter(f => isUserSubreddit(f.name))
-      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())),
+      .toSorted((a, b) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+      ),
   ]
     .map(f => ({
       ...f,
       dateAdded: new Date(ret[f.name]?.dateAdded ?? new Date()),
     }))
-    .sort(
+    .toSorted(
       (a, b) =>
         ((ret[a.name]?.visitedCount ?? 0) - (ret[b.name]?.visitedCount ?? 0)) *
         sortVisits,
     )
-    .sort((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
+    .toSorted((a, b) => (+a.dateAdded - +b.dateAdded) * sortDateAdded)
   return (
     <BaseDialog open={open} onClose={onClose}>
       {creatingFeed ? (

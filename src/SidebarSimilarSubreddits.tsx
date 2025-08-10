@@ -67,7 +67,7 @@ export default function SidebarSimilarSubreddits() {
                 ),
               ]
                 .map(r => `/r/${r}`)
-                .sort(
+                .toSorted(
                   (a, b) =>
                     ((ret[normalizeForDisplay(a)]?.visitedCount ?? 0) -
                       (ret[normalizeForDisplay(b)]?.visitedCount ?? 0)) *

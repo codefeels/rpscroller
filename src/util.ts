@@ -166,5 +166,5 @@ export function maybeSort<T>(
   flag: boolean,
   cb: (a: T, b: T) => number,
 ) {
-  return flag ? arg.sort(cb) : arg
+  return flag ? arg.toSorted(cb) : arg
 }
