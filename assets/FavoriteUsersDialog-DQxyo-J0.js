@@ -1,0 +1,2 @@
+import{u as i,j as m,i as n}from"./index-CNjTN_Kv.js";import{F as p}from"./FavoritesDialog-_JHcWGY4.js";import"./BaseDialog-BrezZuZq.js";import"./en-US-A-7Ux56e.js";function c({open:o,onClose:t}){const r=i(),{favorites:s}=r;return m.jsx(p,{title:"Favorite users",open:o,onClose:t,favorites:s.filter(e=>n(e.name)).toSorted((e,a)=>e.name.toLowerCase().localeCompare(a.name.toLowerCase()))})}export{c as default};
+//# sourceMappingURL=FavoriteUsersDialog-DQxyo-J0.js.map
