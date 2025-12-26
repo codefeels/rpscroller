@@ -61,11 +61,7 @@ export default function SidebarSimilarSubreddits() {
           {error ? <div className="text-error">{`${error}`}</div> : null}
           {data ? (
             <div>
-              {[
-                ...new Set(
-                  data[normalizeForDisplay(val).replace('r/', '')] ?? [],
-                ),
-              ]
+              {[...new Set(data[normalizeForDisplay(val).replace('r/', '')])]
                 .map(r => `/r/${r}`)
                 .toSorted(
                   (a, b) =>
