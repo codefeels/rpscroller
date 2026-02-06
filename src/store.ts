@@ -329,6 +329,7 @@ export const useAppStore = create<AppState>()(
           Object.entries(state).filter(([key]) => !filterSet.has(key)),
         ),
       onRehydrateStorage: () => {
+        // eslint-disable-next-line unicorn/consistent-function-scoping
         return state => {
           if (state) {
             // Handle migration from old format (string array) to new format

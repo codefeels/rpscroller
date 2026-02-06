@@ -23,7 +23,7 @@ export default function LoadMoreSection({
   data: { children: { data: Post }[] }[]
   setSize: (
     size: number | ((_size: number) => number),
-  ) => Promise<{ children: { data: Post }[] }[] | undefined>
+  ) => Promise<{ children: { data: Post }[] }[] | undefined | void>
   size: number
 }) {
   const { noGifs, blocked, skipPinned, dedupe, noRedGifs, redGifsOnly } =
